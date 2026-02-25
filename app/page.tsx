@@ -1,3 +1,7 @@
+import Navbar from "@/components/Navbar";
+import Hero from "@/components/Hero";
+import Features from "@/components/Features";
+
 export const metadata = {
   title: "Home | AI-powered Learning Management System",
   description:
@@ -6,8 +10,10 @@ export const metadata = {
 
 export default function Home() {
   return (
-    <div>
-      <h1>Landing page</h1>
-    </div>
+    <main>
+      <Navbar />
+      <Hero />
+      <Features />
+    </main>
   );
 }
