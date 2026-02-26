@@ -4,60 +4,42 @@ import { useState } from "react";
 import { EyeOff, Eye } from "lucide-react";
 import Link from "next/link";
 
-type Role = "student" | "teacher";
-
-interface UserDetails {
-  id: string;
-  fullname: string;
+interface LoginDetails {
   email: string;
   password: string;
-  role: Role;
 }
 
-export default function RegisterClient() {
+export default function LoginClient() {
   const [showPassword, setShowPassword] = useState(false);
-  const [userDetails, setUserDetails] = useState<UserDetails>({
-    id: crypto.randomUUID(),
-    fullname: "",
+  const [loginDetails, setLoginDetails] = useState<LoginDetails>({
     email: "",
     password: "",
-    role: "student",
   });
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
-
-    setUserDetails((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setLoginDetails((prev) => ({ ...prev, [name]: value }));
   }
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setUserDetails({
-      id: crypto.randomUUID(),
-      fullname: "",
-      email: "",
-      password: "",
-      role: "student",
-    });
+    // add login logic here
   }
 
   return (
-    <div className="w-full max-w-md lg:p-6 flex flex-col gap-8">
+    <div className="w-full max-w-md lg:p-8 flex flex-col gap-8">
       {/* Header */}
       <div className="flex flex-col gap-1.5">
         <h1 className="text-2xl font-bold text-foreground tracking-tight">
-          Create your account
+          Welcome back
         </h1>
         <p className="text-sm text-foreground-muted">
-          Already have an account?{" "}
+          Don't have an account?{" "}
           <Link
-            href="/login"
+            href="/register"
             className="text-primary font-semibold hover:underline underline-offset-4"
           >
-            Log in
+            Sign up
           </Link>
         </p>
       </div>
@@ -80,45 +62,6 @@ export default function RegisterClient() {
 
       {/* Form */}
       <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-        {/* Role */}
-        <div className="flex flex-col gap-2">
-          <label className="text-xs font-semibold tracking-widest uppercase text-foreground-muted">
-            I am a
-          </label>
-          <div className="grid grid-cols-2 rounded-lg border border-border bg-card p-1 gap-1">
-            {(["student", "teacher"] as Role[]).map((r) => (
-              <button
-                key={r}
-                type="button"
-                onClick={() => setUserDetails((prev) => ({ ...prev, role: r }))}
-                className={`py-2 rounded-md text-sm font-semibold capitalize transition-all duration-200 ${
-                  userDetails.role === r
-                    ? "bg-primary text-primary-foreground shadow-sm"
-                    : "text-foreground-muted hover:text-foreground"
-                }`}
-              >
-                {r === "student" ? "Student" : "Teacher"}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Full name */}
-        <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-semibold tracking-widest uppercase text-foreground-muted">
-            Full Name
-          </label>
-          <input
-            type="text"
-            placeholder="Ada Lovelace"
-            name="fullname"
-            value={userDetails.fullname}
-            onChange={handleChange}
-            className="w-full rounded-lg border border-border bg-input px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-input-focus transition-all duration-200"
-            required
-          />
-        </div>
-
         {/* Email */}
         <div className="flex flex-col gap-1.5">
           <label className="text-xs font-semibold tracking-widest uppercase text-foreground-muted">
@@ -128,7 +71,7 @@ export default function RegisterClient() {
             type="email"
             placeholder="ada@cognify.com"
             name="email"
-            value={userDetails.email}
+            value={loginDetails.email}
             onChange={handleChange}
             className="w-full rounded-lg border border-border bg-input px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-input-focus transition-all duration-200"
             required
@@ -137,15 +80,23 @@ export default function RegisterClient() {
 
         {/* Password */}
         <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-semibold tracking-widest uppercase text-foreground-muted">
-            Password
-          </label>
+          <div className="flex items-center justify-between">
+            <label className="text-xs font-semibold tracking-widest uppercase text-foreground-muted">
+              Password
+            </label>
+            <Link
+              href="/forgot-password"
+              className="text-xs text-primary hover:underline underline-offset-4"
+            >
+              Forgot password?
+            </Link>
+          </div>
           <div className="relative">
             <input
               type={showPassword ? "text" : "password"}
-              placeholder="Min. 8 characters"
+              placeholder="Your password"
               name="password"
-              value={userDetails.password}
+              value={loginDetails.password}
               onChange={handleChange}
               className="w-full rounded-lg border border-border bg-input px-4 py-2.5 pr-11 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-input-focus transition-all duration-200"
               required
@@ -165,13 +116,13 @@ export default function RegisterClient() {
           type="submit"
           className="w-full mt-1 rounded-lg bg-primary text-primary-foreground px-4 py-2.5 text-sm font-semibold hover:bg-primary-hover active:scale-[0.98] transition-all duration-200 shadow-sm"
         >
-          Create account
+          Log in
         </button>
       </form>
 
       {/* Terms */}
       <p className="text-xs text-foreground-muted text-center leading-relaxed">
-        By signing up you agree to our{" "}
+        By logging in you agree to our{" "}
         <Link
           href="/terms"
           className="text-primary hover:underline underline-offset-4"
