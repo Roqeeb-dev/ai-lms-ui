@@ -4,8 +4,9 @@ import Button from "./Button";
 export const links = [
   { text: "Home", to: "" },
   { text: "Features", to: "features" },
-  { text: "About", to: "about" },
-  { text: "Documentation", to: "docs" },
+  { text: "Testimonials", to: "testimonials" },
+  { text: "Pricing", to: "pricing" },
+  { text: "How it works", to: "how-it-works" },
 ];
 
 export default function Navbar() {
@@ -14,7 +15,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         <Logo />
 
-        <nav className="hidden md:flex items-center gap-8">
+        <nav className="hidden md:flex items-center gap-5">
           {links.map((link, idx) => (
             <a
               key={idx}
