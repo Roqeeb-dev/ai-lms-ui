@@ -12,10 +12,8 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border-subtle bg-background/90 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-        {/* Logo */}
         <Logo />
 
-        {/* Nav Links */}
         <nav className="hidden md:flex items-center gap-8">
           {links.map((link, idx) => (
             <a
@@ -28,7 +26,6 @@ export default function Navbar() {
           ))}
         </nav>
 
-        {/* CTA */}
         <div className="flex items-center gap-3">
           <Button variant="secondary" text="Login" href="/login" />
           <Button variant="primary" text="Sign Up" href="/register" />
