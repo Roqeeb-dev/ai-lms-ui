@@ -3,6 +3,7 @@ import Hero from "@/components/Hero";
 import Features from "@/components/Features";
 import Testimonials from "@/components/Testimonials";
 import HowItWorks from "@/components/HowItWorks";
+import Pricing from "@/components/Pricing";
 
 export const metadata = {
   title: "Home | AI-powered Learning Management System",
@@ -18,6 +19,7 @@ export default function Home() {
       <Features />
       <Testimonials />
       <HowItWorks />
+      <Pricing />
     </main>
   );
 }
