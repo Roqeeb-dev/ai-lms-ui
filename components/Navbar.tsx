@@ -10,20 +10,29 @@ export const links = [
 
 export default function Navbar() {
   return (
-    <header className="flex items-center justify-between max-w-7xl mx-auto p-4">
-      <Logo />
+    <header className="sticky top-0 z-50 w-full border-b border-border-subtle bg-background/90 backdrop-blur-md">
+      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+        {/* Logo */}
+        <Logo />
 
-      <nav className="flex items-center space-x-9">
-        {links.map((link, idx) => (
-          <a key={idx} href={`#${link.to}`}>
-            {link.text}
-          </a>
-        ))}
-      </nav>
+        {/* Nav Links */}
+        <nav className="hidden md:flex items-center gap-8">
+          {links.map((link, idx) => (
+            <a
+              key={idx}
+              href={`#${link.to}`}
+              className="relative text-sm font-medium text-foreground-muted transition-colors duration-200 hover:text-foreground after:absolute after:-bottom-0.5 after:left-0 after:h-px after:w-0 after:bg-primary after:transition-all after:duration-200 hover:after:w-full"
+            >
+              {link.text}
+            </a>
+          ))}
+        </nav>
 
-      <div className="flex items-center space-x-2">
-        <Button variant="primary" text="Login" href="/login" />
-        <Button variant="secondary" text="Sign Up" href="/register" />
+        {/* CTA */}
+        <div className="flex items-center gap-3">
+          <Button variant="secondary" text="Login" href="/login" />
+          <Button variant="primary" text="Sign Up" href="/register" />
+        </div>
       </div>
     </header>
   );

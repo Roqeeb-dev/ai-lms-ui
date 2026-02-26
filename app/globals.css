@@ -1,46 +1,98 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #0f172a;
+  /* ── Surfaces ── */
+  --background: #f2e8dc; /* sand — lightest base */
+  --background-subtle: #ede0d0; /* slightly deeper sand for subtle sections */
 
-  --primary: #4f46e5;
-  --primary-foreground: #ffffff;
+  --card: #f8f2ea; /* warm parchment — elevated surface */
+  --card-raised: #ffffff; /* modals, dropdowns, top-layer cards */
 
-  --accent: #7c3aed;
-  --accent-foreground: #ffffff;
+  --foreground: #1a0f0a; /* espresso — primary text */
+  --foreground-muted: #6b4f3a; /* warm brown — secondary text */
 
-  --muted: #f1f5f9;
-  --muted-foreground: #64748b;
+  /* ── Primary: Burnt Terracotta ── */
+  --primary: #c0522a;
+  --primary-hover: #a8441f;
+  --primary-foreground: #f8f2ea;
 
-  --card: #ffffff;
-  --card-foreground: #020617;
+  /* ── Accent: Saffron ── */
+  --accent: #f5a623;
+  --accent-hover: #e09510;
+  --accent-foreground: #1a0f0a;
 
-  --border: #e5e7eb;
-  --input: #e5e7eb;
+  /* ── Secondary: Forest Green ── */
+  --secondary: #2d4a3e;
+  --secondary-hover: #223a30;
+  --secondary-foreground: #f2e8dc;
 
-  --ring: #6366f1;
+  /* ── Muted ── */
+  --muted: #e8d9c8;
+  --muted-foreground: #8a6a52;
+
+  /* ── Semantic ── */
+  --success: #2d4a3e;
+  --success-foreground: #b5cda3;
+  --warning: #f5a623;
+  --warning-foreground: #1a0f0a;
+  --destructive: #c0522a;
+  --destructive-foreground: #f8f2ea;
+
+  /* ── Borders & Inputs ── */
+  --border: #d4b99a;
+  --border-subtle: #e0ccba;
+  --input: #f8f2ea;
+  --input-focus: #c0522a;
+
+  /* ── Focus ring ── */
+  --ring: #c0522a;
+
+  /* ── Highlight / Achievement ── */
+  --highlight: #f5a623; /* streaks, badges, completions */
+  --highlight-foreground: #1a0f0a;
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-background-subtle: var(--background-subtle);
+
   --color-foreground: var(--foreground);
+  --color-foreground-muted: var(--foreground-muted);
 
   --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
   --color-primary-foreground: var(--primary-foreground);
 
   --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
   --color-accent-foreground: var(--accent-foreground);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-hover: var(--secondary-hover);
+  --color-secondary-foreground: var(--secondary-foreground);
 
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
 
   --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
+  --color-card-raised: var(--card-raised);
+  --color-card-foreground: var(--foreground);
+
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
 
   --color-border: var(--border);
+  --color-border-subtle: var(--border-subtle);
   --color-input: var(--input);
+  --color-input-focus: var(--input-focus);
   --color-ring: var(--ring);
+
+  --color-highlight: var(--highlight);
+  --color-highlight-foreground: var(--highlight-foreground);
 
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
