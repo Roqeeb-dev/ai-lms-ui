@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { EyeOff, Eye } from "lucide-react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 import type { Role } from "@/types/user";
@@ -17,6 +18,7 @@ export default function RegisterClient() {
     password: "",
     role: "student",
   });
+  const router = useRouter();
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
@@ -35,6 +37,7 @@ export default function RegisterClient() {
       password: "",
       role: "student",
     });
+    router.push("/onboarding");
   }
 
   return (
