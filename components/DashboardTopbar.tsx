@@ -3,9 +3,8 @@
 import { Menu } from "lucide-react";
 import NotificationBell from "./NotificationBell";
 import UserMenu from "./UserMenu";
+import { Role } from "@/types/user";
 import Link from "next/link";
-
-type Role = "student" | "teacher" | "admin";
 
 export interface TopbarUser {
   fullname: string;

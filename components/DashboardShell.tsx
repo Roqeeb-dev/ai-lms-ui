@@ -8,10 +8,11 @@ import StudentSidebar from "./sidebars/StudentSidebar";
 import TeacherSidebar from "./sidebars/TeacherSidebar";
 import AdminSidebar from "./sidebars/AdminSidebar";
 
+// mock data
 const user = {
   fullname: "Ada Lovelace",
   email: "ada@cognify.com",
-  role: "admin" as const,
+  role: "student" as const,
   streak: 7,
 };
 
