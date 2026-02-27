@@ -1,7 +1,7 @@
 import Logo from "./Logo";
 
 const links = {
-  Product: ["Features", "How It Works", "Pricing", "Changelog"],
+  Product: ["Features", "How It Works", "Pricing", "Testimonials"],
   Learn: ["Browse Courses", "AI Tutor", "For Students", "For Teachers"],
   Company: ["About", "Blog", "Careers", "Contact"],
   Legal: ["Privacy Policy", "Terms of Service", "Cookie Policy"],
@@ -20,6 +20,7 @@ export default function Footer() {
               AI-powered personalized learning for students, educators, and
               institutions.
             </p>
+
             {/* Socials */}
             <div className="flex items-center gap-3 mt-1">
               {["X", "Li", "Gh", "Yt"].map((s) => (

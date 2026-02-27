@@ -4,10 +4,9 @@ import { useState } from "react";
 import { EyeOff, Eye } from "lucide-react";
 import Link from "next/link";
 
-interface LoginDetails {
-  email: string;
-  password: string;
-}
+import type { User } from "@/types/user";
+
+type LoginDetails = Pick<User, "email" | "password">;
 
 export default function LoginClient() {
   const [showPassword, setShowPassword] = useState(false);

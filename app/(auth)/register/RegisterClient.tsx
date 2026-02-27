@@ -4,20 +4,14 @@ import { useState } from "react";
 import { EyeOff, Eye } from "lucide-react";
 import Link from "next/link";
 
-type Role = "student" | "teacher";
+import type { Role } from "@/types/user";
+import type { User } from "@/types/user";
 
-interface UserDetails {
-  id: string;
-  fullname: string;
-  email: string;
-  password: string;
-  role: Role;
-}
+type RegisterDetails = Omit<User, "id" | "createdAt">;
 
 export default function RegisterClient() {
   const [showPassword, setShowPassword] = useState(false);
-  const [userDetails, setUserDetails] = useState<UserDetails>({
-    id: crypto.randomUUID(),
+  const [userDetails, setUserDetails] = useState<RegisterDetails>({
     fullname: "",
     email: "",
     password: "",
@@ -36,7 +30,6 @@ export default function RegisterClient() {
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setUserDetails({
-      id: crypto.randomUUID(),
       fullname: "",
       email: "",
       password: "",
