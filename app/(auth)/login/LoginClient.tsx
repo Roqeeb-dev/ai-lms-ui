@@ -5,6 +5,7 @@ import { EyeOff, Eye } from "lucide-react";
 import Link from "next/link";
 
 import type { User } from "@/types/user";
+import { useRouter } from "next/navigation";
 
 type LoginDetails = Pick<User, "email" | "password">;
 
@@ -14,6 +15,7 @@ export default function LoginClient() {
     email: "",
     password: "",
   });
+  const router = useRouter();
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
@@ -22,7 +24,10 @@ export default function LoginClient() {
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    // add login logic here
+    setLoginDetails({
+      email: "",
+      password: "",
+    });
   }
 
   return (
