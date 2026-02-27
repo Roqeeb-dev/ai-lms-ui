@@ -2,12 +2,16 @@
 
 import { useState } from "react";
 import { usePathname } from "next/navigation";
+import type { Role } from "@/types/user";
 import DashboardTopbar from "@/components/DashboardTopbar";
+import StudentSidebar from "./sidebars/StudentSidebar";
+import TeacherSidebar from "./sidebars/TeacherSidebar";
+import AdminSidebar from "./sidebars/AdminSidebar";
 
-const mockUser = {
+const user = {
   fullname: "Ada Lovelace",
   email: "ada@cognify.com",
-  role: "student" as const,
+  role: "admin" as const,
   streak: 7,
 };
 
@@ -40,18 +44,24 @@ export default function DashboardShell({
   const pathname = usePathname();
   const pageTitle = getPageTitle(pathname);
 
+  function displayDynamicSidebar(role: Role) {
+    if (role === "student") {
+      return <StudentSidebar open={sidebarOpen} />;
+    } else if (role === "teacher") {
+      return <TeacherSidebar open={sidebarOpen} />;
+    } else {
+      return <AdminSidebar open={sidebarOpen} />;
+    }
+  }
+
   return (
     <div className="flex h-screen bg-background overflow-hidden">
-      {/* Sidebar placeholder — replace with role-based sidebar */}
-      <aside
-        className={`shrink-0 h-full bg-card border-r border-border transition-all duration-300 ease-in-out overflow-hidden
-          ${sidebarOpen ? "w-60" : "w-0 border-r-0"}`}
-      />
+      {displayDynamicSidebar(user.role)}
 
       {/* Main */}
       <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
         <DashboardTopbar
-          user={mockUser}
+          user={user}
           pageTitle={pageTitle}
           notificationCount={3}
           onSidebarToggle={() => setSidebarOpen((prev) => !prev)}
