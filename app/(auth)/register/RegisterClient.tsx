@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { EyeOff, Eye } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useForm } from "@/hooks/useForm";
 import Link from "next/link";
 
 import type { Role } from "@/types/user";
@@ -12,31 +13,19 @@ type RegisterDetails = Omit<User, "id" | "createdAt">;
 
 export default function RegisterClient() {
   const [showPassword, setShowPassword] = useState(false);
-  const [userDetails, setUserDetails] = useState<RegisterDetails>({
+
+  const { values, update } = useForm<RegisterDetails>({
     fullname: "",
     email: "",
     password: "",
     role: "student",
   });
+
   const router = useRouter();
-
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const { name, value } = e.target;
-
-    setUserDetails((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  }
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setUserDetails({
-      fullname: "",
-      email: "",
-      password: "",
-      role: "student",
-    });
+
     router.push("/onboarding");
   }
 
@@ -86,9 +75,9 @@ export default function RegisterClient() {
               <button
                 key={r}
                 type="button"
-                onClick={() => setUserDetails((prev) => ({ ...prev, role: r }))}
+                onClick={() => update("role", r)}
                 className={`py-2 rounded-md text-sm font-semibold capitalize transition-all duration-200 ${
-                  userDetails.role === r
+                  values.role === r
                     ? "bg-primary text-primary-foreground shadow-sm"
                     : "text-foreground-muted hover:text-foreground"
                 }`}
@@ -108,8 +97,8 @@ export default function RegisterClient() {
             type="text"
             placeholder="Ada Lovelace"
             name="fullname"
-            value={userDetails.fullname}
-            onChange={handleChange}
+            value={values.fullname}
+            onChange={(e) => update("fullname", e.target.value)}
             className="w-full rounded-lg border border-border bg-input px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-input-focus transition-all duration-200"
             required
           />
@@ -124,8 +113,8 @@ export default function RegisterClient() {
             type="email"
             placeholder="ada@cognify.com"
             name="email"
-            value={userDetails.email}
-            onChange={handleChange}
+            value={values.email}
+            onChange={(e) => update("email", e.target.value)}
             className="w-full rounded-lg border border-border bg-input px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-input-focus transition-all duration-200"
             required
           />
@@ -141,8 +130,8 @@ export default function RegisterClient() {
               type={showPassword ? "text" : "password"}
               placeholder="Min. 8 characters"
               name="password"
-              value={userDetails.password}
-              onChange={handleChange}
+              value={values.password}
+              onChange={(e) => update("password", e.target.value)}
               className="w-full rounded-lg border border-border bg-input px-4 py-2.5 pr-11 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-input-focus transition-all duration-200"
               required
             />
