@@ -3,31 +3,23 @@
 import { useState } from "react";
 import { EyeOff, Eye } from "lucide-react";
 import Link from "next/link";
+import { useForm } from "@/hooks/useForm";
 
 import type { User } from "@/types/user";
-import { useRouter } from "next/navigation";
 
 type LoginDetails = Pick<User, "email" | "password">;
 
 export default function LoginClient() {
   const [showPassword, setShowPassword] = useState(false);
-  const [loginDetails, setLoginDetails] = useState<LoginDetails>({
+  const { values, update } = useForm<LoginDetails>({
     email: "",
     password: "",
   });
-  const router = useRouter();
-
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const { name, value } = e.target;
-    setLoginDetails((prev) => ({ ...prev, [name]: value }));
-  }
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setLoginDetails({
-      email: "",
-      password: "",
-    });
+
+    //add login logic when apiclient is setup
   }
 
   return (
@@ -75,8 +67,8 @@ export default function LoginClient() {
             type="email"
             placeholder="ada@cognify.com"
             name="email"
-            value={loginDetails.email}
-            onChange={handleChange}
+            value={values.email}
+            onChange={(e) => update("email", e.target.value)}
             className="w-full rounded-lg border border-border bg-input px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-input-focus transition-all duration-200"
             required
           />
@@ -100,8 +92,8 @@ export default function LoginClient() {
               type={showPassword ? "text" : "password"}
               placeholder="Your password"
               name="password"
-              value={loginDetails.password}
-              onChange={handleChange}
+              value={values.password}
+              onChange={(e) => update("password", e.target.value)}
               className="w-full rounded-lg border border-border bg-input px-4 py-2.5 pr-11 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-input-focus transition-all duration-200"
               required
             />

@@ -131,6 +131,7 @@ export default function RegisterClient() {
               placeholder="Min. 8 characters"
               name="password"
               value={values.password}
+              minLength={8}
               onChange={(e) => update("password", e.target.value)}
               className="w-full rounded-lg border border-border bg-input px-4 py-2.5 pr-11 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-input-focus transition-all duration-200"
               required
