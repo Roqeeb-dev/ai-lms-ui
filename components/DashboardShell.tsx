@@ -3,18 +3,14 @@
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import type { Role } from "@/types/user";
+import { useUserStore } from "@/store/useUserStore";
+
 import DashboardTopbar from "@/components/DashboardTopbar";
 import StudentSidebar from "./sidebars/StudentSidebar";
 import TeacherSidebar from "./sidebars/TeacherSidebar";
 import AdminSidebar from "./sidebars/AdminSidebar";
 
-// mock data
-const user = {
-  fullname: "Ada Lovelace",
-  email: "ada@cognify.com",
-  role: "student" as const,
-  streak: 7,
-};
+const user = useUserStore((state) => state.user);
 
 function getPageTitle(pathname: string): string {
   const map: Record<string, string> = {
@@ -54,6 +50,8 @@ export default function DashboardShell({
       return <AdminSidebar open={sidebarOpen} />;
     }
   }
+
+  if (!user) return;
 
   return (
     <div className="flex h-screen bg-background overflow-hidden">

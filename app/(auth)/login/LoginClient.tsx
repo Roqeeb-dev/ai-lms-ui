@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useForm } from "@/hooks/useForm";
 import { useRouter } from "next/navigation";
 import { auth } from "@/lib/authService";
+import { useUserStore } from "@/store/useUserStore";
 
 import type { User } from "@/types/user";
 
@@ -19,6 +20,7 @@ export default function LoginClient() {
     email: "",
     password: "",
   });
+  const setUser = useUserStore((state) => state.setUser);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -27,6 +29,7 @@ export default function LoginClient() {
       setLoading(true);
       const data = await auth.login(values);
       console.log("user:", data.user);
+      setUser(data.user);
       reset();
       router.push(`/dashboard/${data.user.role}`);
     } catch (err: any) {
