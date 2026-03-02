@@ -4,6 +4,8 @@ import { useState } from "react";
 import { EyeOff, Eye } from "lucide-react";
 import Link from "next/link";
 import { useForm } from "@/hooks/useForm";
+import { useRouter } from "next/navigation";
+import { auth } from "@/lib/authService";
 
 import type { User } from "@/types/user";
 
@@ -11,15 +13,28 @@ type LoginDetails = Pick<User, "email" | "password">;
 
 export default function LoginClient() {
   const [showPassword, setShowPassword] = useState(false);
-  const { values, update } = useForm<LoginDetails>({
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const { values, update, reset } = useForm<LoginDetails>({
     email: "",
     password: "",
   });
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    //add login logic when apiclient is setup
+    try {
+      setLoading(true);
+      const data = await auth.login(values);
+      console.log("user:", data.user);
+      reset();
+      router.push(`/dashboard/${data.user.role}`);
+    } catch (err: any) {
+      console.error("Login failed:", err.message || err);
+      alert("Login failed: " + (err.message || "Unknown error"));
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -110,9 +125,10 @@ export default function LoginClient() {
         {/* Submit */}
         <button
           type="submit"
+          disabled={loading}
           className="w-full mt-1 rounded-lg bg-primary text-primary-foreground px-4 py-2.5 text-sm font-semibold hover:bg-primary-hover active:scale-[0.98] transition-all duration-200 shadow-sm"
         >
-          Log in
+          {loading ? "Logging you in" : "Log in"}
         </button>
       </form>
 

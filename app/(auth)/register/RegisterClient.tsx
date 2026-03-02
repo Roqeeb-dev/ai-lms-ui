@@ -4,6 +4,7 @@ import { useState } from "react";
 import { EyeOff, Eye } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useForm } from "@/hooks/useForm";
+import { auth } from "@/lib/authService";
 import Link from "next/link";
 
 import type { Role } from "@/types/user";
@@ -13,8 +14,9 @@ type RegisterDetails = Omit<User, "id" | "createdAt">;
 
 export default function RegisterClient() {
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const { values, update } = useForm<RegisterDetails>({
+  const { values, update, reset } = useForm<RegisterDetails>({
     fullname: "",
     email: "",
     password: "",
@@ -23,10 +25,21 @@ export default function RegisterClient() {
 
   const router = useRouter();
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    router.push("/onboarding");
+    try {
+      setLoading(true);
+      const data = await auth.register(values);
+      console.log("Registered user:", data.user);
+      reset();
+      router.push("/onboarding");
+    } catch (err: any) {
+      console.error("Registration failed:", err.message || err);
+      alert("Registration failed: " + (err.message || "Unknown error"));
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -149,9 +162,10 @@ export default function RegisterClient() {
         {/* Submit */}
         <button
           type="submit"
+          disabled={loading}
           className="w-full mt-1 rounded-lg bg-primary text-primary-foreground px-4 py-2.5 text-sm font-semibold hover:bg-primary-hover active:scale-[0.98] transition-all duration-200 shadow-sm"
         >
-          Create account
+          {loading ? "Creating your account" : "Create account"}
         </button>
       </form>
 
