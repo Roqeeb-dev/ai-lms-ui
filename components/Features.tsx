@@ -9,7 +9,7 @@ const features = [
     headline: "A curriculum that evolves with you",
     description:
       "Cognify maps your knowledge gaps in real time and builds a path unique to your pace, goals, and style.",
-    image: "/images/features/adaptive-learning.png",
+    image: "/adaptive-learning.jpg",
     alt: "Adaptive learning path visualization",
     span: "md:col-span-2",
   },
@@ -18,7 +18,7 @@ const features = [
     headline: "Ask anything. Understand everything.",
     description:
       "Your AI tutor answers questions and breaks down concepts the moment you get stuck.",
-    image: "/images/features/ai-tutor.png",
+    image: "/ai-tutor.jpg",
     alt: "AI tutor interface",
     span: "md:col-span-1",
   },
@@ -27,7 +27,7 @@ const features = [
     headline: "See exactly where you stand",
     description:
       "Deep analytics surface your strengths and weak points so you always know what to tackle next.",
-    image: "/images/features/progress.png",
+    image: "/progress.jpg",
     alt: "Progress analytics dashboard",
     span: "md:col-span-1",
   },
@@ -36,7 +36,7 @@ const features = [
     headline: "Remember what you learn, forever",
     description:
       "Cognify schedules reviews at the exact moment your memory starts to fade — proven science, fully automated.",
-    image: "/images/features/spaced-repetition.png",
+    image: "/spaced-repetition.jpg",
     alt: "Spaced repetition schedule",
     span: "md:col-span-2",
   },
