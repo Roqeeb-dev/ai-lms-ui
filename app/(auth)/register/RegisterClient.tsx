@@ -10,7 +10,7 @@ import Link from "next/link";
 import type { Role } from "@/types/user";
 import type { User } from "@/types/user";
 
-type RegisterDetails = Omit<User, "id" | "createdAt">;
+type RegisterDetails = Pick<User, "fullname" | "email" | "password" | "role">;
 
 export default function RegisterClient() {
   const [showPassword, setShowPassword] = useState(false);
