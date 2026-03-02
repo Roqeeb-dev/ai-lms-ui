@@ -10,8 +10,6 @@ import StudentSidebar from "./sidebars/StudentSidebar";
 import TeacherSidebar from "./sidebars/TeacherSidebar";
 import AdminSidebar from "./sidebars/AdminSidebar";
 
-const user = useUserStore((state) => state.user);
-
 function getPageTitle(pathname: string): string {
   const map: Record<string, string> = {
     // Student
@@ -38,6 +36,7 @@ export default function DashboardShell({
   children: React.ReactNode;
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const user = useUserStore((state) => state.user);
   const pathname = usePathname();
   const pageTitle = getPageTitle(pathname);
 
