@@ -17,3 +17,5 @@ export interface User {
 }
 
 export type PublicUser = Pick<User, "fullname" | "email" | "role">;
+
+export type SessionUser = Omit<User, "password">;

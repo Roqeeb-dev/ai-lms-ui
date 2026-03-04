@@ -1,16 +1,20 @@
-import { User } from "@/types/user";
-import { PublicUser } from "@/types/user";
+import { SessionUser, User } from "@/types/user";
 import { create } from "zustand";
 
 interface UserStore {
-  user: PublicUser | null;
+  user: SessionUser | null;
   setUser: (data: Partial<User>) => void;
 }
 
-const mockUser: PublicUser = {
+const mockUser: SessionUser = {
+  id: "2334",
   fullname: "Shafiriyu Roqeeb Taiwo",
   email: "shafiriyuroqeeb@gmail.com",
   role: "student",
+  createdAt: new Date(),
+  profile: {
+    firstName: "Roqeeb",
+  },
 };
 
 export const useUserStore = create<UserStore>((set) => ({
