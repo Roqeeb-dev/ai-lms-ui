@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useUserStore } from "@/store/useUserStore";
+import { useForm } from "@/hooks/useForm";
 import { Pencil, X, Check } from "lucide-react";
 import type { SessionUser } from "@/types/user";
 
@@ -18,9 +19,7 @@ type ProfileForm = {
 export default function ProfileClient() {
   const user = useUserStore((state) => state.user);
   const updateUserDetails = useUserStore((state) => state.setUser);
-
-  const [editing, setEditing] = useState(false);
-  const [form, setForm] = useState<ProfileForm>({
+  const { values, update, reset } = useForm<ProfileForm>({
     fullname: user?.fullname ?? "",
     email: user?.email ?? "",
     profile: {
@@ -29,6 +28,8 @@ export default function ProfileClient() {
       bio: user?.profile?.bio ?? "",
     },
   });
+
+  const [editing, setEditing] = useState(false);
 
   if (!user)
     return (
@@ -44,44 +45,22 @@ export default function ProfileClient() {
     .slice(0, 2)
     .toUpperCase();
 
-  function handleChange(
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) {
-    const { name, value } = e.target;
-    if (["firstName", "lastName", "bio"].includes(name)) {
-      setForm((prev) => ({
-        ...prev,
-        profile: { ...prev.profile, [name]: value },
-      }));
-    } else {
-      setForm((prev) => ({ ...prev, [name]: value }));
-    }
-  }
-
   function handleSave() {
     updateUserDetails({
-      fullname: form.fullname,
-      email: form.email,
+      fullname: values.fullname,
+      email: values.email,
       profile: {
-        firstName: form.profile.firstName,
-        lastName: form.profile.lastName || undefined,
-        bio: form.profile.bio || undefined,
+        firstName: values.profile.firstName,
+        lastName: values.profile.lastName || undefined,
+        bio: values.profile.bio || undefined,
       },
-    } as Partial<SessionUser>);
+    });
     setEditing(false);
   }
 
   function handleCancel() {
     if (!user) return;
-    setForm({
-      fullname: user.fullname,
-      email: user.email,
-      profile: {
-        firstName: user.profile?.firstName ?? "",
-        lastName: user.profile?.lastName ?? "",
-        bio: user.profile?.bio ?? "",
-      },
-    });
+    reset();
     setEditing(false);
   }
 
@@ -152,8 +131,13 @@ export default function ProfileClient() {
             <label className={labelClass}>First Name</label>
             <input
               name="firstName"
-              value={form.profile.firstName}
-              onChange={handleChange}
+              value={values.profile.firstName}
+              onChange={(e) =>
+                update("profile", {
+                  ...values.profile,
+                  firstName: e.target.value,
+                })
+              }
               disabled={!editing}
               placeholder="Ada"
               className={inputClass}
@@ -164,8 +148,13 @@ export default function ProfileClient() {
             <label className={labelClass}>Last Name</label>
             <input
               name="lastName"
-              value={form.profile.lastName}
-              onChange={handleChange}
+              value={values.profile.lastName}
+              onChange={(e) =>
+                update("profile", {
+                  ...values.profile,
+                  lastName: e.target.value,
+                })
+              }
               disabled={!editing}
               placeholder="Lovelace"
               className={inputClass}
@@ -176,8 +165,8 @@ export default function ProfileClient() {
             <label className={labelClass}>Display Name</label>
             <input
               name="fullname"
-              value={form.fullname}
-              onChange={handleChange}
+              value={values.fullname}
+              onChange={(e) => update("fullname", e.target.value)}
               disabled={!editing}
               placeholder="Ada Lovelace"
               className={inputClass}
@@ -189,8 +178,8 @@ export default function ProfileClient() {
             <input
               type="email"
               name="email"
-              value={form.email}
-              onChange={handleChange}
+              value={values.email}
+              onChange={(e) => update("email", e.target.value)}
               disabled={!editing}
               placeholder="ada@cognify.com"
               className={inputClass}
@@ -201,8 +190,13 @@ export default function ProfileClient() {
             <label className={labelClass}>Bio</label>
             <textarea
               name="bio"
-              value={form.profile.bio}
-              onChange={handleChange}
+              value={values.profile.bio}
+              onChange={(e) =>
+                update("profile", {
+                  ...values.profile,
+                  bio: e.target.value,
+                })
+              }
               disabled={!editing}
               placeholder="Tell us a little about yourself..."
               rows={3}
