@@ -4,30 +4,15 @@ import { useState } from "react";
 import { useUserStore } from "@/store/useUserStore";
 import { useForm } from "@/hooks/useForm";
 import { Pencil, X, Check } from "lucide-react";
-import type { SessionUser } from "@/types/user";
+import { auth } from "@/lib/authService";
+import { UpdateProfilePayload } from "@/lib/authService";
+import { User } from "@/types/user";
 
-type ProfileForm = {
-  fullname: string;
-  email: string;
-  profile: {
-    firstName: string;
-    lastName: string;
-    bio: string;
-  };
-};
+type ProfileFormValues = Omit<User, "id" | "createdAt" | "password" | "role">;
 
 export default function ProfileClient() {
   const user = useUserStore((state) => state.user);
-  const updateUserDetails = useUserStore((state) => state.setUser);
-  const { values, update, reset } = useForm<ProfileForm>({
-    fullname: user?.fullname ?? "",
-    email: user?.email ?? "",
-    profile: {
-      firstName: user?.profile?.firstName ?? "",
-      lastName: user?.profile?.lastName ?? "",
-      bio: user?.profile?.bio ?? "",
-    },
-  });
+  const setUser = useUserStore((state) => state.setUser);
 
   const [editing, setEditing] = useState(false);
 
@@ -38,6 +23,16 @@ export default function ProfileClient() {
       </div>
     );
 
+  const { values, update, reset } = useForm<ProfileFormValues>({
+    fullname: user?.fullname ?? "",
+    email: user?.email ?? "",
+    profile: {
+      firstName: user?.profile?.firstName ?? "",
+      lastName: user?.profile?.lastName ?? "",
+      bio: user?.profile?.bio ?? "",
+    },
+  });
+
   const initials = user.fullname
     .split(" ")
     .map((n) => n[0])
@@ -45,8 +40,8 @@ export default function ProfileClient() {
     .slice(0, 2)
     .toUpperCase();
 
-  function handleSave() {
-    updateUserDetails({
+  async function handleSave() {
+    const payload: UpdateProfilePayload = {
       fullname: values.fullname,
       email: values.email,
       profile: {
@@ -54,8 +49,18 @@ export default function ProfileClient() {
         lastName: values.profile.lastName || undefined,
         bio: values.profile.bio || undefined,
       },
-    });
-    setEditing(false);
+    };
+
+    try {
+      const response = await auth.updateProfile(payload);
+
+      if (response.success) {
+        setUser(response.user);
+        setEditing(false);
+      }
+    } catch (error) {
+      console.error("Profile update failed:", error);
+    }
   }
 
   function handleCancel() {

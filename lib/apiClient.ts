@@ -25,6 +25,13 @@ export const apiClient = {
     return this.request<T>(url, { method: "PUT", body: JSON.stringify(body) });
   },
 
+  patch<T, B>(url: string, body: B) {
+    return this.request<T>(url, {
+      method: "PATCH",
+      body: JSON.stringify(body),
+    });
+  },
+
   delete<T>(url: string) {
     return this.request<T>(url, { method: "DELETE" });
   },
