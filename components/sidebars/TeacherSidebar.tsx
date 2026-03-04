@@ -1,16 +1,37 @@
 "use client";
 
-import { Home, School, Users, BookOpen, Settings, User } from "lucide-react";
+import {
+  Home,
+  School,
+  Users,
+  BookOpen,
+  FileText,
+  MessageCircle,
+  Settings,
+  User,
+} from "lucide-react";
 import SidebarLink from "../SidebarLink";
 import Logo from "@/components/Logo";
 
+// Main navigation links for teachers
 const links = [
   { href: "/dashboard/teacher", label: "Home", icon: Home },
   { href: "/dashboard/teacher/classrooms", label: "Classrooms", icon: School },
   { href: "/dashboard/teacher/students", label: "Students", icon: Users },
   { href: "/dashboard/teacher/courses", label: "Courses", icon: BookOpen },
+  {
+    href: "/dashboard/teacher/assignments",
+    label: "Assignments",
+    icon: FileText,
+  },
+  {
+    href: "/dashboard/teacher/discussions",
+    label: "Discussions",
+    icon: MessageCircle,
+  },
 ];
 
+// Bottom / account-related links
 const bottomLinks = [
   { href: "/dashboard/teacher/profile", label: "Profile", icon: User },
   { href: "/dashboard/teacher/settings", label: "Settings", icon: Settings },

@@ -13,7 +13,7 @@ export interface User {
   password: string;
   role: Role;
   profile: Profile;
-  createdAt: string;
+  createdAt: Date;
 }
 
 export type PublicUser = Pick<User, "fullname" | "email" | "role">;

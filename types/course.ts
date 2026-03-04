@@ -21,7 +21,9 @@ export interface Course {
   description: string;
   teacherId: string;
   level: "beginner" | "intermediate" | "advanced";
+  category?: string;
   moduleIds: string[];
+  videoUrl?: string;
   createdAt: Date;
 }
 

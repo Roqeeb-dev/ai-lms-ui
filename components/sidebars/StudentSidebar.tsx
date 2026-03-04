@@ -1,13 +1,45 @@
 "use client";
 
-import { Home, BookOpen, Sparkles, Settings, User } from "lucide-react";
+import {
+  Home,
+  BookOpen,
+  Sparkles,
+  MessageCircle,
+  Bell,
+  Settings,
+  User,
+} from "lucide-react";
 import SidebarLink from "../SidebarLink";
 import Logo from "@/components/Logo";
 
 const links = [
   { href: "/dashboard/student", label: "Home", icon: Home },
   { href: "/dashboard/student/courses", label: "My Courses", icon: BookOpen },
-  { href: "/dashboard/student/ai-tutor", label: "AI Tutor", icon: Sparkles },
+  {
+    href: "/dashboard/student/browse",
+    label: "Browse Courses",
+    icon: Sparkles,
+  },
+  {
+    href: "/dashboard/student/assignments",
+    label: "Assignments",
+    icon: MessageCircle,
+  },
+  {
+    href: "/dashboard/student/discussions",
+    label: "Discussions",
+    icon: MessageCircle,
+  },
+  {
+    href: "/dashboard/student/notifications",
+    label: "Notifications",
+    icon: Bell,
+  },
+  {
+    href: "/dashboard/student/ai-tutor",
+    label: "AI Tutor",
+    icon: Sparkles,
+  },
 ];
 
 const bottomLinks = [
