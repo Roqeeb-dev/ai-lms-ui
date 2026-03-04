@@ -1,5 +1,3 @@
-import { Course } from "./course";
-
 export type Role = "student" | "teacher" | "admin";
 
 interface Profile {
@@ -18,6 +16,4 @@ export interface User {
   createdAt: string;
 }
 
-export interface Student extends User {
-  courses: Course[];
-}
+export type PublicUser = Pick<User, "fullname" | "email" | "role">;

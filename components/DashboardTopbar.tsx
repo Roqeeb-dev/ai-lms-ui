@@ -3,15 +3,11 @@
 import { Menu } from "lucide-react";
 import NotificationBell from "./NotificationBell";
 import UserMenu from "./UserMenu";
-import { Role } from "@/types/user";
+import { PublicUser } from "@/types/user";
 import Link from "next/link";
 
-export interface TopbarUser {
-  fullname: string;
-  email: string;
-  role: Role;
+export interface TopbarUser extends PublicUser {
   streak?: number;
-  initials?: string;
 }
 
 interface DashboardTopbarProps {

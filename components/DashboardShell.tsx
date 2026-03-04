@@ -50,7 +50,12 @@ export default function DashboardShell({
     }
   }
 
-  if (!user) return;
+  if (!user)
+    return (
+      <div>
+        <h1>User does not exist</h1>
+      </div>
+    );
 
   return (
     <div className="flex h-screen bg-background overflow-hidden">
