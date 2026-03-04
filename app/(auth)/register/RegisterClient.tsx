@@ -5,16 +5,22 @@ import { EyeOff, Eye } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useForm } from "@/hooks/useForm";
 import { auth } from "@/lib/authService";
+import type { AuthResponse } from "@/lib/authService";
 import Link from "next/link";
 
-import type { Role } from "@/types/user";
-import type { User } from "@/types/user";
+import type { Role, User } from "@/types/user";
 
 type RegisterDetails = Pick<User, "fullname" | "email" | "password" | "role">;
 
+type RegisterState =
+  | { state: "idle" }
+  | { state: "loading" }
+  | { state: "success"; data: AuthResponse }
+  | { state: "error"; error: any };
+
 export default function RegisterClient() {
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [authState, setAuthState] = useState<RegisterState>({ state: "idle" });
 
   const { values, update, reset } = useForm<RegisterDetails>({
     fullname: "",
@@ -28,17 +34,18 @@ export default function RegisterClient() {
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
+    setAuthState({ state: "loading" });
+
     try {
-      setLoading(true);
       const data = await auth.register(values);
+      setAuthState({ state: "success", data });
       console.log("Registered user:", data.user);
       reset();
       router.push("/onboarding");
     } catch (err: any) {
+      setAuthState({ state: "error", error: err });
       console.error("Registration failed:", err.message || err);
       alert("Registration failed: " + (err.message || "Unknown error"));
-    } finally {
-      setLoading(false);
     }
   }
 
@@ -60,7 +67,7 @@ export default function RegisterClient() {
         </p>
       </div>
 
-      {/* Google OAuth */}
+      {/* OAuth */}
       <div className="flex flex-col gap-4">
         <button
           type="button"
@@ -68,7 +75,6 @@ export default function RegisterClient() {
         >
           Continue with Google
         </button>
-
         <div className="flex items-center gap-3">
           <div className="flex-1 h-px bg-border" />
           <span className="text-xs text-foreground-muted">or</span>
@@ -76,9 +82,7 @@ export default function RegisterClient() {
         </div>
       </div>
 
-      {/* Form */}
       <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-        {/* Role */}
         <div className="flex flex-col gap-2">
           <label className="text-xs font-semibold tracking-widest uppercase text-foreground-muted">
             I am a
@@ -101,7 +105,6 @@ export default function RegisterClient() {
           </div>
         </div>
 
-        {/* Full name */}
         <div className="flex flex-col gap-1.5">
           <label className="text-xs font-semibold tracking-widest uppercase text-foreground-muted">
             Full Name
@@ -117,7 +120,6 @@ export default function RegisterClient() {
           />
         </div>
 
-        {/* Email */}
         <div className="flex flex-col gap-1.5">
           <label className="text-xs font-semibold tracking-widest uppercase text-foreground-muted">
             Email
@@ -133,7 +135,6 @@ export default function RegisterClient() {
           />
         </div>
 
-        {/* Password */}
         <div className="flex flex-col gap-1.5">
           <label className="text-xs font-semibold tracking-widest uppercase text-foreground-muted">
             Password
@@ -159,14 +160,21 @@ export default function RegisterClient() {
           </div>
         </div>
 
-        {/* Submit */}
         <button
           type="submit"
-          disabled={loading}
+          disabled={authState.state === "loading"}
           className="w-full mt-1 rounded-lg bg-primary text-primary-foreground px-4 py-2.5 text-sm font-semibold hover:bg-primary-hover active:scale-[0.98] transition-all duration-200 shadow-sm"
         >
-          {loading ? "Creating your account" : "Create account"}
+          {authState.state === "loading"
+            ? "Creating your account"
+            : "Create account"}
         </button>
+
+        {authState.state === "error" && (
+          <p className="text-red-500 text-sm mt-2">
+            {authState.error?.message || "Registration failed."}
+          </p>
+        )}
       </form>
 
       {/* Terms */}

@@ -4,7 +4,7 @@ import { User } from "@/types/user";
 type LoginPayload = Pick<User, "email" | "password">;
 type RegisterPayload = Pick<User, "fullname" | "email" | "password" | "role">;
 
-type AuthResponse = {
+export type AuthResponse = {
   token: string;
   user: User;
 };

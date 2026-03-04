@@ -9,12 +9,20 @@ import { auth } from "@/lib/authService";
 import { useUserStore } from "@/store/useUserStore";
 
 import type { User } from "@/types/user";
+import type { AuthResponse } from "@/lib/authService";
 
 type LoginDetails = Pick<User, "email" | "password">;
 
+type AuthState =
+  | { state: "idle" }
+  | { state: "loading" }
+  | { state: "success"; data: AuthResponse }
+  | { state: "error"; error: any };
+
 export default function LoginClient() {
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [authState, setAuthState] = useState<AuthState>({ state: "idle" });
+
   const router = useRouter();
   const { values, update, reset } = useForm<LoginDetails>({
     email: "",
@@ -25,18 +33,18 @@ export default function LoginClient() {
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
+    setAuthState({ state: "loading" });
+
     try {
-      setLoading(true);
       const data = await auth.login(values);
-      console.log("user:", data.user);
+      setAuthState({ state: "success", data });
       setUser(data.user);
       reset();
       router.push(`/dashboard/${data.user.role}`);
     } catch (err: any) {
+      setAuthState({ state: "error", error: err });
       console.error("Login failed:", err.message || err);
       alert("Login failed: " + (err.message || "Unknown error"));
-    } finally {
-      setLoading(false);
     }
   }
 
@@ -128,11 +136,18 @@ export default function LoginClient() {
         {/* Submit */}
         <button
           type="submit"
-          disabled={loading}
+          disabled={authState.state === "loading"}
           className="w-full mt-1 rounded-lg bg-primary text-primary-foreground px-4 py-2.5 text-sm font-semibold hover:bg-primary-hover active:scale-[0.98] transition-all duration-200 shadow-sm"
         >
-          {loading ? "Logging you in" : "Log in"}
+          {authState.state === "loading" ? "Logging you in" : "Log in"}
         </button>
+
+        {/* Optional error message */}
+        {authState.state === "error" && (
+          <p className="text-red-500 text-sm mt-2">
+            {authState.error?.message || "Login failed."}
+          </p>
+        )}
       </form>
 
       {/* Terms */}
