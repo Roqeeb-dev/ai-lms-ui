@@ -1,3 +1,5 @@
+"use client";
+
 import { redirect } from "next/navigation";
 import { Role } from "@/types/user";
 import { useUserStore } from "@/store/useUserStore";
