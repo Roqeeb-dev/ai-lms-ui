@@ -5,11 +5,11 @@ import { EyeOff, Eye } from "lucide-react";
 import Link from "next/link";
 import { useForm } from "@/hooks/useForm";
 import { useRouter } from "next/navigation";
-import { auth } from "@/lib/authService";
+import { auth } from "@/services/authService";
 import { useUserStore } from "@/store/useUserStore";
 
 import type { User } from "@/types/user";
-import type { AuthResponse } from "@/lib/authService";
+import type { AuthResponse } from "@/services/authService";
 
 type LoginDetails = Pick<User, "email" | "password">;
 
@@ -40,7 +40,7 @@ export default function LoginClient() {
       setAuthState({ state: "success", data });
       setUser(data.user);
       reset();
-      router.push(`/dashboard/${data.user.role}`);
+      router.replace(`/dashboard/${data.user.role}`);
     } catch (err: any) {
       setAuthState({ state: "error", error: err });
       console.error("Login failed:", err.message || err);

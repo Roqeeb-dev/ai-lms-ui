@@ -8,7 +8,7 @@ interface Profile {
 
 export interface User {
   id: string;
-  fullname: string;
+  name: string;
   email: string;
   password: string;
   role: Role;
@@ -16,6 +16,6 @@ export interface User {
   createdAt: Date;
 }
 
-export type PublicUser = Pick<User, "fullname" | "email" | "role">;
+export type PublicUser = Pick<User, "name" | "email" | "role">;
 
 export type SessionUser = Omit<User, "password">;

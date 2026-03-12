@@ -4,8 +4,8 @@ import { useState } from "react";
 import { useUserStore } from "@/store/useUserStore";
 import { useForm } from "@/hooks/useForm";
 import { Pencil, X, Check } from "lucide-react";
-import { auth } from "@/lib/authService";
-import { UpdateProfilePayload } from "@/lib/authService";
+import { auth } from "@/services/authService";
+import { UpdateProfilePayload } from "@/services/authService";
 import { User } from "@/types/user";
 
 type ProfileFormValues = Omit<User, "id" | "createdAt" | "password" | "role">;

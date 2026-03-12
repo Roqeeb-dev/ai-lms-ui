@@ -4,13 +4,13 @@ import { useState } from "react";
 import { EyeOff, Eye } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useForm } from "@/hooks/useForm";
-import { auth } from "@/lib/authService";
-import type { AuthResponse } from "@/lib/authService";
+import { auth } from "@/services/authService";
+import type { AuthResponse } from "@/services/authService";
 import Link from "next/link";
 
 import type { Role, User } from "@/types/user";
 
-type RegisterDetails = Pick<User, "fullname" | "email" | "password" | "role">;
+type RegisterDetails = Pick<User, "name" | "email" | "password" | "role">;
 
 type RegisterState =
   | { state: "idle" }
@@ -23,7 +23,7 @@ export default function RegisterClient() {
   const [authState, setAuthState] = useState<RegisterState>({ state: "idle" });
 
   const { values, update, reset } = useForm<RegisterDetails>({
-    fullname: "",
+    name: "",
     email: "",
     password: "",
     role: "student",
@@ -113,8 +113,8 @@ export default function RegisterClient() {
             type="text"
             placeholder="Ada Lovelace"
             name="fullname"
-            value={values.fullname}
-            onChange={(e) => update("fullname", e.target.value)}
+            value={values.name}
+            onChange={(e) => update("name", e.target.value)}
             className="w-full rounded-lg border border-border bg-input px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-input-focus transition-all duration-200"
             required
           />

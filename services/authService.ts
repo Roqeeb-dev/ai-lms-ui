@@ -1,12 +1,12 @@
-import { apiClient } from "./apiClient";
+import { apiClient } from "../lib/apiClient";
 import { User } from "@/types/user";
 
 type LoginPayload = Pick<User, "email" | "password">;
 
-type RegisterPayload = Pick<User, "fullname" | "email" | "password" | "role">;
+type RegisterPayload = Pick<User, "name" | "email" | "password" | "role">;
 
 export type UpdateProfilePayload = Partial<
-  Pick<User, "fullname" | "email" | "profile">
+  Pick<User, "name" | "email" | "profile">
 >;
 
 export type AuthResponse = {
@@ -24,16 +24,29 @@ export type UpdateProfileResponse = {
 
 export const auth = {
   async login(payload: LoginPayload) {
-    return apiClient.post<AuthResponse, LoginPayload>("/login", payload);
+    return apiClient.post<AuthResponse, LoginPayload>(
+      "/api/auth/login",
+      payload,
+    );
   },
 
   async register(payload: RegisterPayload) {
-    return apiClient.post<AuthResponse, RegisterPayload>("/register", payload);
+    return apiClient.post<AuthResponse, RegisterPayload>(
+      "/api/auth/signup",
+      payload,
+    );
   },
 
   async updateProfile(payload: UpdateProfilePayload) {
     return apiClient.patch<UpdateProfileResponse, UpdateProfilePayload>(
       "/me",
+      payload,
+    );
+  },
+
+  async checkUser(payload: Pick<User, "email">) {
+    return apiClient.post<User, Pick<User, "email">>(
+      "/api/auth/check",
       payload,
     );
   },
