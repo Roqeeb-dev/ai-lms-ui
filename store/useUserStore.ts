@@ -8,7 +8,7 @@ interface UserStore {
 
 const mockUser: SessionUser = {
   id: "2334",
-  fullname: "Shafiriyu Roqeeb Taiwo",
+  name: "Shafiriyu Roqeeb Taiwo",
   email: "shafiriyuroqeeb@gmail.com",
   role: "student",
   createdAt: new Date(),

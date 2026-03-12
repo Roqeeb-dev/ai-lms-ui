@@ -112,7 +112,7 @@ export default function RegisterClient() {
           <input
             type="text"
             placeholder="Ada Lovelace"
-            name="fullname"
+            name="name"
             value={values.name}
             onChange={(e) => update("name", e.target.value)}
             className="w-full rounded-lg border border-border bg-input px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-input-focus transition-all duration-200"

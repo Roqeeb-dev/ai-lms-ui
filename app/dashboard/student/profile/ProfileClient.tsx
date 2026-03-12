@@ -24,7 +24,7 @@ export default function ProfileClient() {
     );
 
   const { values, update, reset } = useForm<ProfileFormValues>({
-    fullname: user?.fullname ?? "",
+    name: user?.name ?? "",
     email: user?.email ?? "",
     profile: {
       firstName: user?.profile?.firstName ?? "",
@@ -33,7 +33,7 @@ export default function ProfileClient() {
     },
   });
 
-  const initials = user.fullname
+  const initials = user.name
     .split(" ")
     .map((n) => n[0])
     .join("")
@@ -42,7 +42,7 @@ export default function ProfileClient() {
 
   async function handleSave() {
     const payload: UpdateProfilePayload = {
-      fullname: values.fullname,
+      name: values.name,
       email: values.email,
       profile: {
         firstName: values.profile.firstName,
@@ -117,7 +117,7 @@ export default function ProfileClient() {
           {initials}
         </div>
         <div className="flex flex-col gap-1">
-          <p className="text-base font-bold text-foreground">{user.fullname}</p>
+          <p className="text-base font-bold text-foreground">{user.name}</p>
           <p className="text-sm text-foreground-muted">{user.email}</p>
           <span className="self-start mt-1 text-xs font-semibold tracking-widest uppercase bg-primary/10 text-primary border border-primary/20 rounded-full px-3 py-0.5 capitalize">
             {user.role}
@@ -169,9 +169,9 @@ export default function ProfileClient() {
           <div className="flex flex-col gap-1.5 lg:col-span-2">
             <label className={labelClass}>Display Name</label>
             <input
-              name="fullname"
-              value={values.fullname}
-              onChange={(e) => update("fullname", e.target.value)}
+              name="name"
+              value={values.name}
+              onChange={(e) => update("name", e.target.value)}
               disabled={!editing}
               placeholder="Ada Lovelace"
               className={inputClass}

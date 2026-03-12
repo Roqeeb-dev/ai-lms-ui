@@ -20,7 +20,7 @@ export default function UserMenu({ user }: { user: TopbarUser }) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const initials = user.fullname
+  const initials = user.name
     .split(" ")
     .map((n) => n[0])
     .join("")
@@ -42,7 +42,7 @@ export default function UserMenu({ user }: { user: TopbarUser }) {
         </div>
         <div className="hidden md:flex flex-col items-start leading-none gap-0.5">
           <span className="text-sm font-semibold text-foreground">
-            {user.fullname}
+            {user.name}
           </span>
           <span className="text-xs text-foreground-muted capitalize">
             {user.role}
@@ -59,9 +59,7 @@ export default function UserMenu({ user }: { user: TopbarUser }) {
         <div className="absolute right-0 top-full mt-2 w-52 rounded-xl border border-border bg-card shadow-md py-1 z-50">
           {/* User info */}
           <div className="px-4 py-3 border-b border-border-subtle">
-            <p className="text-sm font-semibold text-foreground">
-              {user.fullname}
-            </p>
+            <p className="text-sm font-semibold text-foreground">{user.name}</p>
             <p className="text-xs text-foreground-muted truncate">
               {user.email}
             </p>

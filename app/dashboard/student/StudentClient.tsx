@@ -50,7 +50,7 @@ export default function StudentClient() {
       </div>
     );
 
-  const firstName = user.fullname.split(" ")[0];
+  const firstName = user.name.split(" ")[0];
 
   return (
     <div className="flex flex-col gap-8 max-w-6xl mx-auto">
