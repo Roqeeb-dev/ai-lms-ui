@@ -39,6 +39,8 @@ export default function LoginClient() {
       const data = await auth.login(values);
       setAuthState({ state: "success", data });
       setUser(data.user);
+      console.log("Logged-in user (normalized):", data.user);
+      console.log("user store after login:", useUserStore.getState().user);
       reset();
       router.replace(`/dashboard/${data.user.role}`);
     } catch (err: any) {

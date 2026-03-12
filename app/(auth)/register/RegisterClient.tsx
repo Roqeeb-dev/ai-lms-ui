@@ -59,8 +59,10 @@ export default function RegisterClient() {
     try {
       const data = await auth.register(values);
       setAuthState({ state: "success", data });
-      console.log("Registered user:", data.user);
+      console.log("Registered user (normalized):", data.user);
       setUser(data.user);
+      // inspect store immediately after setting
+      console.log("user store state after set:", useUserStore.getState().user);
       reset();
       router.push("/onboarding");
     } catch (err: any) {

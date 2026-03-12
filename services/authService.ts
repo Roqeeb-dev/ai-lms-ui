@@ -1,5 +1,5 @@
 import { apiClient } from "../lib/apiClient";
-import { User } from "@/types/user";
+import { User, ServerUser, Role } from "@/types/user";
 
 type LoginPayload = Pick<User, "email" | "password">;
 
@@ -12,7 +12,7 @@ export type UpdateProfilePayload = Partial<
 export type AuthResponse = {
   success: boolean;
   message?: string;
-  token: string;
+  token?: string;
   user: User;
 };
 
@@ -22,26 +22,63 @@ export type UpdateProfileResponse = {
   user: User;
 };
 
+function mapRole(r: string): Role {
+  if (r === "instructor") return "teacher";
+  if (r === "student" || r === "teacher" || r === "admin") return r as Role;
+
+  return "student";
+}
+
+function normalizeUser(u: ServerUser): User {
+  return {
+    id: u._id,
+    name: u.name,
+    email: u.email,
+    password: "",
+    role: mapRole(u.role),
+    profile: { firstName: "", lastName: "", bio: u.bio || "" },
+    createdAt: new Date(u.createdAt),
+    bio: u.bio || undefined,
+    profilePic: u.profilePic || undefined,
+    isVerified: u.isVerified,
+    isApproved: u.isApproved,
+    lastLogin: u.lastLogin ? new Date(u.lastLogin) : undefined,
+    updatedAt: u.updatedAt ? new Date(u.updatedAt) : undefined,
+  };
+}
+
 export const auth = {
   async login(payload: LoginPayload) {
-    return apiClient.post<AuthResponse, LoginPayload>(
-      "/api/auth/login",
-      payload,
-    );
+    const res = await apiClient.post<
+      { success: boolean; message?: string; token?: string; user: ServerUser },
+      LoginPayload
+    >("/api/auth/login", payload);
+    return {
+      ...res,
+      user: normalizeUser(res.user),
+    } as AuthResponse;
   },
 
   async register(payload: RegisterPayload) {
-    return apiClient.post<AuthResponse, RegisterPayload>(
-      "/api/auth/signup",
-      payload,
-    );
+    const res = await apiClient.post<
+      { success: boolean; message?: string; token?: string; user: ServerUser },
+      RegisterPayload
+    >("/api/auth/signup", payload);
+    return {
+      ...res,
+      user: normalizeUser(res.user),
+    } as AuthResponse;
   },
 
   async updateProfile(payload: UpdateProfilePayload) {
-    return apiClient.patch<UpdateProfileResponse, UpdateProfilePayload>(
-      "/me",
-      payload,
-    );
+    const res = await apiClient.patch<
+      { success: boolean; message?: string; user: ServerUser },
+      UpdateProfilePayload
+    >("/me", payload);
+    return {
+      ...res,
+      user: normalizeUser(res.user),
+    } as UpdateProfileResponse;
   },
 
   async checkUser(payload: Pick<User, "email">) {
