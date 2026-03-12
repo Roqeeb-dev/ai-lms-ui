@@ -10,6 +10,8 @@ import Link from "next/link";
 
 import type { Role, User } from "@/types/user";
 
+import { useUserStore } from "@/store/useUserStore";
+
 type RegisterDetails = Pick<User, "name" | "email" | "password" | "role">;
 
 type RegisterState =
@@ -17,6 +19,23 @@ type RegisterState =
   | { state: "loading" }
   | { state: "success"; data: AuthResponse }
   | { state: "error"; error: any };
+
+function LoadingDots() {
+  return (
+    <span className="inline-flex items-center gap-1">
+      Creating your account
+      <span className="inline-flex gap-0.5 ml-1">
+        {[0, 1, 2].map((i) => (
+          <span
+            key={i}
+            className="w-1 h-1 rounded-full bg-current animate-bounce"
+            style={{ animationDelay: `${i * 0.15}s` }}
+          />
+        ))}
+      </span>
+    </span>
+  );
+}
 
 export default function RegisterClient() {
   const [showPassword, setShowPassword] = useState(false);
@@ -29,6 +48,7 @@ export default function RegisterClient() {
     role: "student",
   });
 
+  const { setUser } = useUserStore();
   const router = useRouter();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -40,6 +60,7 @@ export default function RegisterClient() {
       const data = await auth.register(values);
       setAuthState({ state: "success", data });
       console.log("Registered user:", data.user);
+      setUser(data.user);
       reset();
       router.push("/onboarding");
     } catch (err: any) {
@@ -106,7 +127,7 @@ export default function RegisterClient() {
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-semibold tracking-widest uppercase text-foreground-muted">
+          <label className="text-xs font-semibold tracking-widests uppercase text-foreground-muted">
             Full Name
           </label>
           <input
@@ -163,11 +184,9 @@ export default function RegisterClient() {
         <button
           type="submit"
           disabled={authState.state === "loading"}
-          className="w-full mt-1 rounded-lg bg-primary text-primary-foreground px-4 py-2.5 text-sm font-semibold hover:bg-primary-hover active:scale-[0.98] transition-all duration-200 shadow-sm"
+          className="w-full mt-1 rounded-lg bg-primary text-primary-foreground px-4 py-2.5 text-sm font-semibold hover:bg-primary-hover active:scale-[0.98] transition-all duration-200 shadow-sm disabled:opacity-70 disabled:cursor-not-allowed"
         >
-          {authState.state === "loading"
-            ? "Creating your account"
-            : "Create account"}
+          {authState.state === "loading" ? <LoadingDots /> : "Create account"}
         </button>
 
         {authState.state === "error" && (

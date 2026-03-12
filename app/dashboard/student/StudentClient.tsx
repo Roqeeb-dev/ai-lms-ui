@@ -50,6 +50,8 @@ export default function StudentClient() {
       </div>
     );
 
+  console.log(user);
+
   const firstName = user.name.split(" ")[0];
 
   return (

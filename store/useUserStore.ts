@@ -6,23 +6,12 @@ interface UserStore {
   setUser: (data: Partial<User>) => void;
 }
 
-const mockUser: SessionUser = {
-  id: "2334",
-  name: "Shafiriyu Roqeeb Taiwo",
-  email: "shafiriyuroqeeb@gmail.com",
-  role: "student",
-  createdAt: new Date(),
-  profile: {
-    firstName: "Roqeeb",
-  },
-};
-
 export const useUserStore = create<UserStore>((set) => ({
-  user: mockUser,
+  user: null,
 
   setUser: (data) => {
     set((state) => ({
-      user: state.user ? { ...state.user, ...data } : null,
+      user: state.user ? { ...state.user, ...data } : (data as SessionUser),
     }));
   },
 }));
