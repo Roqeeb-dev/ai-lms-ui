@@ -61,7 +61,6 @@ export default function RegisterClient() {
       setAuthState({ state: "success", data });
       console.log("Registered user (normalized):", data.user);
       setUser(data.user);
-      // inspect store immediately after setting
       console.log("user store state after set:", useUserStore.getState().user);
       reset();
       router.push("/onboarding");
