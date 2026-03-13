@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
+import { auth } from "@/services/authService";
+import { LoadingDots } from "@/components/LoadingDots";
 
 interface ResetDetails {
   password: string;
@@ -13,6 +15,8 @@ export default function ResetClient() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [resetDetails, setResetDetails] = useState<ResetDetails>({
     password: "",
     confirmPassword: "",
@@ -23,15 +27,26 @@ export default function ResetClient() {
     setResetDetails((prev) => ({ ...prev, [name]: value }));
   }
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    // add reset logic here
-    setSubmitted(true);
-  }
-
   const passwordsMatch =
     resetDetails.confirmPassword === "" ||
     resetDetails.password === resetDetails.confirmPassword;
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (!passwordsMatch) return;
+
+    setLoading(true);
+    setError("");
+
+    try {
+      await auth.resetPassword({ password: resetDetails.password });
+      setSubmitted(true);
+    } catch (err: any) {
+      setError(err.message ?? "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <div className="w-full max-w-md flex flex-col gap-8">
@@ -70,7 +85,6 @@ export default function ResetClient() {
         </div>
       ) : (
         <>
-          {/* Header */}
           <div className="flex flex-col gap-1.5">
             <h1 className="text-2xl font-bold text-foreground tracking-tight">
               Reset your password
@@ -80,7 +94,6 @@ export default function ResetClient() {
             </p>
           </div>
 
-          {/* Form */}
           <form onSubmit={handleSubmit} className="flex flex-col gap-5">
             <div className="flex flex-col gap-1.5">
               <label className="text-xs font-semibold tracking-widest uppercase text-foreground-muted">
@@ -139,12 +152,14 @@ export default function ResetClient() {
               )}
             </div>
 
+            {error && <p className="text-sm text-destructive">{error}</p>}
+
             <button
               type="submit"
-              disabled={!passwordsMatch}
-              className="w-full rounded-lg bg-primary text-primary-foreground px-4 py-2.5 text-sm font-semibold hover:bg-primary-hover active:scale-[0.98] transition-all duration-200 shadow-sm disabled:opacity-50 disabled:pointer-events-none"
+              disabled={!passwordsMatch || loading}
+              className="w-full rounded-lg bg-primary text-primary-foreground px-4 py-2.5 text-sm font-semibold hover:bg-primary-hover active:scale-[0.98] transition-all duration-200 shadow-sm disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:bg-primary"
             >
-              Reset password
+              {loading ? <LoadingDots text="Resetting..." /> : "Reset password"}
             </button>
           </form>
 

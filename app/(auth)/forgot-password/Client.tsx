@@ -2,15 +2,28 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { auth } from "@/services/authService";
+import { LoadingDots } from "@/components/LoadingDots";
 
-export default function Client() {
+export default function ForgotPasswordClient() {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    // add reset logic here
-    setSubmitted(true);
+    setLoading(true);
+    setError("");
+
+    try {
+      await auth.forgotPassword({ email });
+      setSubmitted(true);
+    } catch (err: any) {
+      setError(err.message ?? "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -82,11 +95,16 @@ export default function Client() {
               />
             </div>
 
+            {error && <p className="text-sm text-red-500">{error}</p>}
+
             <button
               type="submit"
-              className="w-full rounded-lg bg-primary text-primary-foreground px-4 py-2.5 text-sm font-semibold hover:bg-primary-hover active:scale-[0.98] transition-all duration-200 shadow-sm"
+              disabled={loading}
+              className="w-full rounded-lg bg-primary text-primary-foreground px-4 py-2.5 text-sm font-semibold
+                         hover:bg-primary-hover active:scale-[0.98] transition-all duration-200 shadow-sm
+                         disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:bg-primary"
             >
-              Send reset link
+              {loading ? <LoadingDots text="Sending" /> : "Send reset link"}
             </button>
           </form>
 

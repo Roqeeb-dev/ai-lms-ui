@@ -10,11 +10,11 @@ import { useUserStore } from "@/store/useUserStore";
 
 import type { User } from "@/types/user";
 import type { AuthResponse } from "@/services/authService";
-import { LoadingDots } from "../register/RegisterClient";
+import { LoadingDots } from "@/components/LoadingDots";
 
 type LoginDetails = Pick<User, "email" | "password">;
 
-type AuthState =
+export type AuthState =
   | { state: "idle" }
   | { state: "loading" }
   | { state: "success"; data: AuthResponse }

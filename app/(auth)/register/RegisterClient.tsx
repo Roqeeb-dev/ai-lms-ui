@@ -7,6 +7,7 @@ import { useForm } from "@/hooks/useForm";
 import { auth } from "@/services/authService";
 import type { AuthResponse } from "@/services/authService";
 import Link from "next/link";
+import { LoadingDots } from "@/components/LoadingDots";
 
 import type { Role, User } from "@/types/user";
 
@@ -19,23 +20,6 @@ type RegisterState =
   | { state: "loading" }
   | { state: "success"; data: AuthResponse }
   | { state: "error"; error: any };
-
-export function LoadingDots({ text }: { text: string }) {
-  return (
-    <span className="inline-flex items-center gap-1">
-      {text}
-      <span className="inline-flex gap-0.5 ml-1">
-        {[0, 1, 2].map((i) => (
-          <span
-            key={i}
-            className="w-1 h-1 rounded-full bg-current animate-bounce"
-            style={{ animationDelay: `${i * 0.15}s` }}
-          />
-        ))}
-      </span>
-    </span>
-  );
-}
 
 export default function RegisterClient() {
   const [showPassword, setShowPassword] = useState(false);
