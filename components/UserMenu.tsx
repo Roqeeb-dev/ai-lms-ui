@@ -4,12 +4,17 @@ import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Settings, LogOut, ChevronDown, User2 } from "lucide-react";
 import { TopbarUser } from "./DashboardTopbar";
+import { useUserStore } from "@/store/useUserStore";
 import Link from "next/link";
+import Dialog from "./Dialog";
+import { auth } from "@/services/authService";
 
 export default function UserMenu({ user }: { user: TopbarUser }) {
   const [open, setOpen] = useState(false);
+  const [isDialogShown, setIsDialogShown] = useState<boolean>(false);
   const ref = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const { clearUser } = useUserStore();
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -29,6 +34,17 @@ export default function UserMenu({ user }: { user: TopbarUser }) {
 
   const profileHref = `/dashboard/${user.role}/profile`;
   const settingsHref = `/dashboard/${user.role}/settings`;
+
+  async function handleLogout() {
+    try {
+      await auth.logout();
+      clearUser();
+      router.replace("/login");
+    } catch (err: any) {
+      console.error("Logout failed:", err);
+      alert("Failed to log out. Please try again.");
+    }
+  }
 
   return (
     <div ref={ref} className="relative">
@@ -86,8 +102,8 @@ export default function UserMenu({ user }: { user: TopbarUser }) {
           <div className="border-t border-border-subtle py-1">
             <button
               onClick={() => {
+                setIsDialogShown(true);
                 setOpen(false);
-                router.push("/login");
               }}
               className="flex items-center gap-3 px-4 py-2 text-sm text-destructive hover:bg-muted transition-colors duration-150 w-full text-left"
             >
@@ -96,6 +112,17 @@ export default function UserMenu({ user }: { user: TopbarUser }) {
           </div>
         </div>
       )}
+
+      <Dialog
+        type="confirm"
+        open={isDialogShown}
+        onClose={() => setIsDialogShown(false)}
+        title="Logout Confirmation"
+        message="Are you sure you want to log out?"
+        confirmText="Yes, I want to Log out"
+        cancelText="No, Keep me Logged in"
+        onConfirm={handleLogout}
+      />
     </div>
   );
 }
