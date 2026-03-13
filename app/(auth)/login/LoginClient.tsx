@@ -10,6 +10,7 @@ import { useUserStore } from "@/store/useUserStore";
 
 import type { User } from "@/types/user";
 import type { AuthResponse } from "@/services/authService";
+import { LoadingDots } from "../register/RegisterClient";
 
 type LoginDetails = Pick<User, "email" | "password">;
 
@@ -139,11 +140,14 @@ export default function LoginClient() {
         <button
           type="submit"
           disabled={authState.state === "loading"}
-          className="w-full mt-1 rounded-lg bg-primary text-primary-foreground px-4 py-2.5 text-sm font-semibold hover:bg-primary-hover active:scale-[0.98] transition-all duration-200 shadow-sm"
+          className="w-full mt-1 rounded-lg bg-primary text-primary-foreground px-4 py-2.5 text-sm font-semibold hover:bg-primary-hover active:scale-[0.98] transition-all duration-200 shadow-sm disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:bg-primary"
         >
-          {authState.state === "loading" ? "Logging you in" : "Log in"}
+          {authState.state === "loading" ? (
+            <LoadingDots text="Logging you in" />
+          ) : (
+            "Log in"
+          )}
         </button>
-
         {/* Optional error message */}
         {authState.state === "error" && (
           <p className="text-red-500 text-sm mt-2">

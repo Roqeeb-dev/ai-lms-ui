@@ -22,6 +22,12 @@ export type UpdateProfileResponse = {
   user: User;
 };
 
+type ForgotPasswordResponse = {
+  success: boolean;
+  message: string;
+  user: ServerUser;
+};
+
 function mapRole(r: string): Role {
   if (r === "instructor") return "teacher";
   if (r === "student" || r === "teacher" || r === "admin") return r as Role;
@@ -70,6 +76,12 @@ export const auth = {
     } as AuthResponse;
   },
 
+  async logout() {
+    return apiClient.post<{ success: boolean; message: string }>(
+      "/api/auth/logout",
+    );
+  },
+
   async updateProfile(payload: UpdateProfilePayload) {
     const res = await apiClient.patch<
       { success: boolean; message?: string; user: ServerUser },
@@ -79,6 +91,20 @@ export const auth = {
       ...res,
       user: normalizeUser(res.user),
     } as UpdateProfileResponse;
+  },
+
+  async forgotPassword(payload: Pick<User, "email">) {
+    return apiClient.post<ForgotPasswordResponse, Pick<User, "email">>(
+      "/api/auth/forgot-password",
+      payload,
+    );
+  },
+
+  async resetPassword(payload: { password: string }) {
+    return apiClient.post<
+      { success: boolean; message?: string; user: ServerUser },
+      { password: string }
+    >("/api/auth/reset-password", payload);
   },
 
   async checkUser(payload: Pick<User, "email">) {

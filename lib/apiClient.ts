@@ -17,8 +17,11 @@ export const apiClient = {
     return this.request<T>(url);
   },
 
-  post<T, B>(url: string, body: B) {
-    return this.request<T>(url, { method: "POST", body: JSON.stringify(body) });
+  post<T, B = unknown>(url: string, body?: B) {
+    return this.request<T>(url, {
+      method: "POST",
+      ...(body !== undefined && { body: JSON.stringify(body) }),
+    });
   },
 
   put<T, B>(url: string, body: B) {

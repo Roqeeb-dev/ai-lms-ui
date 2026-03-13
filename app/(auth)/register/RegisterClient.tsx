@@ -20,10 +20,10 @@ type RegisterState =
   | { state: "success"; data: AuthResponse }
   | { state: "error"; error: any };
 
-function LoadingDots() {
+export function LoadingDots({ text }: { text: string }) {
   return (
     <span className="inline-flex items-center gap-1">
-      Creating your account
+      {text}
       <span className="inline-flex gap-0.5 ml-1">
         {[0, 1, 2].map((i) => (
           <span
@@ -185,9 +185,13 @@ export default function RegisterClient() {
         <button
           type="submit"
           disabled={authState.state === "loading"}
-          className="w-full mt-1 rounded-lg bg-primary text-primary-foreground px-4 py-2.5 text-sm font-semibold hover:bg-primary-hover active:scale-[0.98] transition-all duration-200 shadow-sm disabled:opacity-70 disabled:cursor-not-allowed"
+          className="w-full mt-1 rounded-lg bg-primary text-primary-foreground px-4 py-2.5 text-sm font-semibold hover:bg-primary-hover active:scale-[0.98] transition-all duration-200 shadow-sm disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:bg-primary"
         >
-          {authState.state === "loading" ? <LoadingDots /> : "Create account"}
+          {authState.state === "loading" ? (
+            <LoadingDots text="Creating your account" />
+          ) : (
+            "Create account"
+          )}
         </button>
 
         {authState.state === "error" && (

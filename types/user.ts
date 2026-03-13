@@ -8,13 +8,16 @@ export interface ServerUser {
   role: string;
   isVerified: boolean;
   isApproved: boolean;
-  profilePic: string;
+  profilePic?: string;
   verificationToken: string;
   verificationTokenExpiresAt: string;
   lastLogin: string;
   createdAt: string;
   updatedAt: string;
   __v: number;
+
+  resetPasswordToken?: string;
+  resetPasswordTokenExpiresAt?: Date;
 }
 
 interface Profile {
