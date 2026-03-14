@@ -87,7 +87,6 @@ export const auth = {
       { success: boolean; message: string; user: ServerUser },
       { token: string }
     >("/api/auth/verify-email", payload);
-
     return {
       ...res,
       user: normalizeUser(res.user),
@@ -111,8 +110,8 @@ export const auth = {
     } as UpdateProfileResponse;
   },
 
-  async forgotPassword(payload: Pick<User, "email">) {
-    return apiClient.post<ForgotPasswordResponse, Pick<User, "email">>(
+  async forgotPassword(payload: { email: string }) {
+    return apiClient.post<ForgotPasswordResponse, { email: string }>(
       "/api/auth/forgot-password",
       payload,
     );
@@ -125,10 +124,14 @@ export const auth = {
     >("/api/auth/reset-password", payload);
   },
 
-  async checkUser(payload: Pick<User, "email">) {
-    return apiClient.post<User, Pick<User, "email">>(
+  async checkUser(payload: { email: string }) {
+    const res = await apiClient.post<ServerUser, { email: string }>(
       "/api/auth/check",
       payload,
     );
+    return {
+      ...res,
+      user: normalizeUser(res),
+    };
   },
 };
