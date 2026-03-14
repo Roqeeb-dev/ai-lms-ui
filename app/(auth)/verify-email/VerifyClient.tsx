@@ -15,7 +15,6 @@ export default function VerifyClient() {
   const [error, setError] = useState("");
   const [resent, setResent] = useState(false);
 
-  // Get token from URL
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const token = params.get("token");
@@ -45,17 +44,17 @@ export default function VerifyClient() {
   async function handleResend() {
     setLoading(true);
     setError("");
-    // try {
-    //   if (user?.email) {
-    //     await auth.resendVerification({ email: user.email });
-    //     setResent(true);
-    //     setTimeout(() => setResent(false), 3000);
-    //   }
-    // } catch (err: any) {
-    //   setError(err.message || "Failed to resend email. Please try again.");
-    // } finally {
-    setLoading(false);
-    // }
+    try {
+      if (user?.email) {
+        await auth.resetVerification({ email: user.email });
+        setResent(true);
+        setTimeout(() => setResent(false), 3000);
+      }
+    } catch (err: any) {
+      setError(err.message || "Failed to resend email. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (

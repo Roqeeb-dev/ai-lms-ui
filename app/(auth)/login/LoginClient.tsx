@@ -40,14 +40,11 @@ export default function LoginClient() {
       const data = await auth.login(values);
       setAuthState({ state: "success", data });
       setUser(data.user);
-      console.log("Logged-in user (normalized):", data.user);
-      console.log("user store after login:", useUserStore.getState().user);
       reset();
       router.replace(`/dashboard/${data.user.role}`);
     } catch (err: any) {
       setAuthState({ state: "error", error: err });
       console.error("Login failed:", err.message || err);
-      alert("Login failed: " + (err.message || "Unknown error"));
     }
   }
 
@@ -150,7 +147,7 @@ export default function LoginClient() {
         </button>
         {/* Optional error message */}
         {authState.state === "error" && (
-          <p className="text-red-500 text-sm mt-2">
+          <p className="text-red-500 text-sm">
             {authState.error?.message || "Login failed."}
           </p>
         )}
