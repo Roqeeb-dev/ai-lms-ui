@@ -28,6 +28,12 @@ type ForgotPasswordResponse = {
   user: ServerUser;
 };
 
+export type VerifyEmailResponse = {
+  success: boolean;
+  message?: string;
+  user: User;
+};
+
 function mapRole(r: string): Role {
   if (r === "instructor") return "teacher";
   if (r === "student" || r === "teacher" || r === "admin") return r as Role;
@@ -74,6 +80,18 @@ export const auth = {
       ...res,
       user: normalizeUser(res.user),
     } as AuthResponse;
+  },
+
+  async verifyEmail(payload: { token: string }): Promise<VerifyEmailResponse> {
+    const res = await apiClient.post<
+      { success: boolean; message: string; user: ServerUser },
+      { token: string }
+    >("/api/auth/verify-email", payload);
+
+    return {
+      ...res,
+      user: normalizeUser(res.user),
+    };
   },
 
   async logout() {

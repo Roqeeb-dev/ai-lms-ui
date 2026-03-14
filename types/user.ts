@@ -9,8 +9,8 @@ export interface ServerUser {
   isVerified: boolean;
   isApproved: boolean;
   profilePic?: string;
-  verificationToken: string;
-  verificationTokenExpiresAt: string;
+  verificationToken?: string;
+  verificationTokenExpiresAt?: string;
   lastLogin: string;
   createdAt: string;
   updatedAt: string;
