@@ -47,7 +47,7 @@ export default function RegisterClient() {
       setUser(data.user);
       console.log("user store state after set:", useUserStore.getState().user);
       reset();
-      router.push("/onboarding");
+      router.push("/verify-email");
     } catch (err: any) {
       setAuthState({ state: "error", error: err });
       console.error("Registration failed:", err.message || err);

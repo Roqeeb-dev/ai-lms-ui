@@ -38,8 +38,8 @@ export default function UserMenu({ user }: { user: TopbarUser }) {
   async function handleLogout() {
     try {
       await auth.logout();
-      clearUser();
       router.replace("/login");
+      clearUser();
     } catch (err: any) {
       console.error("Logout failed:", err);
       alert("Failed to log out. Please try again.");
