@@ -209,8 +209,8 @@ export default function OnboardingClient() {
     }
 
     return (
-      <main className="min-h-screen bg-background flex items-center justify-center px-6">
-        <div className="w-full max-w-lg flex flex-col items-center gap-8 text-center">
+      <main className="min-h-screen bg-background flex items-center justify-center px-4">
+        <div className="w-full max-w-lg flex flex-col items-center gap-6 text-center">
           <div className="relative">
             <div className="absolute inset-0 rounded-full bg-accent opacity-20 blur-2xl scale-150" />
             <div className="relative w-16 h-16 rounded-full bg-accent/20 border border-accent/30 flex items-center justify-center text-2xl">
@@ -218,14 +218,14 @@ export default function OnboardingClient() {
             </div>
           </div>
           <div className="flex flex-col gap-1.5">
-            <h1 className="text-2xl font-bold text-foreground">
+            <h1 className="text-xl font-bold text-foreground">
               You're all set
             </h1>
             <p className="text-sm text-foreground-muted">
               Cognify is building your personalized learning path.
             </p>
           </div>
-          <div className="w-full rounded-2xl border border-border bg-card p-6 flex flex-col gap-3 text-left">
+          <div className="w-full rounded-2xl border border-border bg-card p-4 flex flex-col gap-3 text-left">
             {[
               {
                 label: "Role",
@@ -256,7 +256,7 @@ export default function OnboardingClient() {
           </div>
           <button
             onClick={goToDashboard}
-            className="w-full rounded-lg bg-primary text-primary-foreground px-4 py-2.5 text-sm font-semibold hover:bg-primary-hover active:scale-[0.98] transition-all duration-200 shadow-sm"
+            className="w-full rounded-lg bg-primary text-primary-foreground px-3 py-2 text-sm font-semibold hover:bg-primary-hover active:scale-[0.98] transition-all duration-200 shadow-sm"
           >
             Go to my dashboard →
           </button>
@@ -268,8 +268,8 @@ export default function OnboardingClient() {
   const current = steps[step];
 
   return (
-    <main className="min-h-screen bg-background flex flex-col items-center px-6 py-12">
-      <div className="w-full max-w-2xl flex flex-col gap-8">
+    <main className="min-h-screen bg-background flex flex-col items-center px-4 py-8">
+      <div className="w-full max-w-2xl flex flex-col gap-6">
         {/* Progress */}
         <div className="flex flex-col gap-2">
           <div className="flex justify-between text-xs text-foreground-muted">
@@ -290,7 +290,7 @@ export default function OnboardingClient() {
         <div
           className={`flex flex-col gap-5 transition-all duration-250 ${animating ? (direction === "forward" ? "opacity-0 -translate-x-3" : "opacity-0 translate-x-3") : "opacity-100 translate-x-0"}`}
         >
-          <h1 className="text-2xl font-bold text-foreground tracking-tight">
+          <h1 className="text-xl font-bold text-foreground tracking-tight">
             {current.question}
           </h1>
           {current.content}
@@ -302,7 +302,7 @@ export default function OnboardingClient() {
             <button
               type="button"
               onClick={() => navigate("back")}
-              className="flex-1 rounded-lg border border-border bg-card text-foreground px-4 py-2.5 text-sm font-semibold hover:bg-muted transition-all duration-200"
+              className="flex-1 rounded-lg border border-border bg-card text-foreground px-3 py-2 text-sm font-semibold hover:bg-muted transition-all duration-200"
             >
               Back
             </button>
@@ -311,7 +311,7 @@ export default function OnboardingClient() {
             type="button"
             onClick={() => navigate("forward")}
             disabled={!canProceed}
-            className="flex-1 rounded-lg bg-primary text-primary-foreground px-4 py-2.5 text-sm font-semibold hover:bg-primary-hover active:scale-[0.98] transition-all duration-200 shadow-sm disabled:opacity-40 disabled:pointer-events-none"
+            className="flex-1 rounded-lg bg-primary text-primary-foreground px-3 py-2 text-sm font-semibold hover:bg-primary-hover active:scale-[0.98] transition-all duration-200 shadow-sm disabled:opacity-40 disabled:pointer-events-none"
           >
             {step === TOTAL_STEPS - 1 ? "Finish" : "Next →"}
           </button>

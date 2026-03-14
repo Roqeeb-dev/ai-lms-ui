@@ -56,13 +56,13 @@ export default function Pricing() {
     <section id="pricing" className="w-full bg-background">
       <div className="w-full h-px bg-gradient-to-r from-transparent via-border to-transparent" />
 
-      <div className="max-w-7xl mx-auto px-6 py-24 flex flex-col gap-14">
+      <div className="max-w-6xl mx-auto px-6 py-16 flex flex-col gap-10">
         {/* Header */}
         <div className="text-center flex flex-col gap-3 max-w-lg mx-auto">
           <span className="text-xs font-semibold tracking-widest uppercase text-primary">
             Pricing
           </span>
-          <h2 className="text-4xl font-bold text-foreground tracking-tight leading-tight">
+          <h2 className="text-3xl font-bold text-foreground tracking-tight leading-tight">
             Start free.{" "}
             <span
               className="text-primary"
@@ -87,7 +87,7 @@ export default function Pricing() {
           {plans.map((plan) => (
             <div
               key={plan.name}
-              className={`flex flex-col gap-6 rounded-2xl border p-8 transition-all duration-200 ${
+              className={`flex flex-col gap-6 rounded-2xl border p-6 transition-all duration-200 ${
                 plan.highlight
                   ? "border-primary bg-card shadow-md"
                   : "border-border bg-card/60 shadow-sm"
@@ -106,7 +106,7 @@ export default function Pricing() {
                   {plan.name}
                 </p>
                 <div className="flex items-baseline gap-1">
-                  <span className="text-4xl font-extrabold text-foreground">
+                  <span className="text-3xl font-extrabold text-foreground">
                     {plan.price}
                   </span>
                   {plan.per && (
@@ -125,7 +125,7 @@ export default function Pricing() {
                 {plan.features.map((f) => (
                   <li
                     key={f}
-                    className="flex items-center gap-2 text-sm text-foreground"
+                    className="flex items-center gap-2 text-xs text-foreground"
                   >
                     <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
                     {f}

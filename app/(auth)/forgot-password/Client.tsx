@@ -27,7 +27,7 @@ export default function ForgotPasswordClient() {
   }
 
   return (
-    <div className="w-full max-w-md flex flex-col gap-8">
+    <div className="w-full max-w-md flex flex-col gap-6">
       {submitted ? (
         <div className="flex flex-col gap-4 text-center">
           <div className="w-12 h-12 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto">
@@ -46,7 +46,7 @@ export default function ForgotPasswordClient() {
             </svg>
           </div>
           <div className="flex flex-col gap-1.5">
-            <h1 className="text-2xl font-bold text-foreground tracking-tight">
+            <h1 className="text-xl font-bold text-foreground tracking-tight">
               Check your inbox
             </h1>
             <p className="text-sm text-foreground-muted leading-relaxed">
@@ -70,7 +70,7 @@ export default function ForgotPasswordClient() {
         <>
           {/* Header */}
           <div className="flex flex-col gap-1.5">
-            <h1 className="text-2xl font-bold text-foreground tracking-tight">
+            <h1 className="text-xl font-bold text-foreground tracking-tight">
               Forgot your password?
             </h1>
             <p className="text-sm text-foreground-muted leading-relaxed">
@@ -90,7 +90,7 @@ export default function ForgotPasswordClient() {
                 name="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full rounded-lg border border-border bg-input px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-input-focus transition-all duration-200"
+                className="w-full rounded-lg border border-border bg-input px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-input-focus transition-all duration-200"
                 required
               />
             </div>
@@ -100,7 +100,7 @@ export default function ForgotPasswordClient() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-lg bg-primary text-primary-foreground px-4 py-2.5 text-sm font-semibold
+              className="w-full rounded-lg bg-primary text-primary-foreground px-3 py-2 text-sm font-semibold
                          hover:bg-primary-hover active:scale-[0.98] transition-all duration-200 shadow-sm
                          disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:bg-primary"
             >

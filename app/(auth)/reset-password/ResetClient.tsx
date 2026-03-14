@@ -49,7 +49,7 @@ export default function ResetClient() {
   }
 
   return (
-    <div className="w-full max-w-md flex flex-col gap-8">
+    <div className="w-full max-w-md flex flex-col gap-6">
       {submitted ? (
         <div className="flex flex-col gap-4 text-center">
           <div className="w-12 h-12 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto">
@@ -68,7 +68,7 @@ export default function ResetClient() {
             </svg>
           </div>
           <div className="flex flex-col gap-1.5">
-            <h1 className="text-2xl font-bold text-foreground tracking-tight">
+            <h1 className="text-xl font-bold text-foreground tracking-tight">
               Password reset
             </h1>
             <p className="text-sm text-foreground-muted leading-relaxed">
@@ -78,7 +78,7 @@ export default function ResetClient() {
           </div>
           <Link
             href="/login"
-            className="w-full rounded-lg bg-primary text-primary-foreground px-4 py-2.5 text-sm font-semibold hover:bg-primary-hover active:scale-[0.98] transition-all duration-200 shadow-sm text-center"
+            className="w-full rounded-lg bg-primary text-primary-foreground px-3 py-2 text-sm font-semibold hover:bg-primary-hover active:scale-[0.98] transition-all duration-200 shadow-sm text-center"
           >
             Back to login
           </Link>
@@ -86,7 +86,7 @@ export default function ResetClient() {
       ) : (
         <>
           <div className="flex flex-col gap-1.5">
-            <h1 className="text-2xl font-bold text-foreground tracking-tight">
+            <h1 className="text-xl font-bold text-foreground tracking-tight">
               Reset your password
             </h1>
             <p className="text-sm text-foreground-muted leading-relaxed">
@@ -106,7 +106,7 @@ export default function ResetClient() {
                   name="password"
                   value={resetDetails.password}
                   onChange={handleChange}
-                  className="w-full rounded-lg border border-border bg-input px-4 py-2.5 pr-11 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-input-focus transition-all duration-200"
+                  className="w-full rounded-lg border border-border bg-input px-3 py-2 pr-11 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-input-focus transition-all duration-200"
                   required
                 />
                 <button
@@ -130,7 +130,7 @@ export default function ResetClient() {
                   name="confirmPassword"
                   value={resetDetails.confirmPassword}
                   onChange={handleChange}
-                  className={`w-full rounded-lg border bg-input px-4 py-2.5 pr-11 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-all duration-200 ${
+                  className={`w-full rounded-lg border bg-input px-3 py-2 pr-11 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-all duration-200 ${
                     passwordsMatch
                       ? "border-border focus:border-input-focus"
                       : "border-destructive focus:ring-destructive"
@@ -157,7 +157,7 @@ export default function ResetClient() {
             <button
               type="submit"
               disabled={!passwordsMatch || loading}
-              className="w-full rounded-lg bg-primary text-primary-foreground px-4 py-2.5 text-sm font-semibold hover:bg-primary-hover active:scale-[0.98] transition-all duration-200 shadow-sm disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:bg-primary"
+              className="w-full rounded-lg bg-primary text-primary-foreground px-3 py-2 text-sm font-semibold hover:bg-primary-hover active:scale-[0.98] transition-all duration-200 shadow-sm disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:bg-primary"
             >
               {loading ? <LoadingDots text="Resetting..." /> : "Reset password"}
             </button>

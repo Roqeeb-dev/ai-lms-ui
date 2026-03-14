@@ -7,7 +7,7 @@ export const metadata = {
 
 export default function ResetPassword() {
   return (
-    <main className="min-h-screen flex items-center justify-center px-6 bg-background">
+    <main className="min-h-screen flex items-center justify-center px-4 bg-background">
       <ResetClient />
     </main>
   );

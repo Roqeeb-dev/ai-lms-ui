@@ -177,10 +177,10 @@ function StatCard({
 }) {
   return (
     <div
-      className="absolute bg-card border border-border rounded-xl px-4 py-3 shadow-md flex flex-col gap-0.5"
+      className="absolute bg-card border border-border rounded-xl px-3 py-2 shadow-md flex flex-col gap-0.5"
       style={{ animationDelay: delay }}
     >
-      <span className="text-lg font-bold text-primary leading-none">
+      <span className="text-base font-bold text-primary leading-none">
         {value}
       </span>
       <span className="text-xs text-foreground-muted">{label}</span>
@@ -206,7 +206,7 @@ export default function Hero() {
         }}
       />
 
-      <div className="relative max-w-7xl mx-auto px-6 py-20 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      <div className="relative max-w-6xl mx-auto px-4 py-16 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         <div className="flex flex-col gap-7">
           <div className="inline-flex items-center gap-2 self-start border border-border bg-card rounded-full px-4 py-1.5">
             <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
@@ -216,7 +216,7 @@ export default function Hero() {
           </div>
 
           {/* Headline */}
-          <h1 className="text-5xl lg:text-6xl font-bold leading-[1.1] tracking-tight text-foreground">
+          <h1 className="text-4xl lg:text-5xl font-bold leading-[1.1] tracking-tight text-foreground">
             Learn smarter with{" "}
             <span
               className="relative inline-block text-primary"
@@ -233,7 +233,7 @@ export default function Hero() {
           </h1>
 
           {/* Subheadline */}
-          <p className="text-lg text-foreground-muted leading-relaxed max-w-md">
+          <p className="text-base text-foreground-muted leading-relaxed max-w-md">
             Cognify builds a personalized learning path around your goals, pace,
             and style, then evolves as you grow. Education that finally feels
             like it was made for you.
@@ -277,7 +277,7 @@ export default function Hero() {
         </div>
 
         {/* ── Right: AI Visualization ── */}
-        <div className="relative h-[480px] lg:h-[520px]">
+        <div className="relative h-[400px] lg:h-[440px]">
           {/* Main viz card */}
           <div className="absolute inset-0 rounded-2xl border border-border bg-card shadow-xl overflow-hidden">
             <div

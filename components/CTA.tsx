@@ -7,8 +7,8 @@ export default function CTABanner() {
     <section className="w-full bg-background-subtle">
       <div className="w-full h-px bg-gradient-to-r from-transparent via-border to-transparent" />
 
-      <div className="max-w-7xl mx-auto px-6 py-24">
-        <div className="relative rounded-2xl border border-primary/20 bg-card overflow-hidden px-8 py-16 flex flex-col items-center text-center gap-7">
+      <div className="max-w-6xl mx-auto px-6 py-16">
+        <div className="relative rounded-2xl border border-primary/20 bg-card overflow-hidden px-6 py-12 flex flex-col items-center text-center gap-5">
           {/* Background glow */}
           <div
             className="pointer-events-none absolute inset-0 opacity-20"
@@ -32,7 +32,7 @@ export default function CTABanner() {
             <span className="text-xs font-semibold tracking-widest uppercase text-primary">
               Get Started
             </span>
-            <h2 className="text-4xl lg:text-5xl font-bold text-foreground tracking-tight leading-tight">
+            <h2 className="text-3xl lg:text-4xl font-bold text-foreground tracking-tight leading-tight">
               Your smartest learning decision{" "}
               <span
                 className="text-primary"

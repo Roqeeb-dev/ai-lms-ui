@@ -74,14 +74,14 @@ export default function HowItWorks() {
     <section id="how-it-works" className="w-full bg-background-subtle">
       <div className="w-full h-px bg-gradient-to-r from-transparent via-border to-transparent" />
 
-      <div className="max-w-7xl mx-auto px-6 py-24 flex flex-col gap-14">
+      <div className="max-w-6xl mx-auto px-6 py-16 flex flex-col gap-10">
         {/* Header */}
         <div className="text-center flex flex-col gap-5 max-w-xl mx-auto">
           <div>
             <span className="text-xs font-semibold tracking-widest uppercase text-primary">
               How It Works
             </span>
-            <h2 className="text-4xl font-bold text-foreground tracking-tight leading-tight mt-3">
+            <h2 className="text-3xl font-bold text-foreground tracking-tight leading-tight mt-3">
               Up and running in{" "}
               <span
                 className="text-primary"
@@ -130,7 +130,7 @@ export default function HowItWorks() {
           {steps.map((step, i) => (
             <div
               key={`${tab}-${i}`}
-              className={`flex flex-col gap-5 rounded-2xl border border-border bg-card p-8 shadow-sm transition-all duration-500 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
+              className={`flex flex-col gap-5 rounded-2xl border border-border bg-card p-6 shadow-sm transition-all duration-500 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
               style={{ transitionDelay: `${i * 100}ms` }}
             >
               <div className="w-10 h-10 rounded-full border-2 border-primary bg-background flex items-center justify-center shrink-0 z-10">
@@ -139,10 +139,10 @@ export default function HowItWorks() {
                 </span>
               </div>
               <div className="flex flex-col gap-2">
-                <h3 className="text-lg font-bold text-foreground leading-snug">
+                <h3 className="text-base font-bold text-foreground leading-snug">
                   {step.label}
                 </h3>
-                <p className="text-sm text-foreground-muted leading-relaxed">
+                <p className="text-xs text-foreground-muted leading-relaxed">
                   {step.description}
                 </p>
               </div>

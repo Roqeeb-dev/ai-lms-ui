@@ -66,13 +66,13 @@ export default function Features() {
     <section id="features" className="w-full bg-background-subtle">
       <div className="w-full h-px bg-gradient-to-r from-transparent via-border to-transparent" />
 
-      <div className="max-w-7xl mx-auto px-6 py-24 flex flex-col gap-14">
+      <div className="max-w-6xl mx-auto px-6 py-16 flex flex-col gap-10">
         {/* Header */}
         <div className="text-center flex flex-col gap-3 max-w-xl mx-auto">
           <span className="text-xs font-semibold tracking-widest uppercase text-primary">
             Features
           </span>
-          <h2 className="text-4xl font-bold text-foreground tracking-tight leading-tight">
+          <h2 className="text-3xl font-bold text-foreground tracking-tight leading-tight">
             Everything you need to{" "}
             <span
               className="text-primary"
@@ -112,11 +112,11 @@ export default function Features() {
               </div>
 
               {/* Text */}
-              <div className="flex flex-col gap-2 p-6">
+              <div className="flex flex-col gap-2 p-4">
                 <span className="text-xs font-semibold tracking-widest uppercase text-primary">
                   {f.label}
                 </span>
-                <h3 className="text-lg font-bold text-foreground leading-snug">
+                <h3 className="text-base font-bold text-foreground leading-snug">
                   {f.headline}
                 </h3>
                 <p className="text-sm text-foreground-muted leading-relaxed">

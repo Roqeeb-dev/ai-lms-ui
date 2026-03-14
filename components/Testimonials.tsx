@@ -80,11 +80,11 @@ function TestimonialCard({
 }) {
   return (
     <div
-      className={`flex flex-col gap-4 rounded-2xl border border-border bg-card p-6 shadow-sm transition-all duration-700 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
+      className={`flex flex-col gap-4 rounded-2xl border border-border bg-card p-4 shadow-sm transition-all duration-700 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
       style={{ transitionDelay: `${index * 80}ms` }}
     >
       <Stars />
-      <p className="text-sm text-foreground leading-relaxed flex-1">
+      <p className="text-xs text-foreground leading-relaxed flex-1">
         "{t.quote}"
       </p>
       <div className="flex items-center gap-3 pt-2 border-t border-border-subtle">
@@ -129,13 +129,13 @@ export default function Testimonials() {
     <section id="testimonials" className="w-full bg-background">
       <div className="w-full h-px bg-gradient-to-r from-transparent via-border to-transparent" />
 
-      <div className="max-w-7xl mx-auto px-6 py-24 flex flex-col gap-14">
+      <div className="max-w-6xl mx-auto px-6 py-16 flex flex-col gap-10">
         {/* Header */}
         <div className="text-center flex flex-col gap-3 max-w-xl mx-auto">
           <span className="text-xs font-semibold tracking-widest uppercase text-primary">
             Testimonials
           </span>
-          <h2 className="text-4xl font-bold text-foreground tracking-tight leading-tight">
+          <h2 className="text-3xl font-bold text-foreground tracking-tight leading-tight">
             Learners who{" "}
             <span
               className="text-primary"
@@ -174,9 +174,7 @@ export default function Testimonials() {
             ["500+", "Courses"],
           ].map(([val, label]) => (
             <div key={label} className="flex flex-col items-center gap-0.5">
-              <span className="text-2xl font-extrabold text-primary">
-                {val}
-              </span>
+              <span className="text-xl font-extrabold text-primary">{val}</span>
               <span className="text-xs text-foreground-muted">{label}</span>
             </div>
           ))}

@@ -12,7 +12,7 @@ export default function Login() {
       <div className="hidden lg:block lg:w-1/2">
         <SideAnimation />
       </div>
-      <div className="flex-1 flex items-center justify-center px-6 bg-background">
+      <div className="flex-1 flex items-center justify-center px-4 bg-background">
         <LoginClient />
       </div>
     </main>
