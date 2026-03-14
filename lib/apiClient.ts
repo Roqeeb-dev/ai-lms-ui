@@ -9,7 +9,10 @@ export const apiClient = {
       },
       ...options,
     });
-    if (!res.ok) throw new Error("Request failed");
+    if (!res.ok) {
+      const errorData = await res.json();
+      throw new Error(errorData.message || "Something went wrong");
+    }
     return res.json();
   },
 

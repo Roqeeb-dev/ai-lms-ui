@@ -119,8 +119,8 @@ export default function UserMenu({ user }: { user: TopbarUser }) {
         onClose={() => setIsDialogShown(false)}
         title="Logout Confirmation"
         message="Are you sure you want to log out?"
-        confirmText="Yes, I want to Log out"
-        cancelText="No, Keep me Logged in"
+        confirmText="Yes, Log out"
+        cancelText="No, Don't Log out"
         onConfirm={handleLogout}
       />
     </div>
