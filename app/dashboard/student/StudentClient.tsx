@@ -50,15 +50,13 @@ export default function StudentClient() {
       </div>
     );
 
-  console.log(user);
-
   const firstName = user.name.split(" ")[0];
 
   return (
-    <div className="flex flex-col gap-8 max-w-6xl mx-auto">
+    <div className="flex flex-col gap-6 max-w-6xl mx-auto">
       {/* Header */}
       <div className="flex flex-col gap-1">
-        <h1 className="text-2xl font-bold text-foreground tracking-tight">
+        <h1 className="text-xl font-bold text-foreground tracking-tight">
           Welcome back,{" "}
           <span
             className="relative inline-block text-primary"
@@ -82,7 +80,7 @@ export default function StudentClient() {
         {statCards.map((stat) => (
           <div
             key={stat.label}
-            className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-5 shadow-sm"
+            className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-4 shadow-sm"
           >
             <div
               className={`w-9 h-9 rounded-lg ${stat.bg} flex items-center justify-center`}
@@ -90,7 +88,7 @@ export default function StudentClient() {
               <stat.icon size={17} className={stat.color} />
             </div>
             <div className="flex flex-col gap-0.5">
-              <span className="text-2xl font-extrabold text-foreground">
+              <span className="text-xl font-extrabold text-foreground">
                 {stat.value}
               </span>
               <span className="text-xs text-foreground-muted">
@@ -104,7 +102,7 @@ export default function StudentClient() {
       {/* Continue learning + AI tutor */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Continue learning */}
-        <div className="lg:col-span-2 flex flex-col gap-4 rounded-2xl border border-border bg-card p-6 shadow-sm">
+        <div className="lg:col-span-2 flex flex-col gap-4 rounded-2xl border border-border bg-card p-5 shadow-sm">
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-bold text-foreground uppercase tracking-widest">
               Continue Learning
@@ -169,7 +167,7 @@ export default function StudentClient() {
 
           <a
             href="/dashboard/student/ai-tutor"
-            className="relative mt-6 inline-flex items-center justify-center rounded-lg bg-white text-primary px-4 py-2.5 text-sm font-semibold hover:bg-white/90 active:scale-[0.98] transition-all duration-200"
+            className="relative mt-6 inline-flex items-center justify-center rounded-lg bg-white text-primary px-3 py-2 text-sm font-semibold hover:bg-white/90 active:scale-[0.98] transition-all duration-200"
           >
             Ask a question →
           </a>
@@ -177,7 +175,7 @@ export default function StudentClient() {
       </div>
 
       {/* Quick actions */}
-      <div className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-6 shadow-sm">
+      <div className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-5 shadow-sm">
         <h2 className="text-sm font-bold text-foreground uppercase tracking-widest">
           Quick Actions
         </h2>
@@ -193,7 +191,7 @@ export default function StudentClient() {
             <a
               key={action.label}
               href={action.href}
-              className="rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground hover:border-primary hover:text-primary transition-all duration-200"
+              className="rounded-lg border border-border bg-background px-3 py-1.5 text-sm font-medium text-foreground hover:border-primary hover:text-primary transition-all duration-200"
             >
               {action.label}
             </a>

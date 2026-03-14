@@ -70,16 +70,16 @@ export default function ProfileClient() {
   }
 
   const inputClass =
-    "w-full rounded-lg border border-border bg-input px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-input-focus transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed";
+    "w-full rounded-lg border border-border bg-input px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-input-focus transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed";
   const labelClass =
     "text-xs font-semibold tracking-widest uppercase text-foreground-muted";
 
   return (
-    <div className="flex flex-col gap-8 w-full">
+    <div className="flex flex-col gap-6 w-full">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex flex-col gap-1">
-          <h1 className="text-2xl font-bold text-foreground tracking-tight">
+          <h1 className="text-xl font-bold text-foreground tracking-tight">
             Profile
           </h1>
           <p className="text-sm text-foreground-muted">
@@ -89,7 +89,7 @@ export default function ProfileClient() {
         {!editing ? (
           <button
             onClick={() => setEditing(true)}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg border border-border bg-card text-sm font-semibold text-foreground hover:border-primary hover:text-primary transition-all duration-200"
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border bg-card text-sm font-semibold text-foreground hover:border-primary hover:text-primary transition-all duration-200"
           >
             <Pencil size={14} /> Edit
           </button>
@@ -97,13 +97,13 @@ export default function ProfileClient() {
           <div className="flex items-center gap-2">
             <button
               onClick={handleCancel}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg border border-border bg-card text-sm font-semibold text-foreground-muted hover:text-foreground transition-all duration-200"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border bg-card text-sm font-semibold text-foreground-muted hover:text-foreground transition-all duration-200"
             >
               <X size={14} /> Cancel
             </button>
             <button
               onClick={handleSave}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary-hover active:scale-[0.98] transition-all duration-200 shadow-sm"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary-hover active:scale-[0.98] transition-all duration-200 shadow-sm"
             >
               <Check size={14} /> Save
             </button>
@@ -112,12 +112,12 @@ export default function ProfileClient() {
       </div>
 
       {/* Avatar + identity */}
-      <div className="flex items-center gap-5 rounded-2xl border border-border bg-card p-6 shadow-sm">
-        <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center text-xl font-extrabold text-primary-foreground shrink-0">
+      <div className="flex items-center gap-5 rounded-2xl border border-border bg-card p-5 shadow-sm">
+        <div className="w-14 h-14 rounded-full bg-primary flex items-center justify-center text-lg font-extrabold text-primary-foreground shrink-0">
           {initials}
         </div>
         <div className="flex flex-col gap-1">
-          <p className="text-base font-bold text-foreground">{user.name}</p>
+          <p className="text-sm font-bold text-foreground">{user.name}</p>
           <p className="text-sm text-foreground-muted">{user.email}</p>
           <span className="self-start mt-1 text-xs font-semibold tracking-widest uppercase bg-primary/10 text-primary border border-primary/20 rounded-full px-3 py-0.5 capitalize">
             {user.role}
@@ -126,7 +126,7 @@ export default function ProfileClient() {
       </div>
 
       {/* Editable fields */}
-      <div className="flex flex-col gap-6 rounded-2xl border border-border bg-card p-6 shadow-sm">
+      <div className="flex flex-col gap-6 rounded-2xl border border-border bg-card p-5 shadow-sm">
         <h2 className="text-sm font-bold text-foreground uppercase tracking-widest">
           Personal Information
         </h2>
@@ -212,7 +212,7 @@ export default function ProfileClient() {
       </div>
 
       {/* Read-only account info */}
-      <div className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-6 shadow-sm">
+      <div className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-5 shadow-sm">
         <h2 className="text-sm font-bold text-foreground uppercase tracking-widest">
           Account
         </h2>

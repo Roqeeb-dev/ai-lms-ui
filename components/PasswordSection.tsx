@@ -19,7 +19,7 @@ export default function PasswordSection() {
   const labelClass =
     "text-xs font-semibold tracking-widest uppercase text-foreground-muted";
   const inputClass =
-    "w-full rounded-lg border border-border bg-input px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-input-focus transition-all duration-200";
+    "w-full rounded-lg border border-border bg-input px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-input-focus transition-all duration-200";
 
   function handleSave() {
     // wire to API
@@ -72,7 +72,7 @@ export default function PasswordSection() {
         <button
           onClick={handleSave}
           disabled={!matches || !values.current || !values.new}
-          className="self-start flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary-hover active:scale-[0.98] transition-all duration-200 shadow-sm disabled:opacity-40 disabled:pointer-events-none"
+          className="self-start flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary-hover active:scale-[0.98] transition-all duration-200 shadow-sm disabled:opacity-40 disabled:pointer-events-none"
         >
           {saved ? (
             <>

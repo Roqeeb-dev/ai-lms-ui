@@ -11,7 +11,7 @@ export default function CourseCard({
   enrolled = false,
 }: CourseCardProps) {
   return (
-    <div className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-5 shadow-sm hover:border-primary/30 hover:shadow-md transition-all duration-200 group cursor-pointer">
+    <div className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-4 shadow-sm hover:border-primary/30 hover:shadow-md transition-all duration-200 group cursor-pointer">
       {/* Top row */}
       <div className="flex items-center justify-between">
         <span className="text-xs font-semibold tracking-widest uppercase text-primary">
@@ -67,7 +67,7 @@ export default function CourseCard({
           {course.moduleIds.length !== 1 ? "s" : ""}
         </span>
         <button
-          className={`text-xs font-semibold px-3 py-1.5 rounded-lg transition-all duration-200 ${
+          className={`text-xs font-semibold px-2.5 py-1 rounded-lg transition-all duration-200 ${
             enrolled
               ? "bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground"
               : "bg-muted text-foreground hover:bg-primary hover:text-primary-foreground"

@@ -17,9 +17,9 @@ export default function SettingsClient() {
     );
 
   return (
-    <div className="flex flex-col gap-8 w-full">
+    <div className="flex flex-col gap-6 w-full">
       <div className="flex flex-col gap-1">
-        <h1 className="text-2xl font-bold text-foreground tracking-tight">
+        <h1 className="text-xl font-bold text-foreground tracking-tight">
           Settings
         </h1>
         <p className="text-sm text-foreground-muted">

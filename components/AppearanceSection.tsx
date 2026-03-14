@@ -29,14 +29,14 @@ export default function AppearanceSection() {
             key={t}
             type="button"
             onClick={() => handleThemeChange(t)}
-            className={`flex flex-col items-center gap-3 rounded-xl border p-5 transition-all duration-200 ${
+            className={`flex flex-col items-center gap-3 rounded-xl border p-4 transition-all duration-200 ${
               theme === t
                 ? "border-primary bg-primary/10"
                 : "border-border bg-background hover:border-primary/40"
             }`}
           >
             <div
-              className={`w-10 h-10 rounded-full flex items-center justify-center ${
+              className={`w-8 h-8 rounded-full flex items-center justify-center ${
                 t === "light"
                   ? "bg-amber-100 text-amber-600"
                   : "bg-slate-800 text-slate-200"

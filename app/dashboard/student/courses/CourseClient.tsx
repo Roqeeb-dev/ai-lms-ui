@@ -149,10 +149,10 @@ export default function CourseClient() {
       : browseCourses.filter((c) => c.level === activeCategory.toLowerCase());
 
   return (
-    <div className="flex flex-col gap-10 max-w-6xl mx-auto">
+    <div className="flex flex-col gap-8 max-w-6xl mx-auto">
       {/* Header */}
       <div className="flex flex-col gap-1">
-        <h1 className="text-2xl font-bold text-foreground tracking-tight">
+        <h1 className="text-xl font-bold text-foreground tracking-tight">
           My Courses
         </h1>
         <p className="text-sm text-foreground-muted">
@@ -161,7 +161,7 @@ export default function CourseClient() {
       </div>
 
       {/* Enrolled */}
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <BookOpen size={15} className="text-primary" />
@@ -182,7 +182,7 @@ export default function CourseClient() {
       </div>
 
       {/* AI Recommended */}
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-3">
         <div className="flex items-center gap-2">
           <Sparkles size={15} className="text-amber-600" />
           <h2 className="text-sm font-bold text-foreground uppercase tracking-widest">
@@ -197,7 +197,7 @@ export default function CourseClient() {
       </div>
 
       {/* Browse */}
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-3">
         <h2 className="text-sm font-bold text-foreground uppercase tracking-widest">
           Browse All
         </h2>
@@ -206,7 +206,7 @@ export default function CourseClient() {
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
-              className={`px-4 py-1.5 rounded-full text-xs font-semibold border transition-all duration-200 ${
+              className={`px-3 py-1 rounded-full text-xs font-semibold border transition-all duration-200 ${
                 activeCategory === cat
                   ? "bg-primary text-primary-foreground border-primary"
                   : "bg-card text-foreground-muted border-border hover:border-primary/50 hover:text-foreground"
