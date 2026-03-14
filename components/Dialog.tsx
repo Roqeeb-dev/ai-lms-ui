@@ -1,6 +1,7 @@
 "use client";
 
 import { X } from "lucide-react";
+import { createPortal } from "react-dom";
 
 interface DialogProps {
   open: boolean;
@@ -44,24 +45,24 @@ export default function Dialog({
         ? "text-red-800"
         : "text-gray-800";
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 flex items-center justify-center z-50 px-4">
       {/* Overlay */}
       <div
-        className="fixed inset-0 bg-black/30 backdrop-blur-sm"
+        className="fixed inset-0 bg-black/25 backdrop-blur-sm"
         onClick={onClose}
       />
 
       {/* Dialog box */}
       <div
-        className={`relative max-w-sm w-full rounded-lg border ${borderColor} ${bgColor} p-6 shadow-lg flex flex-col gap-3`}
+        className={`relative w-full max-w-md rounded-lg border ${borderColor} ${bgColor} p-6 shadow-lg flex flex-col gap-4`}
       >
         {/* Close button */}
         <button
           onClick={onClose}
           className="absolute top-3 right-3 text-foreground-muted hover:text-foreground transition-colors"
         >
-          <X size={18} />
+          <X size={20} />
         </button>
 
         {/* Title */}
@@ -72,10 +73,10 @@ export default function Dialog({
 
         {/* Action buttons */}
         {type === "confirm" ? (
-          <div className="mt-4 flex justify-end gap-2">
+          <div className="mt-4 flex justify-end gap-3">
             <button
               onClick={onClose}
-              className="rounded-lg px-4 py-2 text-sm font-semibold bg-gray-300 text-gray-800 hover:bg-gray-400 transition-all duration-200"
+              className="rounded-lg px-5 py-2 text-sm font-normal bg-gray-300 text-gray-800 hover:bg-gray-400 transition-all duration-200"
             >
               {cancelText}
             </button>
@@ -84,7 +85,7 @@ export default function Dialog({
                 onConfirm?.();
                 onClose();
               }}
-              className="rounded-lg px-4 py-2 text-sm font-semibold bg-primary text-primary-foreground hover:bg-primary-hover transition-all duration-200"
+              className="rounded-lg px-5 py-2 text-sm font-normal bg-primary text-primary-foreground hover:bg-primary-hover transition-all duration-200"
             >
               {confirmText}
             </button>
@@ -92,7 +93,7 @@ export default function Dialog({
         ) : (
           <button
             onClick={onClose}
-            className={`mt-2 self-end rounded-lg px-4 py-2 text-sm font-semibold ${
+            className={`mt-4 self-end rounded-lg px-5 py-2 text-sm font-normal ${
               type === "success"
                 ? "bg-green-600 text-white hover:bg-green-700"
                 : type === "error"
@@ -104,6 +105,7 @@ export default function Dialog({
           </button>
         )}
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
