@@ -93,6 +93,17 @@ export const auth = {
     };
   },
 
+  async resetVerification(payload: { email: string }) {
+    const res = await apiClient.post<ForgotPasswordResponse, { email: string }>(
+      "/api/auth/reset-verification",
+      payload,
+    );
+    return {
+      ...res,
+      user: normalizeUser(res.user),
+    };
+  },
+
   async logout() {
     return apiClient.post<{ success: boolean; message: string }>(
       "/api/auth/logout",
