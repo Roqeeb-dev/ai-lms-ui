@@ -1,10 +1,20 @@
-export interface Lesson {
+export interface CourseThumbnail {
+  url: string;
+  public_id: string;
+}
+
+export interface Course {
   id: string;
-  moduleId: string;
   title: string;
-  content: string;
-  duration: number;
+  description: string;
+  instructor: string;
+  thumbnail?: CourseThumbnail;
+  status: "draft" | "published";
+  level?: "beginner" | "intermediate" | "advanced";
+  category?: string;
+  moduleIds: string[];
   createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface Module {
@@ -15,15 +25,12 @@ export interface Module {
   order: number;
 }
 
-export interface Course {
+export interface Lesson {
   id: string;
+  moduleId: string;
   title: string;
-  description: string;
-  teacherId: string;
-  level: "beginner" | "intermediate" | "advanced";
-  category?: string;
-  moduleIds: string[];
-  videoUrl?: string;
+  content: string;
+  duration: number;
   createdAt: Date;
 }
 
