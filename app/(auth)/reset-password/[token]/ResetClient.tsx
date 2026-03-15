@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Eye, EyeOff, Check } from "lucide-react";
 import Link from "next/link";
 import { auth } from "@/services/authService";
 import { LoadingDots } from "@/components/LoadingDots";
+import { useParams, useRouter } from "next/navigation";
 
 interface ResetDetails {
   password: string;
@@ -21,11 +22,24 @@ export default function ResetClient() {
     password: "",
     confirmPassword: "",
   });
+  const params = useParams<{ token: string }>();
+  const token = params.token;
+  const router = useRouter();
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
     setResetDetails((prev) => ({ ...prev, [name]: value }));
   }
+
+  useEffect(() => {
+    if (submitted) {
+      const timer = setTimeout(() => {
+        router.push("/login");
+      }, 2000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [submitted]);
 
   const passwordsMatch =
     resetDetails.confirmPassword === "" ||
@@ -35,11 +49,16 @@ export default function ResetClient() {
     e.preventDefault();
     if (!passwordsMatch) return;
 
+    if (!token) {
+      setError("Invalid or expired reset link.");
+      return;
+    }
+
     setLoading(true);
     setError("");
 
     try {
-      await auth.resetPassword({ password: resetDetails.password });
+      await auth.resetPassword(token, { password: resetDetails.password });
       setSubmitted(true);
     } catch (err: any) {
       setError(err.message ?? "Something went wrong");
