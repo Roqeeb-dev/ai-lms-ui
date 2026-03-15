@@ -128,11 +128,11 @@ export const auth = {
     );
   },
 
-  async resetPassword(payload: { password: string }) {
+  async resetPassword(token: string, payload: { password: string }) {
     return apiClient.post<
       { success: boolean; message?: string; user: ServerUser },
       { password: string }
-    >("/api/auth/reset-password", payload);
+    >(`/api/auth/reset-password/${token}`, payload);
   },
 
   async checkUser(payload: { email: string }) {
