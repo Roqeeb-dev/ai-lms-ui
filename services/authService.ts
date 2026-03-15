@@ -145,4 +145,11 @@ export const auth = {
       user: normalizeUser(res),
     };
   },
+
+  async me() {
+    const res = await apiClient.get<{ user: ServerUser }>("/api/auth/me");
+    return {
+      user: normalizeUser(res.user),
+    };
+  },
 };
