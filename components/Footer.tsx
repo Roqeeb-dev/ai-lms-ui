@@ -2,7 +2,7 @@ import Logo from "./Logo";
 
 const links = {
   Product: ["Features", "How It Works", "Pricing", "Testimonials"],
-  Learn: ["Browse Courses", "AI Tutor", "For Students", "For Teachers"],
+  Learn: ["Browse Courses", "AI Tutor", "For Students", "For Instructors"],
   Company: ["About", "Blog", "Careers", "Contact"],
   Legal: ["Privacy Policy", "Terms of Service", "Cookie Policy"],
 };

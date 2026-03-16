@@ -9,9 +9,10 @@ import type { AuthResponse } from "@/services/authService";
 import Link from "next/link";
 import { LoadingDots } from "@/components/LoadingDots";
 
-import type { Role, User } from "@/types/user";
-
 import { useUserStore } from "@/store/useUserStore";
+import { ROLES } from "@/types/roles";
+
+import type { User, Role } from "@/types/user";
 
 type RegisterDetails = Pick<User, "name" | "email" | "password" | "role">;
 
@@ -29,7 +30,7 @@ export default function RegisterClient() {
     name: "",
     email: "",
     password: "",
-    role: "student",
+    role: ROLES.STUDENT as Role, // default
   });
 
   const { setUser } = useUserStore();
@@ -37,20 +38,16 @@ export default function RegisterClient() {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-
     setAuthState({ state: "loading" });
 
     try {
       const data = await auth.register(values);
       setAuthState({ state: "success", data });
-      console.log("Registered user (normalized):", data.user);
       setUser(data.user);
-      console.log("user store state after set:", useUserStore.getState().user);
       reset();
       router.push("/verify-email");
     } catch (err: any) {
       setAuthState({ state: "error", error: err });
-      console.error("Registration failed:", err.message || err);
       alert("Registration failed: " + (err.message || "Unknown error"));
     }
   }
@@ -89,30 +86,32 @@ export default function RegisterClient() {
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        {/* Role selector */}
         <div className="flex flex-col gap-2">
           <label className="text-xs font-semibold tracking-widest uppercase text-foreground-muted">
             I am a
           </label>
           <div className="grid grid-cols-2 rounded-lg border border-border bg-card p-1 gap-1">
-            {(["student", "teacher"] as Role[]).map((r) => (
+            {[ROLES.STUDENT, ROLES.INSTRUCTOR].map((r) => (
               <button
                 key={r}
                 type="button"
-                onClick={() => update("role", r)}
+                onClick={() => update("role", r as Role)}
                 className={`py-2 rounded-md text-sm font-semibold capitalize transition-all duration-200 ${
                   values.role === r
                     ? "bg-primary text-primary-foreground shadow-sm"
                     : "text-foreground-muted hover:text-foreground"
                 }`}
               >
-                {r === "student" ? "Student" : "Teacher"}
+                {r === ROLES.STUDENT ? "Student" : "Instructor"}
               </button>
             ))}
           </div>
         </div>
 
+        {/* Full Name */}
         <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-semibold tracking-widests uppercase text-foreground-muted">
+          <label className="text-xs font-semibold tracking-widest uppercase text-foreground-muted">
             Full Name
           </label>
           <input
@@ -126,6 +125,7 @@ export default function RegisterClient() {
           />
         </div>
 
+        {/* Email */}
         <div className="flex flex-col gap-1.5">
           <label className="text-xs font-semibold tracking-widest uppercase text-foreground-muted">
             Email
@@ -141,6 +141,7 @@ export default function RegisterClient() {
           />
         </div>
 
+        {/* Password */}
         <div className="flex flex-col gap-1.5">
           <label className="text-xs font-semibold tracking-widest uppercase text-foreground-muted">
             Password

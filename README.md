@@ -25,7 +25,7 @@ Cognify is a full-stack Learning Management System (LMS) that combines proven le
 
 ## Overview
 
-Cognify serves three distinct user roles — students, teachers, and administrators — each with a dedicated dashboard, navigation, and feature set. The platform is built with a focus on:
+Cognify serves three distinct user roles — students, instructors, and administrators — each with a dedicated dashboard, navigation, and feature set. The platform is built with a focus on:
 
 - **Personalization** — AI-generated learning paths tailored to each student's goals, level, and pace
 - **Engagement** — Streak tracking, progress visualization, and AI tutor access
@@ -60,7 +60,7 @@ Cognify serves three distinct user roles — students, teachers, and administrat
 - AI Tutor — ask questions and get instant explanations
 - Onboarding flow that captures goals, focus area, level, and pace
 
-### Teacher
+### Instructor
 
 - Classroom creation and management
 - Student progress monitoring
@@ -96,7 +96,7 @@ cognify/
 │   │   │   ├── ai-tutor/
 │   │   │   ├── profile/
 │   │   │   └── settings/
-│   │   ├── teacher/
+│   │   ├── instructor/
 │   │   │   ├── page.tsx
 │   │   │   ├── classrooms/
 │   │   │   ├── students/
@@ -124,7 +124,7 @@ cognify/
 │   └── sidebars/
 │       ├── SidebarLink.tsx
 │       ├── StudentSidebar.tsx
-│       ├── TeacherSidebar.tsx
+│       ├── InstructorSidebar.tsx
 │       └── AdminSidebar.tsx
 │
 ├── hooks/
@@ -211,7 +211,7 @@ Forgot Password → Reset Password → Login
 Role-based routing is handled in `middleware.ts`. On every request to `/dashboard/*`, the middleware reads the JWT cookie, decodes the user's role, and redirects accordingly:
 
 - `/dashboard` → `/dashboard/student` for students
-- `/dashboard` → `/dashboard/teacher` for teachers
+- `/dashboard` → `/dashboard/instructor` for instructors
 - `/dashboard` → `/dashboard/admin` for admins
 
 Unauthenticated requests to any `/dashboard/*` route are redirected to `/login`.
@@ -220,11 +220,11 @@ Unauthenticated requests to any `/dashboard/*` route are redirected to `/login`.
 
 ## User Roles
 
-| Role      | Access                                                    |
-| --------- | --------------------------------------------------------- |
-| `student` | Personal dashboard, courses, AI tutor, profile, settings  |
-| `teacher` | Classroom management, student tracking, course creation   |
-| `admin`   | Full platform access, user management, analytics, billing |
+| Role         | Access                                                    |
+| ------------ | --------------------------------------------------------- |
+| `student`    | Personal dashboard, courses, AI tutor, profile, settings  |
+| `instructor` | Classroom management, student tracking, course creation   |
+| `admin`      | Full platform access, user management, analytics, billing |
 
 Role is assigned at registration and stored in the JWT payload. The `SessionUser` type (password excluded) is used throughout the frontend. `PublicUser` (name, email, role only) is used when displaying user data to others.
 

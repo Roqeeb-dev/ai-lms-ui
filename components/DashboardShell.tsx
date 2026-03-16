@@ -8,7 +8,7 @@ import { auth } from "@/services/authService";
 
 import DashboardTopbar from "@/components/DashboardTopbar";
 import StudentSidebar from "./sidebars/StudentSidebar";
-import TeacherSidebar from "./sidebars/TeacherSidebar";
+import InstructorSidebar from "./sidebars/InstructorSidebar"; // updated import
 import AdminSidebar from "./sidebars/AdminSidebar";
 
 function getPageTitle(pathname: string): string {
@@ -17,10 +17,10 @@ function getPageTitle(pathname: string): string {
     "/dashboard/student/courses": "My Courses",
     "/dashboard/student/progress": "Progress",
     "/dashboard/student/ai-tutor": "AI Tutor",
-    "/dashboard/teacher": "Home",
-    "/dashboard/teacher/classrooms": "Classrooms",
-    "/dashboard/teacher/students": "Students",
-    "/dashboard/teacher/analytics": "Analytics",
+    "/dashboard/instructor": "Home",
+    "/dashboard/instructor/classrooms": "Classrooms",
+    "/dashboard/instructor/students": "Students",
+    "/dashboard/instructor/analytics": "Analytics",
     "/dashboard/admin": "Home",
     "/dashboard/admin/users": "Users",
     "/dashboard/admin/settings": "Settings",
@@ -64,7 +64,7 @@ export default function DashboardShell({
 
   function displayDynamicSidebar(role: Role) {
     if (role === "student") return <StudentSidebar open={sidebarOpen} />;
-    if (role === "teacher") return <TeacherSidebar open={sidebarOpen} />;
+    if (role === "instructor") return <InstructorSidebar open={sidebarOpen} />;
     return <AdminSidebar open={sidebarOpen} />;
   }
 
