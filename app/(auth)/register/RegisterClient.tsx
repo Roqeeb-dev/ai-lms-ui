@@ -85,9 +85,8 @@ export default function RegisterClient() {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        {/* Role selector */}
       <form onSubmit={handleSubmit} className="flex flex-col gap-5 lg:gap-4">
+        {/* Role selector */}
         <div className="flex flex-col gap-2">
           <label className="text-xs font-semibold tracking-widest uppercase text-foreground-muted">
             I am a
