@@ -3,16 +3,34 @@ export interface CourseThumbnail {
   public_id: string;
 }
 
+export interface Instructor {
+  _id: string;
+  name: string;
+  email: string;
+}
+
+export type Status = "draft" | "published";
+
+export interface ServerCourse {
+  thumbnail: CourseThumbnail;
+  _id: string;
+  title: string;
+  description: string;
+  instructor: Instructor;
+  status: Status;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+
 export interface Course {
   id: string;
   title: string;
   description: string;
-  instructor: string;
-  thumbnail?: CourseThumbnail;
-  status: "draft" | "published";
-  level?: "beginner" | "intermediate" | "advanced";
+  instructor: Instructor;
+  thumbnail: CourseThumbnail;
+  status: Status;
   category?: string;
-  moduleIds: string[];
   createdAt: Date;
   updatedAt: Date;
 }
