@@ -34,7 +34,7 @@ export default function CourseCard({
         {/* Top row */}
         <div className="flex items-center justify-between">
           <span className="text-xs font-semibold tracking-widest uppercase text-primary">
-            {course.level ?? course.status}
+            {course.category ?? course.status}
           </span>
           <div className="flex items-center gap-1.5">
             {course.status === "draft" && (
@@ -91,8 +91,7 @@ export default function CourseCard({
         {/* Footer */}
         <div className="flex items-center justify-between mt-auto pt-2 border-t border-border-subtle">
           <span className="text-xs text-foreground-muted">
-            {course.moduleIds.length} module
-            {course.moduleIds.length !== 1 ? "s" : ""}
+            {course.instructor.name}
           </span>
           <button
             className={`text-xs font-semibold px-2.5 py-1 rounded-lg transition-all duration-200 ${
