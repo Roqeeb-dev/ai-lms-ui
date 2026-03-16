@@ -20,9 +20,9 @@ const links = {
     Contact: "/",
   },
   Legal: {
-    "Privacy Policy": "/",
-    "Terms of Service": "/",
-    "Cookie Policy": "/",
+    "Privacy Policy": "/privacy-policy",
+    "Terms of Service": "/terms",
+    "Cookie Policy": "/terms",
   },
 };
 
