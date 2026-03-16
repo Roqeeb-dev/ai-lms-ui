@@ -135,21 +135,11 @@ export const auth = {
     >(`/api/auth/reset-password/${token}`, payload);
   },
 
-  async checkUser(payload: { email: string }) {
-    const res = await apiClient.post<ServerUser, { email: string }>(
-      "/api/auth/check",
-      payload,
-    );
+  async checkUser() {
+    const res = await apiClient.get<ServerUser>("/api/auth/check");
     return {
       ...res,
       user: normalizeUser(res),
-    };
-  },
-
-  async me() {
-    const res = await apiClient.get<{ user: ServerUser }>("/api/auth/me");
-    return {
-      user: normalizeUser(res.user),
     };
   },
 };

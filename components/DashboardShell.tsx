@@ -50,7 +50,7 @@ export default function DashboardShell({
 
     async function fetchUser() {
       try {
-        const res = await auth.me();
+        const res = await auth.checkUser();
         setUser(res.user);
       } catch {
         router.push("/login");
