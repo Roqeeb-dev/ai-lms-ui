@@ -13,19 +13,23 @@ import {
 import SidebarLink from "../SidebarLink";
 import Logo from "@/components/Logo";
 
-// Main navigation links for teachers
+// Main navigation links for instructors
 const links = [
-  { href: "/dashboard/teacher", label: "Home", icon: Home },
-  { href: "/dashboard/teacher/classrooms", label: "Classrooms", icon: School },
-  { href: "/dashboard/teacher/students", label: "Students", icon: Users },
-  { href: "/dashboard/teacher/courses", label: "Courses", icon: BookOpen },
+  { href: "/dashboard/instructor", label: "Home", icon: Home },
   {
-    href: "/dashboard/teacher/assignments",
+    href: "/dashboard/instructor/classrooms",
+    label: "Classrooms",
+    icon: School,
+  },
+  { href: "/dashboard/instructor/students", label: "Students", icon: Users },
+  { href: "/dashboard/instructor/courses", label: "Courses", icon: BookOpen },
+  {
+    href: "/dashboard/instructor/assignments",
     label: "Assignments",
     icon: FileText,
   },
   {
-    href: "/dashboard/teacher/discussions",
+    href: "/dashboard/instructor/discussions",
     label: "Discussions",
     icon: MessageCircle,
   },
@@ -33,11 +37,11 @@ const links = [
 
 // Bottom / account-related links
 const bottomLinks = [
-  { href: "/dashboard/teacher/profile", label: "Profile", icon: User },
-  { href: "/dashboard/teacher/settings", label: "Settings", icon: Settings },
+  { href: "/dashboard/instructor/profile", label: "Profile", icon: User },
+  { href: "/dashboard/instructor/settings", label: "Settings", icon: Settings },
 ];
 
-export default function TeacherSidebar({ open }: { open: boolean }) {
+export default function InstructorSidebar({ open }: { open: boolean }) {
   return (
     <aside
       className={`shrink-0 h-full bg-card border-r border-border flex flex-col transition-all duration-300 ease-in-out overflow-hidden ${open ? "w-60" : "w-16"}`}

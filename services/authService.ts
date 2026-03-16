@@ -35,8 +35,8 @@ export type VerifyEmailResponse = {
 };
 
 function mapRole(r: string): Role {
-  if (r === "instructor") return "teacher";
-  if (r === "student" || r === "teacher" || r === "admin") return r as Role;
+  if (r === "instructor") return "instructor";
+  if (r === "student" || r === "instructor" || r === "admin") return r as Role;
 
   return "student";
 }

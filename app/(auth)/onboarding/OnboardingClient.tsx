@@ -3,8 +3,9 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import OptionCard from "@/components/OptionCard";
+import { ROLES } from "@/types/roles";
 
-type Role = "student" | "teacher";
+type Role = (typeof ROLES)[keyof typeof ROLES];
 
 interface OnboardingState {
   role: Role;
@@ -15,14 +16,14 @@ interface OnboardingState {
 }
 
 const purposeOptions = {
-  student: [
+  [ROLES.STUDENT]: [
     { value: "career", label: "Career change", icon: "💼" },
     { value: "school", label: "School / university", icon: "🎓" },
     { value: "certification", label: "Get certified", icon: "📜" },
     { value: "personal", label: "Personal growth", icon: "🌱" },
     { value: "curiosity", label: "Just curious", icon: "✨" },
   ],
-  teacher: [
+  [ROLES.INSTRUCTOR]: [
     { value: "school", label: "School / K-12", icon: "🏫" },
     { value: "university", label: "University", icon: "🎓" },
     { value: "corporate", label: "Corporate training", icon: "💼" },
@@ -71,7 +72,7 @@ export default function OnboardingClient() {
   const [animating, setAnimating] = useState(false);
   const [completed, setCompleted] = useState(false);
   const [data, setData] = useState<OnboardingState>({
-    role: "student",
+    role: ROLES.STUDENT,
     purpose: "",
     focusArea: "",
     level: "",
@@ -104,13 +105,13 @@ export default function OnboardingClient() {
   const steps = [
     {
       question:
-        data.role === "student"
+        data.role === ROLES.STUDENT
           ? "What are you learning for?"
           : "What kind of teaching do you do?",
       content: (
         <>
           <div className="grid grid-cols-2 rounded-lg border border-border bg-card p-1 gap-1">
-            {(["student", "teacher"] as Role[]).map((r) => (
+            {[ROLES.STUDENT, ROLES.INSTRUCTOR].map((r) => (
               <button
                 key={r}
                 type="button"
@@ -118,9 +119,13 @@ export default function OnboardingClient() {
                   set("role", r);
                   set("purpose", "");
                 }}
-                className={`py-2 rounded-md text-sm font-semibold capitalize transition-all duration-200 ${data.role === r ? "bg-primary text-primary-foreground shadow-sm" : "text-foreground-muted hover:text-foreground"}`}
+                className={`py-2 rounded-md text-sm font-semibold capitalize transition-all duration-200 ${
+                  data.role === r
+                    ? "bg-primary text-primary-foreground shadow-sm"
+                    : "text-foreground-muted hover:text-foreground"
+                }`}
               >
-                {r === "student" ? "Student" : "Teacher"}
+                {r === ROLES.STUDENT ? "Student" : "Instructor"}
               </button>
             ))}
           </div>
@@ -199,10 +204,10 @@ export default function OnboardingClient() {
     const focusLabel = focusAreas.find((f) => f.value === data.focusArea);
 
     function goToDashboard() {
-      if (data.role === "student") {
+      if (data.role === ROLES.STUDENT) {
         router.push("/dashboard/student");
-      } else if (data.role === "teacher") {
-        router.push("/dashboard/teacher");
+      } else if (data.role === ROLES.INSTRUCTOR) {
+        router.push("/dashboard/instructor");
       } else {
         router.push("/dashboard/admin");
       }
@@ -229,7 +234,7 @@ export default function OnboardingClient() {
             {[
               {
                 label: "Role",
-                value: data.role === "student" ? "Student" : "Teacher",
+                value: data.role === ROLES.STUDENT ? "Student" : "Instructor",
               },
               {
                 label: "Focus area",
@@ -288,7 +293,13 @@ export default function OnboardingClient() {
 
         {/* Step */}
         <div
-          className={`flex flex-col gap-5 transition-all duration-250 ${animating ? (direction === "forward" ? "opacity-0 -translate-x-3" : "opacity-0 translate-x-3") : "opacity-100 translate-x-0"}`}
+          className={`flex flex-col gap-5 transition-all duration-250 ${
+            animating
+              ? direction === "forward"
+                ? "opacity-0 -translate-x-3"
+                : "opacity-0 translate-x-3"
+              : "opacity-100 translate-x-0"
+          }`}
         >
           <h1 className="text-xl font-bold text-foreground tracking-tight">
             {current.question}
