@@ -52,10 +52,10 @@ export default function DashboardTopbar({
             </div>
           )}
 
-        {/* Teacher — new classroom shortcut */}
-        {user.role === "teacher" && (
+        {/* Instructor — new classroom shortcut */}
+        {user.role === "instructor" && (
           <Link
-            href="/dashboard/teacher/classrooms/new"
+            href="/dashboard/instructor/classrooms/new"
             className="hidden sm:flex items-center gap-1.5 bg-secondary/10 border border-secondary/20 rounded-lg px-3 py-1.5 mr-1 text-xs font-semibold text-secondary hover:bg-secondary/20 transition-colors duration-200"
           >
             + New classroom

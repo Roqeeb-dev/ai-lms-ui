@@ -23,7 +23,7 @@ const content = {
         "Work through your path with an AI tutor that adapts in real time — answering questions, filling gaps, and keeping you moving.",
     },
   ],
-  teacher: [
+  instructor: [
     {
       number: "01",
       label: "Set up your classroom",
@@ -45,7 +45,7 @@ const content = {
   ],
 };
 
-type Tab = "student" | "teacher";
+type Tab = "student" | "instructor";
 
 export default function HowItWorks() {
   const [tab, setTab] = useState<Tab>("student");
@@ -103,17 +103,17 @@ export default function HowItWorks() {
 
           {/* Tab toggle */}
           <div className="inline-flex self-center rounded-xl border border-border bg-card p-1 gap-1">
-            {(["student", "teacher"] as Tab[]).map((t) => (
+            {(["student", "instructor"] as Tab[]).map((t) => (
               <button
                 key={t}
                 onClick={() => setTab(t)}
-                className={`px-6 py-2 rounded-lg text-sm font-semibold capitalize transition-all duration-200 ${
+                className={`px-6 py-2 rounded-xl text-sm font-semibold capitalize transition-all duration-200 ${
                   tab === t
                     ? "bg-primary text-primary-foreground shadow-sm"
                     : "text-foreground-muted hover:text-foreground"
                 }`}
               >
-                {t === "student" ? "I'm a Student" : "I'm a Teacher"}
+                {t === "student" ? "I'm a Student" : "I'm an Instructor"}
               </button>
             ))}
           </div>
