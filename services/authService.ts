@@ -35,8 +35,8 @@ export type VerifyEmailResponse = {
 };
 
 function mapRole(r: string): Role {
-  if (r === "instructor") return "teacher";
-  if (r === "student" || r === "teacher" || r === "admin") return r as Role;
+  if (r === "instructor") return "instructor";
+  if (r === "student" || r === "instructor" || r === "admin") return r as Role;
 
   return "student";
 }
@@ -135,11 +135,8 @@ export const auth = {
     >(`/api/auth/reset-password/${token}`, payload);
   },
 
-  async checkUser(payload: { email: string }) {
-    const res = await apiClient.post<ServerUser, { email: string }>(
-      "/api/auth/check",
-      payload,
-    );
+  async checkUser() {
+    const res = await apiClient.get<ServerUser>("/api/auth/check");
     return {
       ...res,
       user: normalizeUser(res),

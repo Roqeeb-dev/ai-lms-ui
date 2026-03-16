@@ -1,10 +1,29 @@
 import Logo from "./Logo";
 
 const links = {
-  Product: ["Features", "How It Works", "Pricing", "Testimonials"],
-  Learn: ["Browse Courses", "AI Tutor", "For Students", "For Teachers"],
-  Company: ["About", "Blog", "Careers", "Contact"],
-  Legal: ["Privacy Policy", "Terms of Service", "Cookie Policy"],
+  Product: {
+    Features: "/",
+    "How It Works": "/",
+    Pricing: "/",
+    Testimonials: "/",
+  },
+  Learn: {
+    "Browse Courses": "/",
+    "AI Tutor": "/",
+    "For Students": "/",
+    "For Teachers": "/",
+  },
+  Company: {
+    About: "/",
+    Blog: "/",
+    Careers: "/",
+    Contact: "/",
+  },
+  Legal: {
+    "Privacy Policy": "/privacy-policy",
+    "Terms of Service": "/terms",
+    "Cookie Policy": "/terms",
+  },
 };
 
 export default function Footer() {
@@ -42,13 +61,13 @@ export default function Footer() {
                 {group}
               </p>
               <ul className="flex flex-col gap-2.5">
-                {items.map((item) => (
-                  <li key={item}>
+                {Object.entries(items).map(([label, href]) => (
+                  <li key={label}>
                     <a
-                      href="#"
+                      href={href}
                       className="text-sm text-foreground-muted hover:text-foreground transition-colors duration-150"
                     >
-                      {item}
+                      {label}
                     </a>
                   </li>
                 ))}

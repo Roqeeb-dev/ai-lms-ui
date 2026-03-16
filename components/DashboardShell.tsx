@@ -1,28 +1,26 @@
 "use client";
 
-import { useState } from "react";
-import { usePathname } from "next/navigation";
+import { useState, useEffect } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import type { Role } from "@/types/user";
 import { useUserStore } from "@/store/useUserStore";
+import { auth } from "@/services/authService";
 
 import DashboardTopbar from "@/components/DashboardTopbar";
 import StudentSidebar from "./sidebars/StudentSidebar";
-import TeacherSidebar from "./sidebars/TeacherSidebar";
+import InstructorSidebar from "./sidebars/InstructorSidebar"; // updated import
 import AdminSidebar from "./sidebars/AdminSidebar";
 
 function getPageTitle(pathname: string): string {
   const map: Record<string, string> = {
-    // Student
     "/dashboard/student": "Home",
     "/dashboard/student/courses": "My Courses",
     "/dashboard/student/progress": "Progress",
     "/dashboard/student/ai-tutor": "AI Tutor",
-    // Teacher
-    "/dashboard/teacher": "Home",
-    "/dashboard/teacher/classrooms": "Classrooms",
-    "/dashboard/teacher/students": "Students",
-    "/dashboard/teacher/analytics": "Analytics",
-    // Admin
+    "/dashboard/instructor": "Home",
+    "/dashboard/instructor/classrooms": "Classrooms",
+    "/dashboard/instructor/students": "Students",
+    "/dashboard/instructor/analytics": "Analytics",
     "/dashboard/admin": "Home",
     "/dashboard/admin/users": "Users",
     "/dashboard/admin/settings": "Settings",
@@ -36,32 +34,54 @@ export default function DashboardShell({
   children: React.ReactNode;
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [hydrating, setHydrating] = useState(true);
+
   const user = useUserStore((state) => state.user);
+  const setUser = useUserStore((state) => state.setUser);
   const pathname = usePathname();
+  const router = useRouter();
   const pageTitle = getPageTitle(pathname);
 
-  function displayDynamicSidebar(role: Role) {
-    if (role === "student") {
-      return <StudentSidebar open={sidebarOpen} />;
-    } else if (role === "teacher") {
-      return <TeacherSidebar open={sidebarOpen} />;
-    } else {
-      return <AdminSidebar open={sidebarOpen} />;
+  useEffect(() => {
+    if (user) {
+      setHydrating(false);
+      return;
     }
+
+    async function fetchUser() {
+      try {
+        const res = await auth.checkUser();
+        setUser(res.user);
+      } catch {
+        router.push("/login");
+      } finally {
+        setHydrating(false);
+      }
+    }
+
+    fetchUser();
+  }, []);
+
+  function displayDynamicSidebar(role: Role) {
+    if (role === "student") return <StudentSidebar open={sidebarOpen} />;
+    if (role === "instructor") return <InstructorSidebar open={sidebarOpen} />;
+    return <AdminSidebar open={sidebarOpen} />;
   }
 
-  if (!user)
+  if (hydrating) {
     return (
-      <div>
-        <h1>User does not exist</h1>
+      <div className="flex h-screen items-center justify-center bg-background">
+        <div className="w-6 h-6 rounded-full border-2 border-primary border-t-transparent animate-spin" />
       </div>
     );
+  }
+
+  if (!user) return null;
 
   return (
     <div className="flex h-screen bg-background overflow-hidden">
       {displayDynamicSidebar(user.role)}
 
-      {/* Main */}
       <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
         <DashboardTopbar
           user={user}

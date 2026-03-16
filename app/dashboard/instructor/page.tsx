@@ -1,15 +1,15 @@
-import TeacherClient from "./TeacherClient";
+import InstructorClient from "./InstructorClient";
 
 export const metadata = {
-  title: "Teacher Dashboard | Cognify",
+  title: "Instructor Dashboard | Cognify",
   description:
     "Manage your classrooms, track student progress, and deliver AI-enhanced learning experiences.",
 };
 
-export default function TeacherDashboard() {
+export default function InstructorDashboard() {
   return (
     <main>
-      <TeacherClient />
+      <InstructorClient />
     </main>
   );
 }
