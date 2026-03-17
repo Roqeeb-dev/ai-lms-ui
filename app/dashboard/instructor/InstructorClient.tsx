@@ -8,7 +8,6 @@ import StatCard from "@/components/StatCard";
 import DashboardHeader from "@/components/DashboardHeader";
 import CourseCard from "@/components/CourseCard";
 import CourseModal, { CourseFormData } from "@/components/CreateCourseModal";
-import { mockCourses } from "@/lib/mockCourses";
 import { useInstructorCourses } from "@/hooks/useInstructorCourses";
 
 export type InstructorCourse = Course & { totalStudents?: number };
@@ -18,50 +17,49 @@ type ModalState =
   | { open: true; mode: "create" }
   | { open: true; mode: "update"; course: Course };
 
-const totalCourses = mockCourses.length;
-const totalStudents = mockCourses.reduce(
-  (acc, c) => acc + (c.totalStudents ?? 0),
-  0,
-);
-const publishedCount = mockCourses.filter(
-  (c) => c.status === "published",
-).length;
-const draftCount = mockCourses.filter((c) => c.status === "draft").length;
-
-const stats = [
-  {
-    label: "Total Courses",
-    value: totalCourses,
-    icon: BookOpen,
-    color: "text-primary",
-    bg: "bg-primary/10",
-  },
-  {
-    label: "Total Students",
-    value: totalStudents,
-    icon: Users,
-    color: "text-emerald-600",
-    bg: "bg-emerald-500/10",
-  },
-  {
-    label: "Published",
-    value: publishedCount,
-    icon: LayoutGrid,
-    color: "text-sky-600",
-    bg: "bg-sky-500/10",
-  },
-  {
-    label: "Drafts",
-    value: draftCount,
-    icon: LayoutGrid,
-    color: "text-amber-600",
-    bg: "bg-amber-500/10",
-  },
-];
-
 export default function InstructorClient() {
   const [modalState, setModalState] = useState<ModalState>({ open: false });
-  const { createCourse, updateCourse } = useInstructorCourses();
+  const { courses, fetching, createCourse, updateCourse } =
+    useInstructorCourses();
+
+  const totalCourses = courses.length;
+  const totalStudents = courses.reduce(
+    (acc, c) => acc + ((c as InstructorCourse).totalStudents ?? 0),
+    0,
+  );
+  const publishedCount = courses.filter((c) => c.status === "published").length;
+  const draftCount = courses.filter((c) => c.status === "draft").length;
+
+  const stats = [
+    {
+      label: "Total Courses",
+      value: totalCourses,
+      icon: BookOpen,
+      color: "text-primary",
+      bg: "bg-primary/10",
+    },
+    {
+      label: "Total Students",
+      value: totalStudents,
+      icon: Users,
+      color: "text-emerald-600",
+      bg: "bg-emerald-500/10",
+    },
+    {
+      label: "Published",
+      value: publishedCount,
+      icon: LayoutGrid,
+      color: "text-sky-600",
+      bg: "bg-sky-500/10",
+    },
+    {
+      label: "Drafts",
+      value: draftCount,
+      icon: LayoutGrid,
+      color: "text-amber-600",
+      bg: "bg-amber-500/10",
+    },
+  ];
 
   async function handleCreate(data: CourseFormData) {
     await createCourse(data);
@@ -102,18 +100,35 @@ export default function InstructorClient() {
             View all <ArrowRight size={12} />
           </Link>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {mockCourses.map((course) => (
-            <CourseCard
-              key={course.id}
-              course={course}
-              variant="instructor"
-              onEdit={() =>
-                setModalState({ open: true, mode: "update", course })
-              }
-            />
-          ))}
-        </div>
+
+        {fetching ? (
+          <div className="flex items-center justify-center py-16">
+            <p className="text-sm text-foreground-muted">Loading courses...</p>
+          </div>
+        ) : courses.length === 0 ? (
+          <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-border bg-card py-16 px-6 text-center">
+            <span className="text-4xl opacity-30">📭</span>
+            <p className="text-sm font-semibold text-foreground">
+              No courses yet
+            </p>
+            <p className="text-xs text-foreground-muted">
+              Get started by creating your first course.
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {courses.map((course) => (
+              <CourseCard
+                key={course.id}
+                course={course}
+                variant="instructor"
+                onEdit={() =>
+                  setModalState({ open: true, mode: "update", course })
+                }
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       <CourseModal

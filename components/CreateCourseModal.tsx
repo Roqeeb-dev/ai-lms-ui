@@ -23,6 +23,7 @@ export type ModalState =
 const EMPTY_FORM: CourseFormData = {
   title: "",
   description: "",
+  thumbnail: null,
   status: "draft",
 };
 
@@ -36,8 +37,6 @@ export default function CourseModal({
   const { values, update, setAll } = useForm<CourseFormData>(EMPTY_FORM);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  // aesthetic only — not wired to form
   const [preview, setPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -51,6 +50,7 @@ export default function CourseModal({
       setAll({
         title: defaultValues.title ?? "",
         description: defaultValues.description ?? "",
+        thumbnail: null,
         status: defaultValues.status ?? "draft",
       });
       setPreview(defaultValues.thumbnail?.url ?? null);
@@ -63,10 +63,10 @@ export default function CourseModal({
     }
   }, [open]);
 
-  // aesthetic only — just shows a preview, does not touch form state
-  function handleFilePreview(e: React.ChangeEvent<HTMLInputElement>) {
+  function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
+    update("thumbnail", file);
     setPreview(URL.createObjectURL(file));
   }
 
@@ -122,27 +122,38 @@ export default function CourseModal({
           onSubmit={handleSubmit}
           className="flex flex-col gap-5 px-6 py-5 overflow-y-auto"
         >
-          {/* Thumbnail — aesthetic only, not submitted */}
+          {/* Thumbnail */}
           <div className="flex flex-col gap-1.5">
-            <div className="flex items-center justify-between">
-              <label className="text-xs font-semibold tracking-widest uppercase text-foreground-muted">
-                Thumbnail
-              </label>
-              <span className="text-[10px] text-foreground-muted bg-muted px-2 py-0.5 rounded-full">
-                Coming soon
-              </span>
-            </div>
-            <div className="relative w-full h-36 rounded-xl border-2 border-dashed border-border bg-muted/40 overflow-hidden flex items-center justify-center opacity-50 cursor-not-allowed">
+            <label className="text-xs font-semibold tracking-widest uppercase text-foreground-muted">
+              Thumbnail
+            </label>
+            <div
+              onClick={() => fileInputRef.current?.click()}
+              className={`relative w-full h-36 rounded-xl border-2 border-dashed transition-all duration-200 cursor-pointer overflow-hidden flex items-center justify-center group ${
+                preview
+                  ? "border-primary/30"
+                  : "border-border hover:border-primary/50 bg-muted/40"
+              }`}
+            >
               {preview ? (
-                <img
-                  src={preview}
-                  alt="Thumbnail preview"
-                  className="w-full h-full object-cover"
-                />
+                <>
+                  <img
+                    src={preview}
+                    alt="Thumbnail preview"
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
+                    <p className="text-xs font-semibold text-white">
+                      Click to change
+                    </p>
+                  </div>
+                </>
               ) : (
-                <div className="flex flex-col items-center gap-2 text-foreground-muted">
+                <div className="flex flex-col items-center gap-2 text-foreground-muted group-hover:text-foreground transition-colors duration-200">
                   <UploadCloud size={20} />
-                  <p className="text-xs font-medium">Upload thumbnail</p>
+                  <p className="text-xs font-medium">
+                    Click to upload thumbnail
+                  </p>
                   <p className="text-xs opacity-60">PNG, JPG up to 5MB</p>
                 </div>
               )}
@@ -151,9 +162,8 @@ export default function CourseModal({
               ref={fileInputRef}
               type="file"
               accept="image/png, image/jpeg, image/webp"
-              onChange={handleFilePreview}
+              onChange={handleFile}
               className="hidden"
-              disabled
             />
           </div>
 
