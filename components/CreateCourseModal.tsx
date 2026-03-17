@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { X, UploadCloud, Loader2 } from "lucide-react";
+import { X, Loader2, UploadCloud } from "lucide-react";
 import type { Course } from "@/types/course";
+import { CreateCoursePayload } from "@/services/courseService";
+import { useForm } from "@/hooks/useForm";
 
 interface CourseModalProps {
   open: boolean;
@@ -12,21 +14,16 @@ interface CourseModalProps {
   mode?: "create" | "update";
 }
 
-export interface CourseFormData {
-  title: string;
-  description: string;
-  thumbnail: File | null;
-  category: string;
-  status: "draft" | "published";
-}
+export type CourseFormData = CreateCoursePayload;
 
-const CATEGORIES = ["Technology", "Business", "Design", "Science", "Languages"];
+export type ModalState =
+  | { mode: "create"; state: "creating" }
+  | { mode: "update"; state: "updating" };
 
 const EMPTY_FORM: CourseFormData = {
   title: "",
   description: "",
   thumbnail: null,
-  category: "",
   status: "draft",
 };
 
@@ -37,39 +34,34 @@ export default function CourseModal({
   defaultValues,
   mode = "create",
 }: CourseModalProps) {
-  const [form, setForm] = useState<CourseFormData>(EMPTY_FORM);
-  const [preview, setPreview] = useState<string | null>(null);
+  const { values, update, setAll } = useForm<CourseFormData>(EMPTY_FORM);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const isUpdate = mode === "update";
 
-  // Populate form when updating
+  const state: ModalState =
+    mode === "update"
+      ? { mode: "update", state: "updating" }
+      : { mode: "create", state: "creating" };
+
   useEffect(() => {
-    if (open && isUpdate && defaultValues) {
-      setForm({
+    if (open && state.mode === "update" && defaultValues) {
+      setAll({
         title: defaultValues.title ?? "",
         description: defaultValues.description ?? "",
         thumbnail: null,
-        category: defaultValues.category ?? "",
         status: defaultValues.status ?? "draft",
       });
       setPreview(defaultValues.thumbnail?.url ?? null);
     }
 
     if (!open) {
-      setForm(EMPTY_FORM);
+      setAll(EMPTY_FORM);
       setPreview(null);
       setError(null);
     }
   }, [open]);
-
-  function update<K extends keyof CourseFormData>(
-    key: K,
-    value: CourseFormData[K],
-  ) {
-    setForm((prev) => ({ ...prev, [key]: value }));
-  }
 
   function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -82,8 +74,9 @@ export default function CourseModal({
     e.preventDefault();
     setError(null);
     setLoading(true);
+
     try {
-      await onSubmit(form);
+      await onSubmit(values);
       onClose();
     } catch (err: any) {
       setError(err.message || "Something went wrong.");
@@ -108,10 +101,10 @@ export default function CourseModal({
         <div className="flex items-center justify-between px-6 py-4 border-b border-border shrink-0">
           <div className="flex flex-col gap-0.5">
             <h2 className="text-sm font-bold text-foreground tracking-tight">
-              {isUpdate ? "Update Course" : "Create New Course"}
+              {state.mode === "update" ? "Update Course" : "Create New Course"}
             </h2>
             <p className="text-xs text-foreground-muted">
-              {isUpdate
+              {state.mode === "update"
                 ? "Edit the details below and save your changes."
                 : "Fill in the details below to get your course started."}
             </p>
@@ -129,14 +122,14 @@ export default function CourseModal({
           onSubmit={handleSubmit}
           className="flex flex-col gap-5 px-6 py-5 overflow-y-auto"
         >
-          {/* Thumbnail upload */}
+          {/* Thumbnail */}
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-semibold tracking-widest uppercase text-foreground-muted">
               Thumbnail
             </label>
             <div
               onClick={() => fileInputRef.current?.click()}
-              className={`relative w-full h-40 rounded-xl border-2 border-dashed transition-all duration-200 cursor-pointer overflow-hidden flex items-center justify-center group ${
+              className={`relative w-full h-36 rounded-xl border-2 border-dashed transition-all duration-200 cursor-pointer overflow-hidden flex items-center justify-center group ${
                 preview
                   ? "border-primary/30"
                   : "border-border hover:border-primary/50 bg-muted/40"
@@ -157,7 +150,7 @@ export default function CourseModal({
                 </>
               ) : (
                 <div className="flex flex-col items-center gap-2 text-foreground-muted group-hover:text-foreground transition-colors duration-200">
-                  <UploadCloud size={22} />
+                  <UploadCloud size={20} />
                   <p className="text-xs font-medium">
                     Click to upload thumbnail
                   </p>
@@ -176,13 +169,13 @@ export default function CourseModal({
 
           {/* Title */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-semibold tracking-widests uppercase text-foreground-muted">
+            <label className="text-xs font-semibold tracking-widest uppercase text-foreground-muted">
               Title
             </label>
             <input
               type="text"
               placeholder="e.g. Introduction to Python"
-              value={form.title}
+              value={values.title}
               onChange={(e) => update("title", e.target.value)}
               className="w-full rounded-lg border border-border bg-input px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-input-focus transition-all duration-200"
               required
@@ -196,7 +189,7 @@ export default function CourseModal({
             </label>
             <textarea
               placeholder="Briefly describe what students will learn..."
-              value={form.description}
+              value={values.description}
               onChange={(e) => update("description", e.target.value)}
               rows={3}
               className="w-full rounded-lg border border-border bg-input px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-input-focus transition-all duration-200 resize-none"
@@ -204,49 +197,26 @@ export default function CourseModal({
             />
           </div>
 
-          {/* Category + Status row */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-semibold tracking-widest uppercase text-foreground-muted">
-                Category
-              </label>
-              <select
-                value={form.category}
-                onChange={(e) => update("category", e.target.value)}
-                className="w-full rounded-lg border border-border bg-input px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-input-focus transition-all duration-200"
-                required
-              >
-                <option value="" disabled>
-                  Select one
-                </option>
-                {CATEGORIES.map((cat) => (
-                  <option key={cat} value={cat}>
-                    {cat}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-semibold tracking-widest uppercase text-foreground-muted">
-                Status
-              </label>
-              <div className="grid grid-cols-2 rounded-lg border border-border bg-card p-1 gap-1">
-                {(["draft", "published"] as const).map((s) => (
-                  <button
-                    key={s}
-                    type="button"
-                    onClick={() => update("status", s)}
-                    className={`py-1.5 rounded-md text-xs font-semibold capitalize transition-all duration-200 ${
-                      form.status === s
-                        ? "bg-primary text-primary-foreground shadow-sm"
-                        : "text-foreground-muted hover:text-foreground"
-                    }`}
-                  >
-                    {s}
-                  </button>
-                ))}
-              </div>
+          {/* Status */}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-semibold tracking-widest uppercase text-foreground-muted">
+              Status
+            </label>
+            <div className="grid grid-cols-2 rounded-lg border border-border bg-card p-1 gap-1">
+              {(["draft", "published"] as const).map((s) => (
+                <button
+                  key={s}
+                  type="button"
+                  onClick={() => update("status", s)}
+                  className={`py-1.5 rounded-md text-xs font-semibold capitalize transition-all duration-200 ${
+                    values.status === s
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "text-foreground-muted hover:text-foreground"
+                  }`}
+                >
+                  {s}
+                </button>
+              ))}
             </div>
           </div>
 
@@ -269,10 +239,10 @@ export default function CourseModal({
             >
               {loading && <Loader2 size={14} className="animate-spin" />}
               {loading
-                ? isUpdate
+                ? state.state === "updating"
                   ? "Saving..."
                   : "Creating..."
-                : isUpdate
+                : state.state === "updating"
                   ? "Save Changes"
                   : "Create Course"}
             </button>

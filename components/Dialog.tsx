@@ -66,17 +66,21 @@ export default function Dialog({
         </button>
 
         {/* Title */}
-        <h2 className={`text-lg font-bold ${textColor}`}>{title}</h2>
+        <h2 className={`text-lg font-bold ${textColor} text-center pr-6`}>
+          {title}
+        </h2>
 
         {/* Message */}
-        <p className={`text-sm ${textColor} leading-relaxed`}>{message}</p>
+        <p className={`text-sm ${textColor} leading-relaxed text-center`}>
+          {message}
+        </p>
 
         {/* Action buttons */}
         {type === "confirm" ? (
-          <div className="mt-4 flex justify-end gap-3">
+          <div className="mt-2 flex gap-3">
             <button
               onClick={onClose}
-              className="rounded-lg px-5 py-2 text-sm font-normal bg-gray-300 text-gray-800 hover:bg-gray-400 transition-all duration-200"
+              className="flex-1 rounded-lg px-5 py-2.5 text-sm font-semibold bg-gray-200 text-gray-800 hover:bg-gray-300 transition-all duration-200"
             >
               {cancelText}
             </button>
@@ -85,7 +89,7 @@ export default function Dialog({
                 onConfirm?.();
                 onClose();
               }}
-              className="rounded-lg px-5 py-2 text-sm font-normal bg-primary text-primary-foreground hover:bg-primary-hover transition-all duration-200"
+              className="flex-1 rounded-lg px-5 py-2.5 text-sm font-semibold bg-primary text-primary-foreground hover:bg-primary-hover transition-all duration-200"
             >
               {confirmText}
             </button>
@@ -93,7 +97,7 @@ export default function Dialog({
         ) : (
           <button
             onClick={onClose}
-            className={`mt-4 self-end rounded-lg px-5 py-2 text-sm font-normal ${
+            className={`mt-2 w-full rounded-lg px-5 py-2.5 text-sm font-semibold ${
               type === "success"
                 ? "bg-green-600 text-white hover:bg-green-700"
                 : type === "error"

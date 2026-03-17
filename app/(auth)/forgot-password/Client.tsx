@@ -27,12 +27,12 @@ export default function ForgotPasswordClient() {
   }
 
   return (
-    <div className="w-full max-w-md flex flex-col gap-6">
+    <div className="w-full max-w-md px-5 pt-10 pb-8 lg:p-6 flex flex-col gap-8 lg:gap-6">
       {submitted ? (
-        <div className="flex flex-col gap-4 text-center">
-          <div className="w-12 h-12 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto">
+        <div className="flex flex-col gap-6 lg:gap-4 text-center">
+          <div className="w-16 h-16 lg:w-12 lg:h-12 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto">
             <svg
-              className="w-5 h-5 text-primary"
+              className="w-6 h-6 lg:w-5 lg:h-5 text-primary"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -45,8 +45,8 @@ export default function ForgotPasswordClient() {
               />
             </svg>
           </div>
-          <div className="flex flex-col gap-1.5">
-            <h1 className="text-xl font-bold text-foreground tracking-tight">
+          <div className="flex flex-col gap-2 lg:gap-1.5">
+            <h1 className="text-2xl lg:text-xl font-bold text-foreground tracking-tight">
               Check your inbox
             </h1>
             <p className="text-sm text-foreground-muted leading-relaxed">
@@ -69,8 +69,8 @@ export default function ForgotPasswordClient() {
       ) : (
         <>
           {/* Header */}
-          <div className="flex flex-col gap-1.5">
-            <h1 className="text-xl font-bold text-foreground tracking-tight">
+          <div className="flex flex-col gap-2 lg:gap-1.5">
+            <h1 className="text-2xl lg:text-xl font-bold text-foreground tracking-tight">
               Forgot your password?
             </h1>
             <p className="text-sm text-foreground-muted leading-relaxed">
@@ -79,7 +79,10 @@ export default function ForgotPasswordClient() {
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+          <form
+            onSubmit={handleSubmit}
+            className="flex flex-col gap-5 lg:gap-4"
+          >
             <div className="flex flex-col gap-1.5">
               <label className="text-xs font-semibold tracking-widest uppercase text-foreground-muted">
                 Email
@@ -90,7 +93,7 @@ export default function ForgotPasswordClient() {
                 name="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full rounded-lg border border-border bg-input px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-input-focus transition-all duration-200"
+                className="w-full rounded-lg border border-border bg-input px-3 py-3 lg:py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-input-focus transition-all duration-200"
                 required
               />
             </div>
@@ -100,7 +103,7 @@ export default function ForgotPasswordClient() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-lg bg-primary text-primary-foreground px-3 py-2 text-sm font-semibold
+              className="w-full rounded-lg bg-primary text-primary-foreground px-3 py-3 lg:py-2 text-sm font-semibold
                          hover:bg-primary-hover active:scale-[0.98] transition-all duration-200 shadow-sm
                          disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:bg-primary"
             >

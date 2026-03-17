@@ -23,7 +23,8 @@ export interface GetInstructorCoursesResponse {
 export interface CreateCoursePayload {
   title: string;
   description: string;
-  thumbnail: string;
+  thumbnail?: File | null;
+  status: "draft" | "published";
 }
 
 export interface CreateCourseResponse {
@@ -68,6 +69,17 @@ function normalizeAllCourses(data: ServerCourse[]): Course[] {
   return data.map((d) => normalizeCourse(d));
 }
 
+function toFormData(payload: CreateCoursePayload): FormData {
+  const fd = new FormData();
+  fd.append("title", payload.title);
+  fd.append("description", payload.description);
+  fd.append("status", payload.status);
+  if (payload.thumbnail) {
+    fd.append("thumbnail", payload.thumbnail);
+  }
+  return fd;
+}
+
 export const course = {
   async getAllCourses() {
     const res = await apiClient.get<GetAllCoursesResponse>("/api/courses");
@@ -107,9 +119,9 @@ export const course = {
   },
 
   async createCourse(payload: CreateCoursePayload) {
-    const res = await apiClient.post<CreateCourseResponse, CreateCoursePayload>(
+    const res = await apiClient.postForm<CreateCourseResponse>(
       "/api/courses",
-      payload,
+      toFormData(payload),
     );
     return {
       course: normalizeCourse(res.course),
@@ -121,10 +133,10 @@ export const course = {
     if (Object.keys(payload).length === 0)
       throw new Error("No fields to update");
 
-    const res = await apiClient.patch<
-      UpdateCourseResponse,
-      Partial<CreateCoursePayload>
-    >(`/api/courses/${courseId}`, payload);
+    const res = await apiClient.patchForm<UpdateCourseResponse>(
+      `/api/courses/${courseId}`,
+      toFormData(payload as CreateCoursePayload),
+    );
 
     return {
       course: normalizeCourse(res.course),

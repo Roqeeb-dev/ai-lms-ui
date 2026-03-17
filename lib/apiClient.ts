@@ -1,4 +1,4 @@
-const baseUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5173";
+const baseUrl = process.env.NEXT_PUBLIC_API_URL ?? "";
 
 export const apiClient = {
   async request<T>(url: string, options: RequestInit = {}): Promise<T> {
@@ -9,9 +9,27 @@ export const apiClient = {
         ...options.headers,
       },
       body: options.body,
-      credentials: "include", // always included
+      credentials: "include",
       redirect: options.redirect,
       signal: options.signal,
+    });
+
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}));
+      throw new Error(errorData.message || "Something went wrong");
+    }
+    return res.json();
+  },
+
+  async requestForm<T>(
+    url: string,
+    method: string,
+    body: FormData,
+  ): Promise<T> {
+    const res = await fetch(baseUrl + url, {
+      method,
+      body,
+      credentials: "include",
     });
 
     if (!res.ok) {
@@ -32,6 +50,11 @@ export const apiClient = {
     });
   },
 
+  // POST with FormData (file upload)
+  postForm<T>(url: string, body: FormData) {
+    return this.requestForm<T>(url, "POST", body);
+  },
+
   put<T, B>(url: string, body: B) {
     return this.request<T>(url, { method: "PUT", body: JSON.stringify(body) });
   },
@@ -41,6 +64,11 @@ export const apiClient = {
       method: "PATCH",
       body: JSON.stringify(body),
     });
+  },
+
+  // PATCH with FormData (file upload)
+  patchForm<T>(url: string, body: FormData) {
+    return this.requestForm<T>(url, "PATCH", body);
   },
 
   delete<T>(url: string) {

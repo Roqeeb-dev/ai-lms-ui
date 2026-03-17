@@ -1,4 +1,4 @@
-import { Sparkles, Users } from "lucide-react";
+import { Sparkles, Users, Pencil } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import type { Course } from "@/types/course";
@@ -7,12 +7,14 @@ interface StudentCardProps {
   variant?: "student";
   course: Course & { progress?: number; reason?: string };
   enrolled?: boolean;
+  onEdit?: never;
 }
 
 interface InstructorCardProps {
   variant: "instructor";
   course: Course & { totalStudents?: number };
   enrolled?: never;
+  onEdit?: () => void;
 }
 
 type CourseCardProps = StudentCardProps | InstructorCardProps;
@@ -33,6 +35,7 @@ export default function CourseCard({
     isInstructor && "totalStudents" in course
       ? course.totalStudents
       : undefined;
+  const onEdit = isInstructor && "onEdit" in props ? props.onEdit : undefined;
 
   return (
     <div className="flex flex-col rounded-2xl border border-border bg-card shadow-sm hover:border-primary/30 hover:shadow-md transition-all duration-200 group cursor-pointer overflow-hidden">
@@ -133,12 +136,26 @@ export default function CourseCard({
                 <Users size={12} />
                 <span>{totalStudents ?? 0} students</span>
               </div>
-              <Link
-                href={`/dashboard/instructor/courses/${course.id}`}
-                className="text-xs font-semibold px-2.5 py-1 rounded-lg bg-muted text-foreground hover:bg-primary hover:text-primary-foreground transition-all duration-200"
-              >
-                Manage
-              </Link>
+              <div className="flex items-center gap-2">
+                {onEdit && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onEdit();
+                    }}
+                    className="text-xs font-semibold px-2.5 py-1 rounded-lg bg-muted text-foreground-muted hover:bg-primary/10 hover:text-primary transition-all duration-200 flex items-center gap-1"
+                  >
+                    <Pencil size={11} />
+                    Edit
+                  </button>
+                )}
+                <Link
+                  href={`/dashboard/instructor/courses/${course.id}`}
+                  className="text-xs font-semibold px-2.5 py-1 rounded-lg bg-muted text-foreground hover:bg-primary hover:text-primary-foreground transition-all duration-200"
+                >
+                  Manage
+                </Link>
+              </div>
             </>
           ) : (
             <>
