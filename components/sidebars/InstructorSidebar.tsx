@@ -13,7 +13,6 @@ import {
 import SidebarLink from "../SidebarLink";
 import Logo from "@/components/Logo";
 
-// Main navigation links for instructors
 const links = [
   { href: "/dashboard/instructor", label: "Home", icon: Home },
   {

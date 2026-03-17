@@ -2,32 +2,34 @@
 
 import { useUserStore } from "@/store/useUserStore";
 import { BookOpen, Sparkles, BarChart2, Clock } from "lucide-react";
+import StatCard from "@/components/StatCard";
+import DashboardHeader from "@/components/DashboardHeader";
 
 const statCards = [
   {
     label: "Courses Enrolled",
-    value: "4",
+    value: 4,
     icon: BookOpen,
     color: "text-primary",
     bg: "bg-primary/10",
   },
   {
     label: "AI Tutor Sessions",
-    value: "12",
+    value: 12,
     icon: Sparkles,
     color: "text-amber-600",
     bg: "bg-accent/10",
   },
   {
     label: "Avg. Progress",
-    value: "68%",
+    value: 68,
     icon: BarChart2,
     color: "text-secondary",
     bg: "bg-secondary/10",
   },
   {
     label: "Hours Learned",
-    value: "24h",
+    value: 24,
     icon: Clock,
     color: "text-primary",
     bg: "bg-primary/10",
@@ -50,52 +52,20 @@ export default function StudentClient() {
       </div>
     );
 
-  const firstName = user.name.split(" ")[0];
+  const firstName = user.name.split(" ")[0] ?? "User";
 
   return (
     <div className="flex flex-col gap-6 max-w-6xl mx-auto">
       {/* Header */}
-      <div className="flex flex-col gap-1">
-        <h1 className="text-xl font-bold text-foreground tracking-tight">
-          Welcome back,{" "}
-          <span
-            className="relative inline-block text-primary"
-            style={{
-              textDecorationLine: "underline",
-              textDecorationStyle: "wavy",
-              textDecorationColor: "#F5A623",
-              textUnderlineOffset: "6px",
-            }}
-          >
-            {firstName}
-          </span>{" "}
-        </h1>
-        <p className="text-sm text-foreground-muted">
-          Here's what's happening with your learning today.
-        </p>
-      </div>
+      <DashboardHeader
+        title={`Welcome back,${firstName}`}
+        text="Here's what's happening with your learning today."
+      />
 
       {/* Stat cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {statCards.map((stat) => (
-          <div
-            key={stat.label}
-            className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-4 shadow-sm"
-          >
-            <div
-              className={`w-9 h-9 rounded-lg ${stat.bg} flex items-center justify-center`}
-            >
-              <stat.icon size={17} className={stat.color} />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <span className="text-xl font-extrabold text-foreground">
-                {stat.value}
-              </span>
-              <span className="text-xs text-foreground-muted">
-                {stat.label}
-              </span>
-            </div>
-          </div>
+          <StatCard stat={stat} />
         ))}
       </div>
 
