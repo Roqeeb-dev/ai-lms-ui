@@ -43,9 +43,12 @@ export default function LoginClient() {
       reset();
       router.replace(`/dashboard/${data.user.role}`);
     } catch (err: any) {
-      setAuthState({ state: "error", error: err });
+      const message =
+        err?.response?.data?.message || err?.message || "Something went wrong";
 
-      console.error("Login failed:", err);
+      setAuthState({ state: "error", error: message });
+
+      console.error("Login failed:", message);
     }
   }
 
