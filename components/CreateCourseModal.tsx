@@ -12,12 +12,15 @@ interface CourseModalProps {
   onSubmit: (data: CourseFormData) => Promise<void>;
   defaultValues?: Partial<Course>;
   mode?: "create" | "update";
-  state: boolean;
 }
 
 export type CourseFormData = CreateCoursePayload & {
   status: "draft" | "published";
 };
+
+export type ModalState =
+  | { mode: "create"; state: "creating" }
+  | { mode: "update"; state: "updating" };
 
 const EMPTY_FORM: CourseFormData = {
   title: "",
@@ -31,7 +34,6 @@ export default function CourseModal({
   onSubmit,
   defaultValues,
   mode = "create",
-  state,
 }: CourseModalProps) {
   const { values, update, setAll } = useForm<CourseFormData>(EMPTY_FORM);
   const [loading, setLoading] = useState(false);
@@ -40,10 +42,14 @@ export default function CourseModal({
   // aesthetic only — not wired to form
   const [preview, setPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const isUpdate = mode === "update";
+
+  const state: ModalState =
+    mode === "update"
+      ? { mode: "update", state: "updating" }
+      : { mode: "create", state: "creating" };
 
   useEffect(() => {
-    if (open && isUpdate && defaultValues) {
+    if (open && state.mode === "update" && defaultValues) {
       setAll({
         title: defaultValues.title ?? "",
         description: defaultValues.description ?? "",
@@ -97,10 +103,10 @@ export default function CourseModal({
         <div className="flex items-center justify-between px-6 py-4 border-b border-border shrink-0">
           <div className="flex flex-col gap-0.5">
             <h2 className="text-sm font-bold text-foreground tracking-tight">
-              {isUpdate ? "Update Course" : "Create New Course"}
+              {state.mode === "update" ? "Update Course" : "Create New Course"}
             </h2>
             <p className="text-xs text-foreground-muted">
-              {isUpdate
+              {state.mode === "update"
                 ? "Edit the details below and save your changes."
                 : "Fill in the details below to get your course started."}
             </p>
@@ -225,10 +231,10 @@ export default function CourseModal({
             >
               {loading && <Loader2 size={14} className="animate-spin" />}
               {loading
-                ? isUpdate
+                ? state.state === "updating"
                   ? "Saving..."
                   : "Creating..."
-                : isUpdate
+                : state.state === "updating"
                   ? "Save Changes"
                   : "Create Course"}
             </button>

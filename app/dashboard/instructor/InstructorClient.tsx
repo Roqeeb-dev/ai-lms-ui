@@ -7,12 +7,16 @@ import type { Course } from "@/types/course";
 import StatCard from "@/components/StatCard";
 import DashboardHeader from "@/components/DashboardHeader";
 import CourseCard from "@/components/CourseCard";
-import CourseModal from "@/components/CreateCourseModal";
+import CourseModal, { CourseFormData } from "@/components/CreateCourseModal";
 import { mockCourses } from "@/lib/mockCourses";
 import { useInstructorCourses } from "@/hooks/useInstructorCourses";
-import { CreateCoursePayload } from "@/services/courseService";
 
 export type InstructorCourse = Course & { totalStudents?: number };
+
+type ModalState =
+  | { open: false }
+  | { open: true; mode: "create" }
+  | { open: true; mode: "update"; course: Course };
 
 const totalCourses = mockCourses.length;
 const totalStudents = mockCourses.reduce(
@@ -56,11 +60,17 @@ const stats = [
 ];
 
 export default function InstructorClient() {
-  const [isModalShown, setIsModalShown] = useState<boolean>(false);
-  const { courses, createCourse, creating } = useInstructorCourses();
+  const [modalState, setModalState] = useState<ModalState>({ open: false });
+  const { createCourse, updateCourse } = useInstructorCourses();
 
-  async function handleCreate(data: CreateCoursePayload) {
+  async function handleCreate(data: CourseFormData) {
     await createCourse(data);
+  }
+
+  async function handleUpdate(data: CourseFormData) {
+    if (modalState.open && modalState.mode === "update") {
+      await updateCourse(modalState.course.id, data);
+    }
   }
 
   return (
@@ -69,7 +79,7 @@ export default function InstructorClient() {
       <DashboardHeader
         title="Instructor Dashboard"
         text="Manage your courses and track student engagement."
-        onClick={() => setIsModalShown(true)}
+        onClick={() => setModalState({ open: true, mode: "create" })}
       />
 
       {/* Stats */}
@@ -92,20 +102,34 @@ export default function InstructorClient() {
             View all <ArrowRight size={12} />
           </Link>
         </div>
-
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {mockCourses.map((course) => (
-            <CourseCard key={course.id} course={course} variant="instructor" />
+            <CourseCard
+              key={course.id}
+              course={course}
+              variant="instructor"
+              onEdit={() =>
+                setModalState({ open: true, mode: "update", course })
+              }
+            />
           ))}
         </div>
       </div>
 
       <CourseModal
-        open={isModalShown}
-        onClose={() => setIsModalShown(false)}
-        mode="create"
-        onSubmit={handleCreate}
-        state={creating}
+        open={modalState.open}
+        onClose={() => setModalState({ open: false })}
+        mode={modalState.open ? modalState.mode : "create"}
+        defaultValues={
+          modalState.open && modalState.mode === "update"
+            ? modalState.course
+            : undefined
+        }
+        onSubmit={
+          modalState.open && modalState.mode === "update"
+            ? handleUpdate
+            : handleCreate
+        }
       />
     </div>
   );
