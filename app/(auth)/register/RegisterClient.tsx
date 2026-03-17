@@ -89,7 +89,7 @@ export default function RegisterClient() {
         {/* Role selector */}
         <div className="flex flex-col gap-2">
           <label className="text-xs font-semibold tracking-widest uppercase text-foreground-muted">
-            I am a
+            I am {values.role === "student" ? "a" : "an"}
           </label>
           <div className="grid grid-cols-2 rounded-lg border border-border bg-card p-1 gap-1">
             {[ROLES.STUDENT, ROLES.INSTRUCTOR].map((r) => (
@@ -200,7 +200,7 @@ export default function RegisterClient() {
         </Link>{" "}
         and{" "}
         <Link
-          href="/privacy"
+          href="/privacy-policy"
           className="text-primary hover:underline underline-offset-4"
         >
           Privacy Policy
