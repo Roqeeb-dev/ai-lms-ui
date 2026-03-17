@@ -23,7 +23,7 @@ export interface GetInstructorCoursesResponse {
 export interface CreateCoursePayload {
   title: string;
   description: string;
-  thumbnail: string;
+  thumbnail?: string;
 }
 
 export interface CreateCourseResponse {

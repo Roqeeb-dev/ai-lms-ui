@@ -5,7 +5,7 @@ import { Plus, Search, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import CourseCard from "@/components/CourseCard";
 import DashboardHeader from "@/components/DashboardHeader";
-import { mockCourses } from "../InstructorClient";
+import { mockCourses } from "@/lib/mockCourses";
 
 type FilterStatus = "all" | "published" | "draft";
 
@@ -34,7 +34,6 @@ export default function CoursesClient() {
       <DashboardHeader
         title="My Courses"
         text="Manage, update, and track all your created courses."
-        href="/dashboard/instructor/courses/create"
       />
 
       <Link

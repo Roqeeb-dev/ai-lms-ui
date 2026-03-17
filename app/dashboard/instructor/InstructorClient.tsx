@@ -1,52 +1,18 @@
 "use client";
 
-import { BookOpen, Users, LayoutGrid, Plus, ArrowRight } from "lucide-react";
+import { BookOpen, Users, LayoutGrid, ArrowRight } from "lucide-react";
+import { useState } from "react";
 import Link from "next/link";
 import type { Course } from "@/types/course";
 import StatCard from "@/components/StatCard";
 import DashboardHeader from "@/components/DashboardHeader";
 import CourseCard from "@/components/CourseCard";
+import CourseModal from "@/components/CreateCourseModal";
+import { mockCourses } from "@/lib/mockCourses";
+import { useInstructorCourses } from "@/hooks/useInstructorCourses";
+import { CreateCoursePayload } from "@/services/courseService";
 
 export type InstructorCourse = Course & { totalStudents?: number };
-
-export const mockCourses: InstructorCourse[] = [
-  {
-    id: "1",
-    title: "Introduction to Python",
-    description: "Learn Python from scratch with hands-on projects.",
-    instructor: { _id: "t1", name: "Ada Lovelace", email: "ada@cognify.com" },
-    thumbnail: { url: "", public_id: "" },
-    status: "published",
-    category: "Technology",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    totalStudents: 84,
-  },
-  {
-    id: "2",
-    title: "Business Communication",
-    description: "Master professional communication skills.",
-    instructor: { _id: "t1", name: "Ada Lovelace", email: "ada@cognify.com" },
-    thumbnail: { url: "", public_id: "" },
-    status: "published",
-    category: "Business",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    totalStudents: 52,
-  },
-  {
-    id: "3",
-    title: "Advanced Design Systems",
-    description: "Build scalable design systems from the ground up.",
-    instructor: { _id: "t1", name: "Ada Lovelace", email: "ada@cognify.com" },
-    thumbnail: { url: "", public_id: "" },
-    status: "draft",
-    category: "Design",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    totalStudents: 0,
-  },
-];
 
 const totalCourses = mockCourses.length;
 const totalStudents = mockCourses.reduce(
@@ -90,13 +56,20 @@ const stats = [
 ];
 
 export default function InstructorClient() {
+  const [isModalShown, setIsModalShown] = useState<boolean>(false);
+  const { courses, createCourse, creating } = useInstructorCourses();
+
+  async function handleCreate(data: CreateCoursePayload) {
+    await createCourse(data);
+  }
+
   return (
     <div className="flex flex-col gap-8 max-w-6xl mx-auto">
       {/* Header */}
       <DashboardHeader
         title="Instructor Dashboard"
         text="Manage your courses and track student engagement."
-        href="/dashboard/instructor/courses/create"
+        onClick={() => setIsModalShown(true)}
       />
 
       {/* Stats */}
@@ -126,6 +99,14 @@ export default function InstructorClient() {
           ))}
         </div>
       </div>
+
+      <CourseModal
+        open={isModalShown}
+        onClose={() => setIsModalShown(false)}
+        mode="create"
+        onSubmit={handleCreate}
+        state={creating}
+      />
     </div>
   );
 }
