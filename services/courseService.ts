@@ -24,6 +24,7 @@ export interface CreateCoursePayload {
   title: string;
   description: string;
   thumbnail?: string;
+  status: "draft" | "published";
 }
 
 export interface CreateCourseResponse {

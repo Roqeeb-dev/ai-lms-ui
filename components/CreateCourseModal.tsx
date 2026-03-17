@@ -14,9 +14,7 @@ interface CourseModalProps {
   mode?: "create" | "update";
 }
 
-export type CourseFormData = CreateCoursePayload & {
-  status: "draft" | "published";
-};
+export type CourseFormData = CreateCoursePayload;
 
 export type ModalState =
   | { mode: "create"; state: "creating" }

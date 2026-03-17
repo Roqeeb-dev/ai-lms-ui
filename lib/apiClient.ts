@@ -1,4 +1,4 @@
-const baseUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5173";
+const baseUrl = process.env.NEXT_PUBLIC_API_URL ?? "";
 
 export const apiClient = {
   async request<T>(url: string, options: RequestInit = {}): Promise<T> {
