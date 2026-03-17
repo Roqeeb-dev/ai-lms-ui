@@ -5,7 +5,7 @@ import { Plus, Search, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import CourseCard from "@/components/CourseCard";
 import DashboardHeader from "@/components/DashboardHeader";
-import { mockCourses } from "@/lib/mockCourses";
+import { useInstructorCourses } from "@/hooks/useInstructorCourses";
 
 type FilterStatus = "all" | "published" | "draft";
 
@@ -18,16 +18,17 @@ const filterOptions: { label: string; value: FilterStatus }[] = [
 export default function CoursesClient() {
   const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState<FilterStatus>("all");
+  const { courses, fetching } = useInstructorCourses();
 
   const filtered = useMemo(() => {
-    return mockCourses.filter((c) => {
+    return courses.filter((c) => {
       const matchesSearch = c.title
         .toLowerCase()
         .includes(search.toLowerCase());
       const matchesFilter = activeFilter === "all" || c.status === activeFilter;
       return matchesSearch && matchesFilter;
     });
-  }, [search, activeFilter]);
+  }, [courses, search, activeFilter]);
 
   return (
     <div className="flex flex-col gap-6 max-w-6xl mx-auto">
@@ -80,22 +81,30 @@ export default function CoursesClient() {
       </div>
 
       {/* Results count */}
-      <p className="text-xs text-foreground-muted -mt-2">
-        Showing{" "}
-        <span className="font-semibold text-foreground">{filtered.length}</span>{" "}
-        {filtered.length === 1 ? "course" : "courses"}
-        {activeFilter !== "all" && (
-          <span>
-            {" "}
-            · filtered by{" "}
-            <span className="font-semibold text-foreground">
-              {activeFilter}
+      {!fetching && (
+        <p className="text-xs text-foreground-muted -mt-2">
+          Showing{" "}
+          <span className="font-semibold text-foreground">
+            {filtered.length}
+          </span>{" "}
+          {filtered.length === 1 ? "course" : "courses"}
+          {activeFilter !== "all" && (
+            <span>
+              {" "}
+              · filtered by{" "}
+              <span className="font-semibold text-foreground">
+                {activeFilter}
+              </span>
             </span>
-          </span>
-        )}
-      </p>
+          )}
+        </p>
+      )}
 
-      {filtered.length > 0 ? (
+      {fetching ? (
+        <div className="flex items-center justify-center py-16">
+          <p className="text-sm text-foreground-muted">Loading courses...</p>
+        </div>
+      ) : filtered.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {filtered.map((course) => (
             <CourseCard key={course.id} course={course} variant="instructor" />
