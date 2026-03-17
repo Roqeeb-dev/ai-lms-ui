@@ -7,9 +7,9 @@ import StatCard from "@/components/StatCard";
 import DashboardHeader from "@/components/DashboardHeader";
 import CourseCard from "@/components/CourseCard";
 
-type InstructorCourse = Course & { totalStudents?: number };
+export type InstructorCourse = Course & { totalStudents?: number };
 
-const mockCourses: InstructorCourse[] = [
+export const mockCourses: InstructorCourse[] = [
   {
     id: "1",
     title: "Introduction to Python",
