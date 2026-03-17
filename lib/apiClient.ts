@@ -3,14 +3,19 @@ const baseUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5173";
 export const apiClient = {
   async request<T>(url: string, options: RequestInit = {}): Promise<T> {
     const res = await fetch(baseUrl + url, {
+      method: options.method ?? "GET",
       headers: {
         "Content-Type": "application/json",
         ...options.headers,
       },
-      ...options,
+      body: options.body,
+      credentials: "include", // always included
+      redirect: options.redirect,
+      signal: options.signal,
     });
+
     if (!res.ok) {
-      const errorData = await res.json();
+      const errorData = await res.json().catch(() => ({}));
       throw new Error(errorData.message || "Something went wrong");
     }
     return res.json();

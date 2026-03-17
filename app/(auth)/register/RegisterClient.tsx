@@ -120,6 +120,7 @@ export default function RegisterClient() {
             name="name"
             value={values.name}
             onChange={(e) => update("name", e.target.value)}
+            autoComplete="name"
             className="w-full rounded-lg border border-border bg-input px-3 py-3 lg:py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-input-focus transition-all duration-200"
             required
           />
@@ -136,6 +137,7 @@ export default function RegisterClient() {
             name="email"
             value={values.email}
             onChange={(e) => update("email", e.target.value)}
+            autoComplete="email"
             className="w-full rounded-lg border border-border bg-input px-3 py-3 lg:py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-input-focus transition-all duration-200"
             required
           />
@@ -154,6 +156,7 @@ export default function RegisterClient() {
               value={values.password}
               minLength={8}
               onChange={(e) => update("password", e.target.value)}
+              autoComplete="new-password"
               className="w-full rounded-lg border border-border bg-input px-3 py-3 lg:py-2 pr-11 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-input-focus transition-all duration-200"
               required
             />
