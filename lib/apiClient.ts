@@ -8,6 +8,7 @@ export const apiClient = {
         ...options.headers,
       },
       ...options,
+      credentials: "include",
     });
     if (!res.ok) {
       const errorData = await res.json();

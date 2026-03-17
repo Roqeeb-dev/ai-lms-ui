@@ -99,6 +99,7 @@ export default function LoginClient() {
             name="email"
             value={values.email}
             onChange={(e) => update("email", e.target.value)}
+            autoComplete="email"
             className="w-full rounded-lg border border-border bg-input px-3 py-3 lg:py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-input-focus transition-all duration-200"
             required
           />
@@ -124,6 +125,7 @@ export default function LoginClient() {
               name="password"
               value={values.password}
               onChange={(e) => update("password", e.target.value)}
+              autoComplete="current-password"
               className="w-full rounded-lg border border-border bg-input px-3 py-3 lg:py-2 pr-11 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-input-focus transition-all duration-200"
               required
             />

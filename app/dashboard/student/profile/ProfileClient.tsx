@@ -144,6 +144,7 @@ export default function ProfileClient() {
                 })
               }
               disabled={!editing}
+              autoComplete="given-name"
               placeholder="Ada"
               className={inputClass}
             />
@@ -161,6 +162,7 @@ export default function ProfileClient() {
                 })
               }
               disabled={!editing}
+              autoComplete="family-name"
               placeholder="Lovelace"
               className={inputClass}
             />
@@ -174,6 +176,7 @@ export default function ProfileClient() {
               onChange={(e) => update("name", e.target.value)}
               disabled={!editing}
               placeholder="Ada Lovelace"
+              autoComplete="name"
               className={inputClass}
             />
           </div>
@@ -187,6 +190,7 @@ export default function ProfileClient() {
               onChange={(e) => update("email", e.target.value)}
               disabled={!editing}
               placeholder="ada@cognify.com"
+              autoComplete="email"
               className={inputClass}
             />
           </div>
