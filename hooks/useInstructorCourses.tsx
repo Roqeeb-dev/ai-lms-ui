@@ -2,39 +2,61 @@ import { course, CreateCoursePayload } from "@/services/courseService";
 import { Course } from "@/types/course";
 import { useState, useEffect } from "react";
 
+function getErrorMessage(err: any): string {
+  return (
+    err?.response?.data?.error ||
+    err?.response?.data?.message ||
+    err?.message ||
+    "Something went wrong"
+  );
+}
+
 export function useInstructorCourses() {
   const [fetching, setFetching] = useState<boolean>(false);
   const [creating, setCreating] = useState<boolean>(false);
   const [deleting, setDeleting] = useState<boolean>(false);
   const [updating, setUpdating] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [courses, setCourses] = useState<Course[] | null>(null);
+
+  const [courses, setCourses] = useState<Course[]>([]);
 
   useEffect(() => {
+    let isMounted = true;
+
     async function fetchLoggedInInstructorCourses() {
       setFetching(true);
+      setError(null);
+
       try {
         const res = await course.getLoggedInInstructorCourses();
-        setCourses(res.courses);
+        if (isMounted) setCourses(res.courses ?? []);
       } catch (err: any) {
-        setError(err.message || "Failed to fetch courses");
-        console.error(err.message ?? err);
+        const message = getErrorMessage(err);
+        if (isMounted) setError(message);
+        console.error(message);
       } finally {
-        setFetching(false);
+        if (isMounted) setFetching(false);
       }
     }
 
     fetchLoggedInInstructorCourses();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   async function createCourse(data: CreateCoursePayload) {
     setCreating(true);
+    setError(null);
+
     try {
       const res = await course.createCourse(data);
-      setCourses((prev) => (prev ? [...prev, res.course] : [res.course]));
+      setCourses((prev) => [...prev, res.course]);
     } catch (err: any) {
-      setError(err.message || "Something went wrong");
-      console.error(err.message ?? err);
+      const message = getErrorMessage(err);
+      setError(message);
+      console.error(message);
     } finally {
       setCreating(false);
     }
@@ -45,15 +67,19 @@ export function useInstructorCourses() {
     data: Partial<CreateCoursePayload>,
   ) {
     setUpdating(true);
+    setError(null);
+
     try {
       const res = await course.updateCourse(courseId, data);
       if (!res) return;
+
       setCourses((prev) =>
-        prev ? prev.map((c) => (c.id === courseId ? res.course : c)) : null,
+        prev.map((c) => (c.id === courseId ? res.course : c)),
       );
     } catch (err: any) {
-      setError(err.message || "Something went wrong");
-      console.error(err.message ?? err);
+      const message = getErrorMessage(err);
+      setError(message);
+      console.error(message);
     } finally {
       setUpdating(false);
     }
@@ -61,14 +87,15 @@ export function useInstructorCourses() {
 
   async function deleteCourse(courseId: string) {
     setDeleting(true);
+    setError(null);
+
     try {
       await course.deleteCourse(courseId);
-      setCourses((prev) =>
-        prev ? prev.filter((c) => c.id !== courseId) : null,
-      );
+      setCourses((prev) => prev.filter((c) => c.id !== courseId));
     } catch (err: any) {
-      setError(err.message || "Something went wrong");
-      console.error(err.message ?? err);
+      const message = getErrorMessage(err);
+      setError(message);
+      console.error(message);
     } finally {
       setDeleting(false);
     }
