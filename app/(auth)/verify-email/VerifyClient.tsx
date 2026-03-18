@@ -1,50 +1,39 @@
 "use client";
 
 import { useState } from "react";
-import { useUserStore } from "@/store/useUserStore";
 import { Mail, Check } from "lucide-react";
 import Link from "next/link";
-import { auth } from "@/services/authService";
+import { useUser } from "@/hooks/useUser";
 
 export default function VerifyClient() {
-  const user = useUserStore((state) => state.user);
+  const {
+    user,
+    verifyEmail,
+    resendVerification,
+    verifying,
+    resendingVerification,
+    error,
+  } = useUser();
   const [token, setToken] = useState("");
-  const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [error, setError] = useState("");
   const [resent, setResent] = useState(false);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!token.trim()) return;
-    setLoading(true);
-    setError("");
-
     try {
-      await auth.verifyEmail({ token });
+      await verifyEmail(token);
       setSuccess(true);
-    } catch (err: any) {
-      setError(
-        err.message || "Invalid token. Please check your email and try again.",
-      );
-    } finally {
-      setLoading(false);
-    }
+    } catch {}
   }
 
   async function handleResend() {
     if (!user?.email) return;
-    setLoading(true);
-    setError("");
     try {
-      await auth.resetVerification({ email: user.email });
+      await resendVerification(user.email);
       setResent(true);
       setTimeout(() => setResent(false), 3000);
-    } catch (err: any) {
-      setError(err.message || "Failed to resend. Please try again.");
-    } finally {
-      setLoading(false);
-    }
+    } catch {}
   }
 
   const inputClass =
@@ -75,6 +64,8 @@ export default function VerifyClient() {
     );
   }
 
+  const loading = verifying || resendingVerification;
+
   return (
     <div className="w-full max-w-md px-5 pt-10 pb-8 lg:p-6 flex flex-col gap-8 lg:gap-6 text-center">
       {/* Icon */}
@@ -103,10 +94,7 @@ export default function VerifyClient() {
         <input
           type="text"
           value={token}
-          onChange={(e) => {
-            setToken(e.target.value);
-            setError("");
-          }}
+          onChange={(e) => setToken(e.target.value)}
           placeholder="Enter verification code"
           className={inputClass}
           maxLength={64}
@@ -117,10 +105,10 @@ export default function VerifyClient() {
         )}
         <button
           type="submit"
-          disabled={loading || !token.trim()}
+          disabled={verifying || !token.trim()}
           className="w-full rounded-lg bg-primary text-primary-foreground px-4 py-3 lg:py-2.5 text-sm font-semibold hover:bg-primary-hover active:scale-[0.98] transition-all duration-200 shadow-sm disabled:opacity-60 disabled:pointer-events-none"
         >
-          {loading ? "Verifying..." : "Verify email"}
+          {verifying ? "Verifying..." : "Verify email"}
         </button>
       </form>
 
