@@ -1,9 +1,12 @@
 import { apiClient } from "../lib/apiClient";
 import { User, ServerUser, Role } from "@/types/user";
 
-type LoginPayload = Pick<User, "email" | "password">;
+export type LoginPayload = Pick<User, "email" | "password">;
 
-type RegisterPayload = Pick<User, "name" | "email" | "password" | "role">;
+export type RegisterPayload = Pick<
+  User,
+  "name" | "email" | "password" | "role"
+>;
 
 export type UpdateProfilePayload = Partial<
   Pick<User, "name" | "email" | "profile">
