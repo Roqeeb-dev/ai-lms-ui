@@ -32,14 +32,14 @@ export default function InstructorClient() {
 
   const stats = [
     {
-      label: "Total Courses",
+      label: `Total Course${totalCourses === 1 ? "" : "s"}`,
       value: totalCourses,
       icon: BookOpen,
       color: "text-primary",
       bg: "bg-primary/10",
     },
     {
-      label: "Total Students",
+      label: `Total Student${totalStudents === 1 ? "" : "s"}`,
       value: totalStudents,
       icon: Users,
       color: "text-emerald-600",
@@ -53,7 +53,7 @@ export default function InstructorClient() {
       bg: "bg-sky-500/10",
     },
     {
-      label: "Drafts",
+      label: `Draft${draftCount === 1 ? "" : "s"}`,
       value: draftCount,
       icon: LayoutGrid,
       color: "text-amber-600",
