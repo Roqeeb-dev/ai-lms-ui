@@ -4,6 +4,7 @@ import {
   normalizeAllLessons,
   normalizeLesson,
 } from "@/types/lesson";
+import { ServerEnrollment, normalizeEnrollment } from "@/types/enrollment";
 import { apiClient } from "@/lib/apiClient";
 
 export interface CreateLessonPayload {
@@ -43,10 +44,9 @@ export interface DeleteLessonResponse {
   message: string;
 }
 
-// fix and add enrollment
 export interface CompleteLessonResponse {
   success: boolean;
-  message: string;
+  data: ServerEnrollment;
 }
 
 export async function createLesson(
@@ -115,11 +115,13 @@ export async function deleteLesson(lessonId: string) {
   return apiClient.delete<DeleteLessonResponse>(`/api/lessons/${lessonId}`);
 }
 
-// fix and add enrollment there - IMPORTANT
 export async function completeLesson(lessonId: string) {
   const res = await apiClient.post<CompleteLessonResponse>(
     `/api/lessons/${lessonId}/complete`,
   );
 
-  return res;
+  return {
+    success: res.success,
+    enrollment: normalizeEnrollment(res.data),
+  };
 }
