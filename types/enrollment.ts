@@ -1,4 +1,5 @@
 import { ServerUser, User } from "./user";
+import { ServerCourse, Course } from "./course";
 
 export type EnrollmentStatus = "active" | "completed" | "dropped";
 
@@ -44,27 +45,10 @@ export function normalizeAllEnrollments(
   return data.map(normalizeEnrollment);
 }
 
-// ---- Populated with Course ----
-
-type EnrollmentCourse = {
-  _id: string;
-  title: string;
-  description: string;
-  instructor: string;
-  status: string;
-  thumbnail: {
-    url: string;
-    public_id: string;
-  };
-  createdAt: string;
-  updatedAt: string;
-  __v: number;
-};
-
 export type ServerEnrollmentPopulated = {
   _id: string;
   user: string;
-  course: EnrollmentCourse;
+  course: ServerCourse;
   status: EnrollmentStatus;
   createdAt: string;
   updatedAt: string;
@@ -77,19 +61,7 @@ export type EnrollmentWithCourse = {
   status: EnrollmentStatus;
   createdAt: Date;
   updatedAt: Date;
-  course: {
-    id: string;
-    title: string;
-    description: string;
-    instructorId: string;
-    status: string;
-    thumbnail: {
-      url: string;
-      publicId: string;
-    };
-    createdAt: Date;
-    updatedAt: Date;
-  };
+  course: Course;
 };
 
 export function normalizeEnrollmentPopulated(
@@ -105,12 +77,9 @@ export function normalizeEnrollmentPopulated(
       id: data.course._id,
       title: data.course.title,
       description: data.course.description,
-      instructorId: data.course.instructor,
+      instructor: data.course.instructor,
       status: data.course.status,
-      thumbnail: {
-        url: data.course.thumbnail.url,
-        publicId: data.course.thumbnail.public_id,
-      },
+      thumbnail: data.course.thumbnail,
       createdAt: new Date(data.course.createdAt),
       updatedAt: new Date(data.course.updatedAt),
     },
@@ -122,8 +91,6 @@ export function normalizeAllEnrollmentsPopulated(
 ): EnrollmentWithCourse[] {
   return data.map(normalizeEnrollmentPopulated);
 }
-
-// ---- Populated with Student ----
 
 export type ServerEnrollmentWithStudent = {
   _id: string;
