@@ -34,28 +34,3 @@ export interface Course {
   createdAt: Date;
   updatedAt: Date;
 }
-
-export interface Module {
-  id: string;
-  courseId: string;
-  title: string;
-  lessonIds: string[];
-  order: number;
-}
-
-export interface Lesson {
-  id: string;
-  moduleId: string;
-  title: string;
-  content: string;
-  duration: number;
-  createdAt: Date;
-}
-
-export interface Enrollment {
-  id: string;
-  studentId: string;
-  courseId: string;
-  enrolledAt: Date;
-  status: "active" | "completed" | "cancelled";
-}
