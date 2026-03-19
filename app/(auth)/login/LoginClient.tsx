@@ -5,51 +5,29 @@ import { EyeOff, Eye } from "lucide-react";
 import Link from "next/link";
 import { useForm } from "@/hooks/useForm";
 import { useRouter } from "next/navigation";
-import { auth } from "@/services/authService";
-import { useUserStore } from "@/store/useUserStore";
-
-import type { User } from "@/types/user";
-import type { AuthResponse } from "@/services/authService";
 import { LoadingDots } from "@/components/LoadingDots";
+import { useUser } from "@/hooks/useUser";
+import type { User } from "@/types/user";
 
 type LoginDetails = Pick<User, "email" | "password">;
 
-export type AuthState =
-  | { state: "idle" }
-  | { state: "loading" }
-  | { state: "success"; data: AuthResponse }
-  | { state: "error"; error: any };
-
 export default function LoginClient() {
   const [showPassword, setShowPassword] = useState(false);
-  const [authState, setAuthState] = useState<AuthState>({ state: "idle" });
-
+  const { loginUser, loggingIn, error } = useUser();
   const router = useRouter();
+
   const { values, update, reset } = useForm<LoginDetails>({
     email: "",
     password: "",
   });
-  const setUser = useUserStore((state) => state.setUser);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-
-    setAuthState({ state: "loading" });
-
     try {
-      const data = await auth.login(values);
-      setAuthState({ state: "success", data });
-      setUser(data.user);
+      const data = await loginUser(values);
       reset();
       router.replace(`/dashboard/${data.user.role}`);
-    } catch (err: any) {
-      const message =
-        err?.response?.data?.message || err?.message || "Something went wrong";
-
-      setAuthState({ state: "error", error: message });
-
-      console.error("Login failed:", message);
-    }
+    } catch {}
   }
 
   return (
@@ -142,21 +120,13 @@ export default function LoginClient() {
         {/* Submit */}
         <button
           type="submit"
-          disabled={authState.state === "loading"}
+          disabled={loggingIn}
           className="w-full mt-1 rounded-lg bg-primary text-primary-foreground px-3 py-3 lg:py-2 text-sm font-semibold hover:bg-primary-hover active:scale-[0.98] transition-all duration-200 shadow-sm disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:bg-primary"
         >
-          {authState.state === "loading" ? (
-            <LoadingDots text="Logging you in" />
-          ) : (
-            "Log in"
-          )}
+          {loggingIn ? <LoadingDots text="Logging you in" /> : "Log in"}
         </button>
 
-        {authState.state === "error" && (
-          <p className="text-red-500 text-sm">
-            {authState.error?.message || "Login failed."}
-          </p>
-        )}
+        {error && <p className="text-red-500 text-sm">{error}</p>}
       </form>
 
       {/* Terms */}
