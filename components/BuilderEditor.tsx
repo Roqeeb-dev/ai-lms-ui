@@ -1,20 +1,41 @@
-import { BookOpen } from "lucide-react";
+"use client";
 
-export default function BuilderEditor() {
+import { BookOpen } from "lucide-react";
+import ModuleForm from "./ModuleForm";
+import LessonForm from "./LessonForm";
+import { SelectionType } from "@/app/dashboard/instructor/course-builder/[courseId]/BuilderClient";
+
+interface Props {
+  selection: SelectionType;
+}
+
+export default function BuilderEditor({ selection }: Props) {
+  if (!selection) {
+    return (
+      <main className="flex-1 flex items-center justify-center bg-background">
+        <div className="flex flex-col items-center gap-3 text-center max-w-xs">
+          <div className="w-12 h-12 rounded-2xl bg-muted flex items-center justify-center">
+            <BookOpen size={20} className="text-foreground-muted" />
+          </div>
+          <h3 className="text-sm font-semibold text-foreground">
+            Select a module or lesson
+          </h3>
+          <p className="text-xs text-foreground-muted leading-relaxed">
+            Choose something from the left panel to start editing, or add a new
+            module to get started.
+          </p>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="flex-1 flex items-center justify-center bg-background">
-      <div className="flex flex-col items-center gap-3 text-center max-w-xs">
-        <div className="w-12 h-12 rounded-2xl bg-muted flex items-center justify-center">
-          <BookOpen size={20} className="text-foreground-muted" />
-        </div>
-        <h3 className="text-sm font-semibold text-foreground">
-          Select a module or lesson
-        </h3>
-        <p className="text-xs text-foreground-muted leading-relaxed">
-          Choose something from the left panel to start editing, or add a new
-          module to get started.
-        </p>
-      </div>
+      {selection.type === "module" || selection.type === "new-module" ? (
+        <ModuleForm />
+      ) : (
+        <LessonForm />
+      )}
     </main>
   );
 }

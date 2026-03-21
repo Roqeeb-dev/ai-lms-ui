@@ -11,14 +11,16 @@ import BuilderContent from "@/components/BuilderContent";
 import BuilderEditor from "@/components/BuilderEditor";
 import { Lesson } from "@/types/lesson";
 
+export interface SelectionType {
+  selectedId: string;
+  type: "module" | "lesson" | "new-module" | null;
+}
+
 export default function BuilderClient() {
   const params = useParams<{ courseId: string }>();
   const [courseDetails, setCourseDetails] = useState<Course | null>(null);
   const [lessonsMap, setLessonsMap] = useState<Record<string, Lesson[]>>({});
-  const [selectedItem, setSelectedItem] = useState<{
-    selectedId: string;
-    type: "module" | "lesson" | null;
-  }>({
+  const [selectedItem, setSelectedItem] = useState<SelectionType>({
     selectedId: "",
     type: null,
   });
@@ -78,7 +80,7 @@ export default function BuilderClient() {
             setSelectedItem({ selectedId: moduleId, type: "module" });
           }}
         />
-        <BuilderEditor />
+        <BuilderEditor selection={selectedItem} />
       </div>
     </div>
   );
