@@ -2,7 +2,6 @@
 import {
   Home,
   BookOpen,
-  Hammer,
   Users,
   ClipboardList,
   BarChart2,
@@ -19,11 +18,7 @@ const links = [
     label: "My Courses",
     icon: BookOpen,
   },
-  {
-    href: "/dashboard/instructor/course-builder",
-    label: "Course Builder",
-    icon: Hammer,
-  },
+
   { href: "/dashboard/instructor/students", label: "Students", icon: Users },
   {
     href: "/dashboard/instructor/quizzes",
