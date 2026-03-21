@@ -3,6 +3,7 @@
 import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useCourse } from "@/hooks/useCourse";
+import { useModule } from "@/hooks/useModule";
 import { Course } from "@/types/course";
 import BuilderHeader from "@/components/BuilderHeader";
 import BuilderContent from "@/components/BuilderContent";
@@ -12,6 +13,11 @@ export default function BuilderClient() {
   const params = useParams<{ courseId: string }>();
   const [courseDetails, setCourseDetails] = useState<Course | null>(null);
   const { fetchingCourseDetails, getCourseDetails } = useCourse();
+  const {
+    modules,
+    fetching: fetchingModules,
+    fetchCourseModules,
+  } = useModule();
 
   useEffect(() => {
     async function fetchCourse() {
@@ -22,10 +28,17 @@ export default function BuilderClient() {
     fetchCourse();
   }, [params.courseId]);
 
-  if (fetchingCourseDetails) {
+  useEffect(() => {
+    async function fetchModules() {
+      await fetchCourseModules(params.courseId);
+    }
+    fetchModules();
+  }, [params.courseId]);
+
+  if (fetchingCourseDetails || fetchingModules) {
     return (
       <div className="flex items-center justify-center h-full text-sm text-foreground-muted">
-        Loading course...
+        Loading...
       </div>
     );
   }
@@ -37,8 +50,7 @@ export default function BuilderClient() {
       <BuilderHeader courseDetails={courseDetails} />
 
       <div className="flex flex-1 overflow-hidden">
-        <BuilderContent courseDetails={courseDetails} />
-
+        <BuilderContent courseDetails={courseDetails} courseModules={modules} />
         <BuilderEditor />
       </div>
     </div>
