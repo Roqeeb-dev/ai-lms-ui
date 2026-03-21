@@ -20,7 +20,7 @@ const links = [
     icon: BookOpen,
   },
   {
-    href: "/dashboard/instructor/builder",
+    href: "/dashboard/instructor/course-builder",
     label: "Course Builder",
     icon: Hammer,
   },

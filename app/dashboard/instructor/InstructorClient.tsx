@@ -9,6 +9,7 @@ import DashboardHeader from "@/components/DashboardHeader";
 import CourseCard from "@/components/CourseCard";
 import CourseModal, { CourseFormData } from "@/components/CreateCourseModal";
 import { useInstructorCourses } from "@/hooks/useInstructorCourses";
+import { useRouter } from "next/navigation";
 
 export type InstructorCourse = Course & { totalStudents?: number };
 
@@ -29,6 +30,7 @@ export default function InstructorClient() {
   );
   const publishedCount = courses.filter((c) => c.status === "published").length;
   const draftCount = courses.filter((c) => c.status === "draft").length;
+  const router = useRouter();
 
   const stats = [
     {
@@ -62,7 +64,9 @@ export default function InstructorClient() {
   ];
 
   async function handleCreate(data: CourseFormData) {
-    await createCourse(data);
+    const res = await createCourse(data);
+    if (!res) return;
+    router.push(`/dashboard/instructor/course-builder/${res.course.id}`);
   }
 
   async function handleUpdate(data: CourseFormData) {

@@ -2,7 +2,7 @@ import { course, CreateCoursePayload } from "@/services/courseService";
 import { Course } from "@/types/course";
 import { useState, useEffect } from "react";
 
-function getErrorMessage(err: any): string {
+export function getErrorMessage(err: any): string {
   return (
     err?.response?.data?.error ||
     err?.response?.data?.message ||
@@ -53,6 +53,7 @@ export function useInstructorCourses() {
     try {
       const res = await course.createCourse(data);
       setCourses((prev) => [...prev, res.course]);
+      return res;
     } catch (err: any) {
       const message = getErrorMessage(err);
       setError(message);
