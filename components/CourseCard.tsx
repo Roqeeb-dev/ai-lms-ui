@@ -7,6 +7,9 @@ import { CourseStatusBadge } from "./CourseStatusBadge";
 import { CourseProgress } from "./CourseProgress";
 import type { Course } from "@/types/course";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import Dialog from "./Dialog";
+import { useInstructorCourses } from "@/hooks/useInstructorCourses";
 
 interface StudentCardProps {
   variant?: "student";
@@ -19,7 +22,6 @@ interface InstructorCardProps {
   variant: "instructor";
   course: Course & { totalStudents?: number };
   enrolled?: never;
-  onEdit?: () => void;
   onDelete?: () => void;
   onToggle?: () => void;
 }
@@ -31,6 +33,8 @@ export default function CourseCard({
   course,
   ...props
 }: CourseCardProps) {
+  const [isDialogShown, setIsDialogShown] = useState(false);
+  const { deleting, deleteCourse } = useInstructorCourses();
   const isInstructor = variant === "instructor";
   const enrolled =
     !isInstructor && "enrolled" in props ? (props.enrolled ?? false) : false;
@@ -51,6 +55,13 @@ export default function CourseCard({
 
   function handleEdit() {
     router.push(`/dashboard/instructor/course-builder/${course.id}`);
+  }
+
+  async function handleDelete() {
+    if (deleting) return;
+    await deleteCourse(course.id);
+    setIsDialogShown(false);
+    onDelete?.();
   }
 
   return (
@@ -95,7 +106,7 @@ export default function CourseCard({
             <InstructorFooter
               totalStudents={totalStudents}
               onEdit={handleEdit}
-              onDelete={onDelete}
+              onDelete={() => setIsDialogShown(true)}
               onToggle={onToggle}
             />
           ) : (
@@ -106,6 +117,17 @@ export default function CourseCard({
           )}
         </div>
       </div>
+
+      <Dialog
+        open={isDialogShown}
+        type="confirm"
+        onClose={() => setIsDialogShown(false)}
+        title="Delete Confirmation"
+        onConfirm={handleDelete}
+        message="Are you sure you want to delete this item?"
+        confirmText="Yes, Delete it"
+        cancelText="No, Keep it"
+      />
     </div>
   );
 }

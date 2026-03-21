@@ -77,21 +77,18 @@ export default function InstructorClient() {
 
   return (
     <div className="flex flex-col gap-8 max-w-6xl mx-auto">
-      {/* Header */}
       <DashboardHeader
         title="Instructor Dashboard"
         text="Manage your courses and track student engagement."
         onClick={() => setModalState({ open: true, mode: "create" })}
       />
 
-      {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat) => (
           <StatCard key={stat.label} stat={stat} />
         ))}
       </div>
 
-      {/* My Courses */}
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-bold text-foreground uppercase tracking-widest">
@@ -126,9 +123,6 @@ export default function InstructorClient() {
                 key={course.id}
                 course={course}
                 variant="instructor"
-                onEdit={() =>
-                  setModalState({ open: true, mode: "update", course })
-                }
               />
             ))}
           </div>
