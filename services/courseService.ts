@@ -45,13 +45,8 @@ export interface DeleteCourseResponse {
 }
 
 function normalizeCourse(data: ServerCourse): Course {
-  const createdAt = new Date(data.createdAt);
-  const updatedAt = new Date(data.updatedAt);
-
-  if (isNaN(createdAt.getTime()))
-    throw new Error(`Invalid createdAt for course ${data._id}`);
-  if (isNaN(updatedAt.getTime()))
-    throw new Error(`Invalid updatedAt for course ${data._id}`);
+  const createdAt = data.createdAt ? new Date(data.createdAt) : new Date();
+  const updatedAt = data.updatedAt ? new Date(data.updatedAt) : new Date();
 
   return {
     id: data._id,
