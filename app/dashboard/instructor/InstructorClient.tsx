@@ -13,7 +13,7 @@ import { useRouter } from "next/navigation";
 
 export type InstructorCourse = Course & { totalStudents?: number };
 
-type ModalState =
+export type ModalState =
   | { open: false }
   | { open: true; mode: "create" }
   | { open: true; mode: "update"; course: Course };
@@ -75,6 +75,15 @@ export default function InstructorClient() {
     }
   }
 
+  async function toggleCourse(courseId: string) {
+    const courseToToggle = courses.find((c) => c.id === courseId);
+    if (!courseToToggle) return;
+
+    await updateCourse(courseId, {
+      status: courseToToggle.status === "published" ? "draft" : "published",
+    });
+  }
+
   return (
     <div className="flex flex-col gap-8 max-w-6xl mx-auto">
       <DashboardHeader
@@ -123,6 +132,7 @@ export default function InstructorClient() {
                 key={course.id}
                 course={course}
                 variant="instructor"
+                onToggle={() => toggleCourse(course.id)}
               />
             ))}
           </div>

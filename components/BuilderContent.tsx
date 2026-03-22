@@ -9,6 +9,8 @@ interface Props {
   courseModules: Module[];
   lessonsMap: Record<string, Lesson[]>;
   onModuleSelect: (moduleId: string) => void;
+  onAddModule: () => void;
+  onAddLesson: (moduleId: string) => void;
 }
 
 export default function BuilderContent({
@@ -16,6 +18,8 @@ export default function BuilderContent({
   courseModules,
   lessonsMap,
   onModuleSelect,
+  onAddModule,
+  onAddLesson,
 }: Props) {
   return (
     <aside className="w-72 shrink-0 border-r border-border bg-card flex flex-col overflow-hidden">
@@ -44,13 +48,17 @@ export default function BuilderContent({
               mod={mod}
               lessons={lessonsMap[mod.id] ?? []}
               onSelect={onModuleSelect}
+              onAddLesson={() => onAddLesson(mod.id)}
             />
           ))
         )}
       </div>
 
       <div className="p-3 border-t border-border shrink-0">
-        <button className="w-full flex items-center justify-center gap-2 text-xs font-semibold py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors">
+        <button
+          onClick={onAddModule}
+          className="w-full flex items-center justify-center gap-2 text-xs font-semibold py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+        >
           <BookOpen size={13} />
           Add Module
         </button>

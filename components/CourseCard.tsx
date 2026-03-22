@@ -111,7 +111,7 @@ export default function CourseCard({
             />
           ) : (
             <StudentFooter
-              instructorName={course.instructor.name}
+              instructorName={course.instructor?.name ?? "Instructor Name"}
               enrolled={enrolled}
             />
           )}

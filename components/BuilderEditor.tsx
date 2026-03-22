@@ -4,13 +4,52 @@ import { BookOpen } from "lucide-react";
 import ModuleForm from "./ModuleForm";
 import LessonForm from "./LessonForm";
 import { SelectionType } from "@/app/dashboard/instructor/course-builder/[courseId]/BuilderClient";
+import { Module } from "@/types/module";
+import { Lesson } from "@/types/lesson";
+import {
+  CreateCourseModulePayload,
+  UpdateModulePayload,
+} from "@/services/moduleService";
+import {
+  CreateLessonPayload,
+  UpdateLessonPayload,
+} from "@/services/lessonService";
 
 interface Props {
   selection: SelectionType;
+  courseId: string;
+  modules: Module[];
+  loading?: boolean;
+  lessonsMap: Record<string, Lesson[]>;
+  onAddModule: (
+    courseId: string,
+    data: CreateCourseModulePayload,
+  ) => Promise<any>;
+  onEditModule: (moduleId: string, data: UpdateModulePayload) => Promise<any>;
+  onDeleteModule: (moduleId: string) => Promise<any>;
+  onAddLesson: (moduleId: string, data: CreateLessonPayload) => Promise<any>;
+  onEditLesson: (lessonId: string, data: UpdateLessonPayload) => Promise<any>;
+  onDeleteLesson: (lessonId: string) => Promise<any>;
+
+  onSuccess?: () => void;
 }
 
-export default function BuilderEditor({ selection }: Props) {
-  if (!selection) {
+export default function BuilderEditor({
+  selection,
+  courseId,
+  modules,
+  lessonsMap,
+  loading,
+  onAddModule,
+  onEditModule,
+  onDeleteModule,
+  onAddLesson,
+  onEditLesson,
+  onDeleteLesson,
+
+  onSuccess,
+}: Props) {
+  if (!selection.type) {
     return (
       <main className="flex-1 flex items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-3 text-center max-w-xs">
@@ -29,12 +68,48 @@ export default function BuilderEditor({ selection }: Props) {
     );
   }
 
+  const selectedModule =
+    selection.type === "module"
+      ? modules.find((m) => m.id === selection.selectedId)
+      : undefined;
+
+  const selectedLesson =
+    selection.type === "lesson"
+      ? Object.values(lessonsMap)
+          .flat()
+          .find((l) => l.id === selection.selectedId)
+      : undefined;
+
   return (
-    <main className="flex-1 flex items-center justify-center bg-background">
+    <main className="flex-1 flex items-center justify-center bg-background p-8">
       {selection.type === "module" || selection.type === "new-module" ? (
-        <ModuleForm />
+        <ModuleForm
+          courseId={courseId}
+          module={selectedModule}
+          onCreate={onAddModule}
+          onUpdate={onEditModule}
+          onDelete={
+            selectedModule ? () => onDeleteModule(selectedModule.id) : undefined
+          }
+          onSuccess={onSuccess}
+          loading={loading}
+        />
       ) : (
-        <LessonForm />
+        <LessonForm
+          moduleId={
+            selection.type === "new-lesson"
+              ? selection.moduleId
+              : selection.selectedId
+          }
+          lesson={selectedLesson}
+          onCreate={onAddLesson}
+          onUpdate={onEditLesson}
+          onDelete={
+            selectedLesson ? () => onDeleteLesson(selectedLesson.id) : undefined
+          }
+          onSuccess={onSuccess}
+          loading={loading}
+        />
       )}
     </main>
   );

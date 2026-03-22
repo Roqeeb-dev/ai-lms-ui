@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { BookOpen, Sparkles, BarChart2 } from "lucide-react";
 import { Course } from "@/types/course";
 import CourseCard from "@/components/CourseCard";
+import { useEnrollment } from "@/hooks/useEnrollment";
+import { useCourse } from "@/hooks/useCourse";
 
-type EnrolledCourse = Course & { progress?: number };
 type RecommendedCourse = Course & { reason?: string };
 
 const categories = [
@@ -17,36 +18,9 @@ const categories = [
   "Languages",
 ];
 
-const enrolledCourses: EnrolledCourse[] = [
-  {
-    id: "1",
-    title: "Introduction to Python",
-    description: "Learn Python from scratch with hands-on projects.",
-    instructor: { _id: "t1", name: "Ada Lovelace", email: "ada@cognify.com" },
-    thumbnail: { url: "", public_id: "" },
-    status: "published",
-    category: "Technology",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    progress: 72,
-  },
-  {
-    id: "2",
-    title: "Business Communication",
-    description: "Master professional communication skills.",
-    instructor: { _id: "t2", name: "John Smith", email: "john@cognify.com" },
-    thumbnail: { url: "", public_id: "" },
-    status: "published",
-    category: "Business",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    progress: 45,
-  },
-];
-
 const recommendedCourses: RecommendedCourse[] = [
   {
-    id: "4",
+    id: "mock-1",
     title: "Data Structures & Algorithms",
     description: "Master the fundamentals of DSA.",
     instructor: { _id: "t4", name: "Grace Hopper", email: "grace@cognify.com" },
@@ -55,10 +29,10 @@ const recommendedCourses: RecommendedCourse[] = [
     category: "Technology",
     createdAt: new Date(),
     updatedAt: new Date(),
-    reason: "Matches your Python path",
+    reason: "Matches your learning path",
   },
   {
-    id: "5",
+    id: "mock-2",
     title: "Product Management 101",
     description: "Learn how to build and ship great products.",
     instructor: { _id: "t5", name: "Alan Turing", email: "alan@cognify.com" },
@@ -71,42 +45,25 @@ const recommendedCourses: RecommendedCourse[] = [
   },
 ];
 
-const browseCourses: Course[] = [
-  {
-    id: "7",
-    title: "Machine Learning Basics",
-    description: "An intro to ML concepts and tools.",
-    instructor: { _id: "t6", name: "Marie Curie", email: "marie@cognify.com" },
-    thumbnail: { url: "", public_id: "" },
-    status: "published",
-    category: "Technology",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    id: "8",
-    title: "Financial Literacy",
-    description: "Understand money, investing, and financial planning.",
-    instructor: {
-      _id: "t7",
-      name: "Warren Buffet",
-      email: "warren@cognify.com",
-    },
-    thumbnail: { url: "", public_id: "" },
-    status: "published",
-    category: "Business",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-];
-
 export default function CourseClient() {
   const [activeCategory, setActiveCategory] = useState("All");
+  const { enrollments, fetching: fetchingEnrollments } = useEnrollment();
+  const { allCourses, fetchingAllCourses, getAllCourses } = useCourse();
 
-  const filteredBrowse =
-    activeCategory === "All"
-      ? browseCourses
-      : browseCourses.filter((c) => c.category === activeCategory);
+  useEffect(() => {
+    getAllCourses();
+  }, []);
+
+  const enrolledCourseIds = new Set(enrollments.map((e) => e.course.id));
+
+  const filteredBrowse = useMemo(() => {
+    return allCourses.filter((c) => {
+      const matchesCategory =
+        activeCategory === "All" || c.category === activeCategory;
+      const notEnrolled = !enrolledCourseIds.has(c.id);
+      return matchesCategory && notEnrolled;
+    });
+  }, [allCourses, activeCategory, enrolledCourseIds]);
 
   return (
     <div className="flex flex-col gap-8 max-w-6xl mx-auto">
@@ -131,14 +88,37 @@ export default function CourseClient() {
           </div>
           <div className="flex items-center gap-1.5 text-xs text-foreground-muted">
             <BarChart2 size={13} />
-            <span>{enrolledCourses.length} courses</span>
+            <span>{enrollments.length} courses</span>
           </div>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {enrolledCourses.map((c) => (
-            <CourseCard key={c.id} course={c} enrolled />
-          ))}
-        </div>
+
+        {fetchingEnrollments ? (
+          <div className="flex items-center justify-center py-10">
+            <p className="text-xs text-foreground-muted">
+              Loading enrolled courses...
+            </p>
+          </div>
+        ) : enrollments.length === 0 ? (
+          <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-border bg-card py-12 px-6 text-center">
+            <span className="text-3xl opacity-30">📚</span>
+            <p className="text-sm font-semibold text-foreground">
+              No enrolled courses yet
+            </p>
+            <p className="text-xs text-foreground-muted">
+              Browse available courses below and enroll to get started.
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {enrollments.map((enrollment) => (
+              <CourseCard
+                key={enrollment.id}
+                course={{ ...enrollment.course, progress: 0 }}
+                enrolled
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       {/* AI Recommended */}
@@ -176,11 +156,28 @@ export default function CourseClient() {
             </button>
           ))}
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredBrowse.map((c) => (
-            <CourseCard key={c.id} course={c} />
-          ))}
-        </div>
+
+        {fetchingAllCourses ? (
+          <div className="flex items-center justify-center py-10">
+            <p className="text-xs text-foreground-muted">Loading courses...</p>
+          </div>
+        ) : filteredBrowse.length === 0 ? (
+          <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-border bg-card py-12 px-6 text-center">
+            <span className="text-3xl opacity-30">🔍</span>
+            <p className="text-sm font-semibold text-foreground">
+              No courses found
+            </p>
+            <p className="text-xs text-foreground-muted">
+              Try a different category or check back later.
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {filteredBrowse.map((c) => (
+              <CourseCard key={c.id} course={c} />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

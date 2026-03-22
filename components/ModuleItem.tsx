@@ -15,7 +15,7 @@ import {
 function LessonTypeIcon({ type }: { type: Lesson["type"] }) {
   if (type === "video")
     return <PlayCircle size={11} className="text-foreground-muted shrink-0" />;
-  if (type === "document")
+  if (type === "pdf")
     return <FileText size={11} className="text-foreground-muted shrink-0" />;
   return <AlignLeft size={11} className="text-foreground-muted shrink-0" />;
 }
@@ -24,9 +24,11 @@ export function ModuleItem({
   mod,
   lessons,
   onSelect,
+  onAddLesson,
 }: {
   mod: Module;
   lessons: Lesson[];
+  onAddLesson: (moduleId: string) => void;
   onSelect: (moduleId: string) => void;
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -91,7 +93,10 @@ export function ModuleItem({
             </div>
           )}
 
-          <button className="w-full flex items-center justify-center gap-1.5 text-xs font-medium py-1.5 rounded-md border border-dashed border-border text-foreground-muted hover:border-primary hover:text-primary transition-colors">
+          <button
+            onClick={() => onAddLesson(mod.id)}
+            className="w-full flex items-center justify-center gap-1.5 text-xs font-medium py-1.5 rounded-md border border-dashed border-border text-foreground-muted hover:border-primary hover:text-primary transition-colors"
+          >
             <Plus size={12} />
             Add Lesson
           </button>
