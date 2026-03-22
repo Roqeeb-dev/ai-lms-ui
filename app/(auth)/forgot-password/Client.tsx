@@ -2,28 +2,21 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { auth } from "@/services/authService";
 import { LoadingDots } from "@/components/LoadingDots";
+import { useUser } from "@/hooks/useUser";
+import { Mail } from "lucide-react";
 
 export default function ForgotPasswordClient() {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
+  const { forgotPassword, sendingReset, error } = useUser();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setLoading(true);
-    setError("");
-
     try {
-      await auth.forgotPassword({ email });
+      await forgotPassword(email);
       setSubmitted(true);
-    } catch (err: any) {
-      setError(err.message ?? "Something went wrong");
-    } finally {
-      setLoading(false);
-    }
+    } catch {}
   }
 
   return (
@@ -31,19 +24,7 @@ export default function ForgotPasswordClient() {
       {submitted ? (
         <div className="flex flex-col gap-6 lg:gap-4 text-center">
           <div className="w-16 h-16 lg:w-12 lg:h-12 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto">
-            <svg
-              className="w-6 h-6 lg:w-5 lg:h-5 text-primary"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-              />
-            </svg>
+            <Mail />
           </div>
           <div className="flex flex-col gap-2 lg:gap-1.5">
             <h1 className="text-2xl lg:text-xl font-bold text-foreground tracking-tight">
@@ -102,12 +83,16 @@ export default function ForgotPasswordClient() {
 
             <button
               type="submit"
-              disabled={loading}
+              disabled={sendingReset}
               className="w-full rounded-lg bg-primary text-primary-foreground px-3 py-3 lg:py-2 text-sm font-semibold
                          hover:bg-primary-hover active:scale-[0.98] transition-all duration-200 shadow-sm
                          disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:bg-primary"
             >
-              {loading ? <LoadingDots text="Sending" /> : "Send reset link"}
+              {sendingReset ? (
+                <LoadingDots text="Sending" />
+              ) : (
+                "Send reset link"
+              )}
             </button>
           </form>
 

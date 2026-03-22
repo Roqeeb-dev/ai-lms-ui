@@ -9,6 +9,7 @@ import DashboardHeader from "@/components/DashboardHeader";
 import CourseCard from "@/components/CourseCard";
 import CourseModal, { CourseFormData } from "@/components/CreateCourseModal";
 import { useInstructorCourses } from "@/hooks/useInstructorCourses";
+import { useRouter } from "next/navigation";
 
 export type InstructorCourse = Course & { totalStudents?: number };
 
@@ -29,17 +30,18 @@ export default function InstructorClient() {
   );
   const publishedCount = courses.filter((c) => c.status === "published").length;
   const draftCount = courses.filter((c) => c.status === "draft").length;
+  const router = useRouter();
 
   const stats = [
     {
-      label: "Total Courses",
+      label: `Total Course${totalCourses === 1 ? "" : "s"}`,
       value: totalCourses,
       icon: BookOpen,
       color: "text-primary",
       bg: "bg-primary/10",
     },
     {
-      label: "Total Students",
+      label: `Total Student${totalStudents === 1 ? "" : "s"}`,
       value: totalStudents,
       icon: Users,
       color: "text-emerald-600",
@@ -53,7 +55,7 @@ export default function InstructorClient() {
       bg: "bg-sky-500/10",
     },
     {
-      label: "Drafts",
+      label: `Draft${draftCount === 1 ? "" : "s"}`,
       value: draftCount,
       icon: LayoutGrid,
       color: "text-amber-600",
@@ -62,7 +64,9 @@ export default function InstructorClient() {
   ];
 
   async function handleCreate(data: CourseFormData) {
-    await createCourse(data);
+    const res = await createCourse(data);
+    if (!res) return;
+    router.push(`/dashboard/instructor/course-builder/${res.course.id}`);
   }
 
   async function handleUpdate(data: CourseFormData) {
@@ -73,21 +77,18 @@ export default function InstructorClient() {
 
   return (
     <div className="flex flex-col gap-8 max-w-6xl mx-auto">
-      {/* Header */}
       <DashboardHeader
         title="Instructor Dashboard"
         text="Manage your courses and track student engagement."
         onClick={() => setModalState({ open: true, mode: "create" })}
       />
 
-      {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat) => (
           <StatCard key={stat.label} stat={stat} />
         ))}
       </div>
 
-      {/* My Courses */}
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-bold text-foreground uppercase tracking-widest">
@@ -122,9 +123,6 @@ export default function InstructorClient() {
                 key={course.id}
                 course={course}
                 variant="instructor"
-                onEdit={() =>
-                  setModalState({ open: true, mode: "update", course })
-                }
               />
             ))}
           </div>

@@ -1,40 +1,37 @@
 "use client";
-
 import {
   Home,
-  School,
-  Users,
   BookOpen,
-  FileText,
-  MessageCircle,
-  Settings,
+  Users,
+  ClipboardList,
+  BarChart2,
   User,
+  Settings,
 } from "lucide-react";
 import SidebarLink from "../SidebarLink";
 import Logo from "@/components/Logo";
 
 const links = [
-  { href: "/dashboard/instructor", label: "Home", icon: Home },
+  { href: "/dashboard/instructor", label: "Dashboard", icon: Home },
   {
-    href: "/dashboard/instructor/classrooms",
-    label: "Classrooms",
-    icon: School,
+    href: "/dashboard/instructor/courses",
+    label: "My Courses",
+    icon: BookOpen,
   },
+
   { href: "/dashboard/instructor/students", label: "Students", icon: Users },
-  { href: "/dashboard/instructor/courses", label: "Courses", icon: BookOpen },
   {
-    href: "/dashboard/instructor/assignments",
-    label: "Assignments",
-    icon: FileText,
+    href: "/dashboard/instructor/quizzes",
+    label: "Quizzes",
+    icon: ClipboardList,
   },
   {
-    href: "/dashboard/instructor/discussions",
-    label: "Discussions",
-    icon: MessageCircle,
+    href: "/dashboard/instructor/analytics",
+    label: "Analytics",
+    icon: BarChart2,
   },
 ];
 
-// Bottom / account-related links
 const bottomLinks = [
   { href: "/dashboard/instructor/profile", label: "Profile", icon: User },
   { href: "/dashboard/instructor/settings", label: "Settings", icon: Settings },

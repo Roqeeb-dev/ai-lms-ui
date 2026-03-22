@@ -4,52 +4,33 @@ import { useState } from "react";
 import { EyeOff, Eye } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useForm } from "@/hooks/useForm";
-import { auth } from "@/services/authService";
-import type { AuthResponse } from "@/services/authService";
 import Link from "next/link";
 import { LoadingDots } from "@/components/LoadingDots";
-
-import { useUserStore } from "@/store/useUserStore";
+import { useUser } from "@/hooks/useUser";
 import { ROLES } from "@/types/roles";
-
 import type { User, Role } from "@/types/user";
 
 type RegisterDetails = Pick<User, "name" | "email" | "password" | "role">;
 
-type RegisterState =
-  | { state: "idle" }
-  | { state: "loading" }
-  | { state: "success"; data: AuthResponse }
-  | { state: "error"; error: any };
-
 export default function RegisterClient() {
   const [showPassword, setShowPassword] = useState(false);
-  const [authState, setAuthState] = useState<RegisterState>({ state: "idle" });
+  const { registerUser, registering, error } = useUser();
+  const router = useRouter();
 
   const { values, update, reset } = useForm<RegisterDetails>({
     name: "",
     email: "",
     password: "",
-    role: ROLES.STUDENT as Role, // default
+    role: ROLES.STUDENT as Role,
   });
-
-  const { setUser } = useUserStore();
-  const router = useRouter();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setAuthState({ state: "loading" });
-
     try {
-      const data = await auth.register(values);
-      setAuthState({ state: "success", data });
-      setUser(data.user);
+      await registerUser(values);
       reset();
       router.push("/verify-email");
-    } catch (err: any) {
-      setAuthState({ state: "error", error: err });
-      alert("Registration failed: " + (err.message || "Unknown error"));
-    }
+    } catch {}
   }
 
   return (
@@ -172,21 +153,17 @@ export default function RegisterClient() {
 
         <button
           type="submit"
-          disabled={authState.state === "loading"}
+          disabled={registering}
           className="w-full mt-1 rounded-lg bg-primary text-primary-foreground px-3 py-3 lg:py-2 text-sm font-semibold hover:bg-primary-hover active:scale-[0.98] transition-all duration-200 shadow-sm disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:bg-primary"
         >
-          {authState.state === "loading" ? (
+          {registering ? (
             <LoadingDots text="Creating your account" />
           ) : (
             "Create account"
           )}
         </button>
 
-        {authState.state === "error" && (
-          <p className="text-red-500 text-sm mt-2">
-            {authState.error?.message || "Registration failed."}
-          </p>
-        )}
+        {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
       </form>
 
       {/* Terms */}

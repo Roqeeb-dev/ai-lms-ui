@@ -4,11 +4,8 @@ import { Menu } from "lucide-react";
 import NotificationBell from "./NotificationBell";
 import UserMenu from "./UserMenu";
 import { PublicUser } from "@/types/user";
-import Link from "next/link";
 
-export interface TopbarUser extends PublicUser {
-  streak?: number;
-}
+export type TopbarUser = PublicUser;
 
 interface DashboardTopbarProps {
   user: TopbarUser;
@@ -40,28 +37,6 @@ export default function DashboardTopbar({
 
       {/* Right */}
       <div className="flex items-center gap-1">
-        {/* Student streak */}
-        {user.role === "student" &&
-          user.streak !== undefined &&
-          user.streak > 0 && (
-            <div className="hidden sm:flex items-center gap-1.5 bg-accent/10 border border-accent/20 rounded-lg px-3 py-1.5 mr-1">
-              <span className="text-sm">🔥</span>
-              <span className="text-xs font-bold text-amber-600">
-                {user.streak} day streak
-              </span>
-            </div>
-          )}
-
-        {/* Instructor — new classroom shortcut */}
-        {user.role === "instructor" && (
-          <Link
-            href="/dashboard/instructor/classrooms/new"
-            className="hidden sm:flex items-center gap-1.5 bg-secondary/10 border border-secondary/20 rounded-lg px-3 py-1.5 mr-1 text-xs font-semibold text-secondary hover:bg-secondary/20 transition-colors duration-200"
-          >
-            + New classroom
-          </Link>
-        )}
-
         <NotificationBell count={notificationCount} />
         <UserMenu user={user} />
       </div>

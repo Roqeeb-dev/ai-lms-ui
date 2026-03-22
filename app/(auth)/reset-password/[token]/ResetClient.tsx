@@ -3,9 +3,9 @@
 import { useState, useEffect } from "react";
 import { Eye, EyeOff, Check } from "lucide-react";
 import Link from "next/link";
-import { auth } from "@/services/authService";
 import { LoadingDots } from "@/components/LoadingDots";
 import { useParams, useRouter } from "next/navigation";
+import { useUser } from "@/hooks/useUser";
 
 interface ResetDetails {
   password: string;
@@ -16,12 +16,12 @@ export default function ResetClient() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
   const [resetDetails, setResetDetails] = useState<ResetDetails>({
     password: "",
     confirmPassword: "",
   });
+
+  const { resetPassword, resettingPassword, error } = useUser();
   const params = useParams<{ token: string }>();
   const token = params.token;
   const router = useRouter();
@@ -36,7 +36,6 @@ export default function ResetClient() {
       const timer = setTimeout(() => {
         router.push("/login");
       }, 2000);
-
       return () => clearTimeout(timer);
     }
   }, [submitted]);
@@ -48,34 +47,23 @@ export default function ResetClient() {
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!passwordsMatch) return;
-
-    if (!token) {
-      setError("Invalid or expired reset link.");
-      return;
-    }
-
-    setLoading(true);
-    setError("");
+    if (!token) return;
 
     try {
-      await auth.resetPassword(token, { password: resetDetails.password });
+      await resetPassword(token, resetDetails.password);
       setSubmitted(true);
-    } catch (err: any) {
-      setError(err.message ?? "Something went wrong");
-    } finally {
-      setLoading(false);
-    }
+    } catch {}
   }
 
   return (
-    <div className="w-full max-w-md flex flex-col gap-6">
+    <div className="w-full max-w-md px-5 pt-10 pb-8 lg:p-6 flex flex-col gap-8 lg:gap-6">
       {submitted ? (
-        <div className="flex flex-col gap-4 text-center">
-          <div className="w-12 h-12 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto">
-            <Check className="text-yellow-800" />
+        <div className="flex flex-col gap-6 lg:gap-4 text-center">
+          <div className="w-16 h-16 lg:w-12 lg:h-12 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto">
+            <Check className="text-primary" size={22} />
           </div>
-          <div className="flex flex-col gap-1.5">
-            <h1 className="text-xl font-bold text-foreground tracking-tight">
+          <div className="flex flex-col gap-2 lg:gap-1.5">
+            <h1 className="text-2xl lg:text-xl font-bold text-foreground tracking-tight">
               Password reset
             </h1>
             <p className="text-sm text-foreground-muted leading-relaxed">
@@ -85,15 +73,15 @@ export default function ResetClient() {
           </div>
           <Link
             href="/login"
-            className="w-full rounded-lg bg-primary text-primary-foreground px-3 py-2 text-sm font-semibold hover:bg-primary-hover active:scale-[0.98] transition-all duration-200 shadow-sm text-center"
+            className="w-full rounded-lg bg-primary text-primary-foreground px-3 py-3 lg:py-2 text-sm font-semibold hover:bg-primary-hover active:scale-[0.98] transition-all duration-200 shadow-sm text-center"
           >
             Back to login
           </Link>
         </div>
       ) : (
         <>
-          <div className="flex flex-col gap-1.5">
-            <h1 className="text-xl font-bold text-foreground tracking-tight">
+          <div className="flex flex-col gap-2 lg:gap-1.5">
+            <h1 className="text-2xl lg:text-xl font-bold text-foreground tracking-tight">
               Reset your password
             </h1>
             <p className="text-sm text-foreground-muted leading-relaxed">
@@ -101,7 +89,10 @@ export default function ResetClient() {
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+          <form
+            onSubmit={handleSubmit}
+            className="flex flex-col gap-5 lg:gap-4"
+          >
             <div className="flex flex-col gap-1.5">
               <label className="text-xs font-semibold tracking-widest uppercase text-foreground-muted">
                 New Password
@@ -113,7 +104,7 @@ export default function ResetClient() {
                   name="password"
                   value={resetDetails.password}
                   onChange={handleChange}
-                  className="w-full rounded-lg border border-border bg-input px-3 py-2 pr-11 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-input-focus transition-all duration-200"
+                  className="w-full rounded-lg border border-border bg-input px-3 py-3 lg:py-2 pr-11 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-input-focus transition-all duration-200"
                   required
                 />
                 <button
@@ -137,7 +128,7 @@ export default function ResetClient() {
                   name="confirmPassword"
                   value={resetDetails.confirmPassword}
                   onChange={handleChange}
-                  className={`w-full rounded-lg border bg-input px-3 py-2 pr-11 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-all duration-200 ${
+                  className={`w-full rounded-lg border bg-input px-3 py-3 lg:py-2 pr-11 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-all duration-200 ${
                     passwordsMatch
                       ? "border-border focus:border-input-focus"
                       : "border-destructive focus:ring-destructive"
@@ -163,10 +154,14 @@ export default function ResetClient() {
 
             <button
               type="submit"
-              disabled={!passwordsMatch || loading}
-              className="w-full rounded-lg bg-primary text-primary-foreground px-3 py-2 text-sm font-semibold hover:bg-primary-hover active:scale-[0.98] transition-all duration-200 shadow-sm disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:bg-primary"
+              disabled={!passwordsMatch || resettingPassword}
+              className="w-full rounded-lg bg-primary text-primary-foreground px-3 py-3 lg:py-2 text-sm font-semibold hover:bg-primary-hover active:scale-[0.98] transition-all duration-200 shadow-sm disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:bg-primary"
             >
-              {loading ? <LoadingDots text="Resetting..." /> : "Reset password"}
+              {resettingPassword ? (
+                <LoadingDots text="Resetting" />
+              ) : (
+                "Reset password"
+              )}
             </button>
           </form>
 
