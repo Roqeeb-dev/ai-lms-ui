@@ -1,7 +1,160 @@
+"use client";
+
+import { useState, useEffect, useMemo } from "react";
+import { Search, BookOpen } from "lucide-react";
+import CourseCard from "@/components/CourseCard";
+import { useCourse } from "@/hooks/useCourse";
+import { useEnrollment } from "@/hooks/useEnrollment";
+
+const categories = [
+  "All",
+  "Technology",
+  "Business",
+  "Design",
+  "Science",
+  "Languages",
+];
+
 export default function BrowseClient() {
+  const [search, setSearch] = useState("");
+  const [activeCategory, setActiveCategory] = useState("All");
+  const { allCourses, fetchingAllCourses, getAllCourses } = useCourse();
+  const { enrollments } = useEnrollment();
+
+  useEffect(() => {
+    getAllCourses();
+  }, []);
+
+  const enrolledCourseIds = new Set(enrollments.map((e) => e.course.id));
+
+  const filtered = useMemo(() => {
+    return allCourses.filter((c) => {
+      const matchesSearch = c.title
+        .toLowerCase()
+        .includes(search.toLowerCase());
+      const matchesCategory =
+        activeCategory === "All" || c.category === activeCategory;
+      return matchesSearch && matchesCategory;
+    });
+  }, [allCourses, search, activeCategory]);
+
   return (
-    <main>
-      <div>Browse all courses</div>
-    </main>
+    <div className="flex flex-col gap-6 max-w-6xl mx-auto">
+      {/* Header */}
+      <div className="flex flex-col gap-1">
+        <h1 className="text-xl font-bold text-foreground tracking-tight">
+          Explore Courses
+        </h1>
+        <p className="text-sm text-foreground-muted">
+          Discover new skills and find your next course.
+        </p>
+      </div>
+
+      {/* Search */}
+      <div className="relative">
+        <Search
+          size={14}
+          className="absolute left-3 top-1/2 -translate-y-1/2 text-foreground-muted"
+        />
+        <input
+          type="text"
+          placeholder="Search courses..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full rounded-lg border border-border bg-input pl-9 pr-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-input-focus transition-all duration-200"
+        />
+      </div>
+
+      {/* Category filter */}
+      <div className="flex flex-wrap gap-2">
+        {categories.map((cat) => (
+          <button
+            key={cat}
+            onClick={() => setActiveCategory(cat)}
+            className={`px-3 py-1 rounded-full text-xs font-semibold border transition-all duration-200 ${
+              activeCategory === cat
+                ? "bg-primary text-primary-foreground border-primary"
+                : "bg-card text-foreground-muted border-border hover:border-primary/50 hover:text-foreground"
+            }`}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
+
+      {/* Results count */}
+      {!fetchingAllCourses && (
+        <div className="flex items-center gap-2 -mt-2">
+          <BookOpen size={13} className="text-foreground-muted" />
+          <p className="text-xs text-foreground-muted">
+            Showing{" "}
+            <span className="font-semibold text-foreground">
+              {filtered.length}
+            </span>{" "}
+            {filtered.length === 1 ? "course" : "courses"}
+            {activeCategory !== "All" && (
+              <span>
+                {" "}
+                · filtered by{" "}
+                <span className="font-semibold text-foreground">
+                  {activeCategory}
+                </span>
+              </span>
+            )}
+            {search && (
+              <span>
+                {" "}
+                · matching{" "}
+                <span className="font-semibold text-foreground">
+                  "{search}"
+                </span>
+              </span>
+            )}
+          </p>
+        </div>
+      )}
+
+      {/* Course grid */}
+      {fetchingAllCourses ? (
+        <div className="flex items-center justify-center py-16">
+          <p className="text-sm text-foreground-muted">Loading courses...</p>
+        </div>
+      ) : filtered.length === 0 ? (
+        <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-border bg-card py-16 px-6 text-center">
+          <span className="text-4xl opacity-30">🔍</span>
+          <p className="text-sm font-semibold text-foreground">
+            {search
+              ? `No courses matching "${search}"`
+              : "No courses available"}
+          </p>
+          <p className="text-xs text-foreground-muted">
+            {search
+              ? "Try a different search term or clear the filters."
+              : "Check back later for new courses."}
+          </p>
+          {(search || activeCategory !== "All") && (
+            <button
+              onClick={() => {
+                setSearch("");
+                setActiveCategory("All");
+              }}
+              className="text-xs font-semibold text-primary hover:underline underline-offset-4"
+            >
+              Clear filters
+            </button>
+          )}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filtered.map((c) => (
+            <CourseCard
+              key={c.id}
+              course={c}
+              enrolled={enrolledCourseIds.has(c.id)}
+            />
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
