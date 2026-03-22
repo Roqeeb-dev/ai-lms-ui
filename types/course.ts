@@ -16,7 +16,7 @@ export interface ServerCourse {
   _id: string;
   title: string;
   description: string;
-  instructor: Instructor;
+  instructor: Instructor | string;
   status: Status;
   createdAt: string;
   updatedAt: string;

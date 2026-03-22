@@ -48,11 +48,16 @@ function normalizeCourse(data: ServerCourse): Course {
   const createdAt = data.createdAt ? new Date(data.createdAt) : new Date();
   const updatedAt = data.updatedAt ? new Date(data.updatedAt) : new Date();
 
+  const instructor =
+    typeof data.instructor === "string"
+      ? { _id: data.instructor, name: "", email: "" }
+      : data.instructor;
+
   return {
     id: data._id,
     title: data.title,
     description: data.description,
-    instructor: data.instructor,
+    instructor,
     thumbnail: data.thumbnail,
     status: data.status,
     createdAt,

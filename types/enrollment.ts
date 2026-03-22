@@ -67,6 +67,11 @@ export type EnrollmentWithCourse = {
 export function normalizeEnrollmentPopulated(
   data: ServerEnrollmentPopulated,
 ): EnrollmentWithCourse {
+  const instructor =
+    typeof data.course.instructor === "string"
+      ? { _id: data.course.instructor, name: "", email: "" }
+      : data.course.instructor;
+
   return {
     id: data._id,
     userId: data.user,
@@ -77,11 +82,15 @@ export function normalizeEnrollmentPopulated(
       id: data.course._id,
       title: data.course.title,
       description: data.course.description,
-      instructor: data.course.instructor,
+      instructor,
       status: data.course.status,
       thumbnail: data.course.thumbnail,
-      createdAt: new Date(data.course.createdAt),
-      updatedAt: new Date(data.course.updatedAt),
+      createdAt: data.course.createdAt
+        ? new Date(data.course.createdAt)
+        : new Date(),
+      updatedAt: data.course.updatedAt
+        ? new Date(data.course.updatedAt)
+        : new Date(),
     },
   };
 }
