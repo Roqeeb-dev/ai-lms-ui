@@ -11,27 +11,44 @@ import BuilderContent from "@/components/BuilderContent";
 import BuilderEditor from "@/components/BuilderEditor";
 import { Lesson } from "@/types/lesson";
 
-export interface SelectionType {
-  selectedId: string;
-  type: "module" | "lesson" | "new-module" | null;
-}
+export type SelectionType =
+  | { type: "new-module" }
+  | { type: "module"; selectedId: string }
+  | { type: "new-lesson"; moduleId: string }
+  | { type: "lesson"; selectedId: string }
+  | { type: null };
 
 export default function BuilderClient() {
   const params = useParams<{ courseId: string }>();
   const [courseDetails, setCourseDetails] = useState<Course | null>(null);
   const [lessonsMap, setLessonsMap] = useState<Record<string, Lesson[]>>({});
   const [selectedItem, setSelectedItem] = useState<SelectionType>({
-    selectedId: "",
     type: null,
   });
 
   const { fetchingCourseDetails, getCourseDetails } = useCourse();
+
   const {
     modules,
     fetching: fetchingModules,
     fetchCourseModules,
+    addModule,
+    editModule,
+    removeModule,
+    creating: creatingModule,
+    updating: updatingModule,
+    deleting: deletingModule,
   } = useModule();
-  const { fetchModuleLessons } = useLesson();
+
+  const {
+    fetchModuleLessons,
+    addLesson,
+    editLesson,
+    removeLesson,
+    creating: creatingLesson,
+    updating: updatingLesson,
+    deleting: deletingLesson,
+  } = useLesson();
 
   async function fetchLessons(moduleId: string) {
     if (lessonsMap[moduleId]) return;
@@ -77,10 +94,35 @@ export default function BuilderClient() {
           lessonsMap={lessonsMap}
           onModuleSelect={(moduleId) => {
             fetchLessons(moduleId);
-            setSelectedItem({ selectedId: moduleId, type: "module" });
+            setSelectedItem({ type: "module", selectedId: moduleId });
           }}
+          // onLessonSelect={(lessonId) =>
+          //   setSelectedItem({ type: "lesson", selectedId: lessonId })
+          // }
+          onAddModule={() => setSelectedItem({ type: "new-module" })}
+          // onAddLesson={(moduleId) =>
+          //   setSelectedItem({ type: "new-lesson", moduleId })
+          // }
         />
-        <BuilderEditor selection={selectedItem} />
+        <BuilderEditor
+          selection={selectedItem}
+          courseId={params.courseId}
+          modules={modules}
+          lessonsMap={lessonsMap}
+          onAddModule={addModule}
+          onEditModule={editModule}
+          onDeleteModule={removeModule}
+          onAddLesson={addLesson}
+          onEditLesson={editLesson}
+          onDeleteLesson={removeLesson}
+          creatingModule={creatingModule}
+          updatingModule={updatingModule}
+          deletingModule={deletingModule}
+          creatingLesson={creatingLesson}
+          updatingLesson={updatingLesson}
+          deletingLesson={deletingLesson}
+          onSuccess={() => setSelectedItem({ type: null })}
+        />
       </div>
     </div>
   );
