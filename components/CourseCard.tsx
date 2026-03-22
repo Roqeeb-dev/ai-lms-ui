@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Dialog from "./Dialog";
 import { useInstructorCourses } from "@/hooks/useInstructorCourses";
+import { useEnrollment } from "@/hooks/useEnrollment";
 
 interface StudentCardProps {
   variant?: "student";
@@ -52,6 +53,7 @@ export default function CourseCard({
     : undefined;
 
   const router = useRouter();
+  const { enrolling, enroll, refetchEnrollments } = useEnrollment();
 
   function handleEdit() {
     router.push(`/dashboard/instructor/course-builder/${course.id}`);
@@ -62,6 +64,12 @@ export default function CourseCard({
     await deleteCourse(course.id);
     setIsDialogShown(false);
     onDelete?.();
+  }
+
+  async function handleEnroll(courseId: string) {
+    const res = await enroll(courseId);
+    if (!res) return;
+    await refetchEnrollments();
   }
 
   return (
@@ -101,7 +109,7 @@ export default function CourseCard({
           <CourseProgress progress={progress} />
         )}
 
-        <div className="flex items-center justify-between mt-auto pt-2 border-t border-border-subtle">
+        <div className="flex items-center justify-between mt-auto">
           {isInstructor ? (
             <InstructorFooter
               totalStudents={totalStudents}
@@ -111,8 +119,11 @@ export default function CourseCard({
             />
           ) : (
             <StudentFooter
-              instructorName={course.instructor?.name ?? "Instructor Name"}
+              instructorName={course.instructor?.name ?? "Instructor"}
               enrolled={enrolled}
+              onEnroll={() => handleEnroll(course.id)}
+              loading={enrolling}
+              courseId={course.id}
             />
           )}
         </div>
