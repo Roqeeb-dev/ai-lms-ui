@@ -23,16 +23,16 @@ export default function CourseDropdown({
   ];
 
   return (
-    <div className="absolute right-0 bottom-8 z-10 w-44 rounded-md border border-border bg-card shadow-md py-1">
+    <div className="absolute right-0 bottom-10 z-10 w-48 rounded-lg border border-border bg-card shadow-lg py-1.5">
       {dropdownLinks.map((link, idx) => (
         <button
           key={idx}
           onClick={link.action}
-          className={`w-full flex items-center gap-2 px-3 py-2 text-sm hover:bg-muted transition-colors ${
+          className={`w-full flex items-center gap-3 px-4 py-3 md:py-2 text-sm hover:bg-muted transition-colors ${
             link.danger ? "text-destructive" : "text-foreground"
           }`}
         >
-          <link.icon size={14} />
+          <link.icon size={15} />
           {link.text}
         </button>
       ))}

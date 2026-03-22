@@ -1,6 +1,6 @@
 "use client";
 
-import { X } from "lucide-react";
+import { X, AlertTriangle, CheckCircle, XCircle } from "lucide-react";
 import { createPortal } from "react-dom";
 
 interface DialogProps {
@@ -26,61 +26,48 @@ export default function Dialog({
 }: DialogProps) {
   if (!open) return null;
 
-  const bgColor =
-    type === "success"
-      ? "bg-green-50"
-      : type === "error"
-        ? "bg-red-50"
-        : "bg-gray-50";
-  const borderColor =
-    type === "success"
-      ? "border-green-200"
-      : type === "error"
-        ? "border-red-200"
-        : "border-gray-200";
-  const textColor =
-    type === "success"
-      ? "text-green-800"
-      : type === "error"
-        ? "text-red-800"
-        : "text-gray-800";
+  const icon =
+    type === "success" ? (
+      <CheckCircle size={18} className="text-emerald-500" />
+    ) : type === "error" ? (
+      <XCircle size={18} className="text-destructive" />
+    ) : (
+      <AlertTriangle size={18} className="text-amber-500" />
+    );
 
   return createPortal(
     <div className="fixed inset-0 flex items-center justify-center z-50 px-4">
-      {/* Overlay */}
       <div
-        className="fixed inset-0 bg-black/25 backdrop-blur-sm"
+        className="fixed inset-0 bg-black/40 backdrop-blur-sm"
         onClick={onClose}
       />
 
-      {/* Dialog box */}
-      <div
-        className={`relative w-full max-w-md rounded-lg border ${borderColor} ${bgColor} p-6 shadow-lg flex flex-col gap-4`}
-      >
-        {/* Close button */}
+      <div className="relative w-full max-w-sm bg-card border border-border rounded-xl shadow-xl flex flex-col gap-4 p-5">
+        {/* Close */}
         <button
           onClick={onClose}
-          className="absolute top-3 right-3 text-foreground-muted hover:text-foreground transition-colors"
+          className="absolute top-4 right-4 text-foreground-muted hover:text-foreground transition-colors"
         >
-          <X size={20} />
+          <X size={15} />
         </button>
 
-        {/* Title */}
-        <h2 className={`text-lg font-bold ${textColor} text-center pr-6`}>
-          {title}
-        </h2>
+        {/* Icon + Title */}
+        <div className="flex items-center gap-2.5 pr-6">
+          {icon}
+          <h2 className="text-sm font-semibold text-foreground">{title}</h2>
+        </div>
 
         {/* Message */}
-        <p className={`text-sm ${textColor} leading-relaxed text-center`}>
+        <p className="text-xs text-foreground-muted leading-relaxed">
           {message}
         </p>
 
-        {/* Action buttons */}
+        {/* Actions */}
         {type === "confirm" ? (
-          <div className="mt-2 flex gap-3">
+          <div className="flex items-center justify-end gap-2 pt-1">
             <button
               onClick={onClose}
-              className="flex-1 rounded-lg px-5 py-2.5 text-sm font-semibold bg-gray-200 text-gray-800 hover:bg-gray-300 transition-all duration-200"
+              className="px-3 py-1.5 text-xs font-semibold rounded-lg border border-border bg-background text-foreground hover:bg-muted transition-colors"
             >
               {cancelText}
             </button>
@@ -89,24 +76,24 @@ export default function Dialog({
                 onConfirm?.();
                 onClose();
               }}
-              className="flex-1 rounded-lg px-5 py-2.5 text-sm font-semibold bg-primary text-primary-foreground hover:bg-primary-hover transition-all duration-200"
+              className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-destructive text-white hover:bg-destructive/90 transition-colors"
             >
               {confirmText}
             </button>
           </div>
         ) : (
-          <button
-            onClick={onClose}
-            className={`mt-2 w-full rounded-lg px-5 py-2.5 text-sm font-semibold ${
-              type === "success"
-                ? "bg-green-600 text-white hover:bg-green-700"
-                : type === "error"
-                  ? "bg-red-600 text-white hover:bg-red-700"
-                  : "bg-gray-600 text-white hover:bg-gray-700"
-            } transition-all duration-200`}
-          >
-            OK
-          </button>
+          <div className="flex items-center justify-end pt-1">
+            <button
+              onClick={onClose}
+              className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors ${
+                type === "success"
+                  ? "bg-emerald-600 text-white hover:bg-emerald-700"
+                  : "bg-destructive text-white hover:bg-destructive/90"
+              }`}
+            >
+              OK
+            </button>
+          </div>
         )}
       </div>
     </div>,

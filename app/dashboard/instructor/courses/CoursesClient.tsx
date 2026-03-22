@@ -6,6 +6,9 @@ import Link from "next/link";
 import CourseCard from "@/components/CourseCard";
 import DashboardHeader from "@/components/DashboardHeader";
 import { useInstructorCourses } from "@/hooks/useInstructorCourses";
+import type { ModalState } from "../InstructorClient";
+import CourseModal, { CourseFormData } from "@/components/CreateCourseModal";
+import { useRouter } from "next/navigation";
 
 type FilterStatus = "all" | "published" | "draft";
 
@@ -17,8 +20,11 @@ const filterOptions: { label: string; value: FilterStatus }[] = [
 
 export default function CoursesClient() {
   const [search, setSearch] = useState("");
+  const router = useRouter();
   const [activeFilter, setActiveFilter] = useState<FilterStatus>("all");
-  const { courses, fetching } = useInstructorCourses();
+  const [modalState, setModalState] = useState<ModalState>({ open: false });
+  const { createCourse, updateCourse, courses, fetching } =
+    useInstructorCourses();
 
   const filtered = useMemo(() => {
     return courses.filter((c) => {
@@ -30,11 +36,33 @@ export default function CoursesClient() {
     });
   }, [courses, search, activeFilter]);
 
+  async function handleCreate(data: CourseFormData) {
+    const res = await createCourse(data);
+    if (!res) return;
+    router.push(`/dashboard/instructor/course-builder/${res.course.id}`);
+  }
+
+  async function handleUpdate(data: CourseFormData) {
+    if (modalState.open && modalState.mode === "update") {
+      await updateCourse(modalState.course.id, data);
+    }
+  }
+
+  async function toggleCourse(courseId: string) {
+    const courseToToggle = courses.find((c) => c.id === courseId);
+    if (!courseToToggle) return;
+
+    await updateCourse(courseId, {
+      status: courseToToggle.status === "published" ? "draft" : "published",
+    });
+  }
+
   return (
     <div className="flex flex-col gap-6 max-w-6xl mx-auto">
       <DashboardHeader
         title="My Courses"
         text="Manage, update, and track all your created courses."
+        onClick={() => setModalState({ open: true, mode: "create" })}
       />
 
       <Link
@@ -107,7 +135,12 @@ export default function CoursesClient() {
       ) : filtered.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {filtered.map((course) => (
-            <CourseCard key={course.id} course={course} variant="instructor" />
+            <CourseCard
+              key={course.id}
+              course={course}
+              variant="instructor"
+              onToggle={() => toggleCourse(course.id)}
+            />
           ))}
         </div>
       ) : (
@@ -135,6 +168,22 @@ export default function CoursesClient() {
           )}
         </div>
       )}
+
+      <CourseModal
+        open={modalState.open}
+        onClose={() => setModalState({ open: false })}
+        mode={modalState.open ? modalState.mode : "create"}
+        defaultValues={
+          modalState.open && modalState.mode === "update"
+            ? modalState.course
+            : undefined
+        }
+        onSubmit={
+          modalState.open && modalState.mode === "update"
+            ? handleUpdate
+            : handleCreate
+        }
+      />
     </div>
   );
 }
