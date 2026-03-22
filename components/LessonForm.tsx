@@ -19,10 +19,8 @@ import {
 interface Props {
   moduleId: string;
   lesson?: Lesson;
-  onSubmit: (
-    moduleOrLessonId: string,
-    data: CreateLessonPayload | UpdateLessonPayload,
-  ) => Promise<any>;
+  onCreate: (moduleId: string, data: CreateLessonPayload) => Promise<any>;
+  onUpdate: (lessonId: string, data: UpdateLessonPayload) => Promise<any>;
   onDelete?: () => void;
   onSuccess?: () => void;
   loading?: boolean;
@@ -35,14 +33,15 @@ const lessonTypes: {
   icon: React.ReactNode;
 }[] = [
   { value: "video", label: "Video", icon: <PlayCircle size={13} /> },
-  { value: "document", label: "Document", icon: <FileText size={13} /> },
+  { value: "pdf", label: "Document", icon: <FileText size={13} /> },
   { value: "text", label: "Text", icon: <AlignLeft size={13} /> },
 ];
 
 export default function LessonForm({
   moduleId,
   lesson,
-  onSubmit,
+  onCreate,
+  onUpdate,
   onDelete,
   onSuccess,
   loading,
@@ -71,19 +70,20 @@ export default function LessonForm({
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    const payload = isEditing
-      ? ({
-          title: values.title,
-          type: values.type,
-          ...(values.file && { file: values.file }),
-        } as UpdateLessonPayload)
-      : ({
-          title: values.title,
-          type: values.type,
-          file: values.file!,
-        } as CreateLessonPayload);
+    if (isEditing) {
+      await onUpdate(lesson!.id, {
+        title: values.title,
+        type: values.type,
+        ...(values.file && { file: values.file }),
+      });
+    } else {
+      await onCreate(moduleId, {
+        title: values.title,
+        type: values.type,
+        file: values.file!,
+      });
+    }
 
-    await onSubmit(isEditing ? lesson!.id : moduleId, payload);
     onSuccess?.();
     if (!isEditing) reset();
   }

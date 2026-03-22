@@ -10,6 +10,7 @@ interface Props {
   lessonsMap: Record<string, Lesson[]>;
   onModuleSelect: (moduleId: string) => void;
   onAddModule: () => void;
+  onAddLesson: (moduleId: string) => void;
 }
 
 export default function BuilderContent({
@@ -18,6 +19,7 @@ export default function BuilderContent({
   lessonsMap,
   onModuleSelect,
   onAddModule,
+  onAddLesson,
 }: Props) {
   return (
     <aside className="w-72 shrink-0 border-r border-border bg-card flex flex-col overflow-hidden">
@@ -46,6 +48,7 @@ export default function BuilderContent({
               mod={mod}
               lessons={lessonsMap[mod.id] ?? []}
               onSelect={onModuleSelect}
+              onAddLesson={() => onAddLesson(mod.id)}
             />
           ))
         )}

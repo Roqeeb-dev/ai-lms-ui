@@ -31,14 +31,7 @@ interface Props {
   onAddLesson: (moduleId: string, data: CreateLessonPayload) => Promise<any>;
   onEditLesson: (lessonId: string, data: UpdateLessonPayload) => Promise<any>;
   onDeleteLesson: (lessonId: string) => Promise<any>;
-  // loading states
-  creatingModule?: boolean;
-  updatingModule?: boolean;
-  deletingModule?: boolean;
-  creatingLesson?: boolean;
-  updatingLesson?: boolean;
-  deletingLesson?: boolean;
-  // reset selection
+
   onSuccess?: () => void;
 }
 
@@ -53,12 +46,7 @@ export default function BuilderEditor({
   onAddLesson,
   onEditLesson,
   onDeleteLesson,
-  creatingModule,
-  updatingModule,
-  deletingModule,
-  creatingLesson,
-  updatingLesson,
-  deletingLesson,
+
   onSuccess,
 }: Props) {
   if (!selection.type) {
@@ -98,17 +86,12 @@ export default function BuilderEditor({
         <ModuleForm
           courseId={courseId}
           module={selectedModule}
-          onSubmit={
-            selection.type === "new-module" ? onAddModule : onEditModule
-          }
+          onCreate={onAddModule}
+          onUpdate={onEditModule}
           onDelete={
             selectedModule ? () => onDeleteModule(selectedModule.id) : undefined
           }
           onSuccess={onSuccess}
-          loading={
-            selection.type === "new-module" ? creatingModule : updatingModule
-          }
-          deleting={deletingModule}
         />
       ) : (
         <LessonForm
@@ -118,17 +101,12 @@ export default function BuilderEditor({
               : selection.selectedId
           }
           lesson={selectedLesson}
-          //   onSubmit={
-          //     selection.type === "new-lesson" ? onAddLesson : onEditLesson
-          //   }
+          onCreate={onAddLesson}
+          onUpdate={onEditLesson}
           onDelete={
             selectedLesson ? () => onDeleteLesson(selectedLesson.id) : undefined
           }
           onSuccess={onSuccess}
-          loading={
-            selection.type === "new-lesson" ? creatingLesson : updatingLesson
-          }
-          deleting={deletingLesson}
         />
       )}
     </main>

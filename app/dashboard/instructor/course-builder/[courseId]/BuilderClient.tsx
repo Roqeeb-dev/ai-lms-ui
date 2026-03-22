@@ -35,20 +35,10 @@ export default function BuilderClient() {
     addModule,
     editModule,
     removeModule,
-    creating: creatingModule,
-    updating: updatingModule,
-    deleting: deletingModule,
   } = useModule();
 
-  const {
-    fetchModuleLessons,
-    addLesson,
-    editLesson,
-    removeLesson,
-    creating: creatingLesson,
-    updating: updatingLesson,
-    deleting: deletingLesson,
-  } = useLesson();
+  const { fetchModuleLessons, addLesson, editLesson, removeLesson } =
+    useLesson();
 
   async function fetchLessons(moduleId: string) {
     if (lessonsMap[moduleId]) return;
@@ -96,13 +86,10 @@ export default function BuilderClient() {
             fetchLessons(moduleId);
             setSelectedItem({ type: "module", selectedId: moduleId });
           }}
-          // onLessonSelect={(lessonId) =>
-          //   setSelectedItem({ type: "lesson", selectedId: lessonId })
-          // }
           onAddModule={() => setSelectedItem({ type: "new-module" })}
-          // onAddLesson={(moduleId) =>
-          //   setSelectedItem({ type: "new-lesson", moduleId })
-          // }
+          onAddLesson={(moduleId) =>
+            setSelectedItem({ type: "new-lesson", moduleId })
+          }
         />
         <BuilderEditor
           selection={selectedItem}
@@ -115,12 +102,6 @@ export default function BuilderClient() {
           onAddLesson={addLesson}
           onEditLesson={editLesson}
           onDeleteLesson={removeLesson}
-          creatingModule={creatingModule}
-          updatingModule={updatingModule}
-          deletingModule={deletingModule}
-          creatingLesson={creatingLesson}
-          updatingLesson={updatingLesson}
-          deletingLesson={deletingLesson}
           onSuccess={() => setSelectedItem({ type: null })}
         />
       </div>

@@ -3,13 +3,17 @@
 import { useEffect } from "react";
 import { useForm } from "@/hooks/useForm";
 import { Module } from "@/types/module";
-import { CreateCourseModulePayload } from "@/services/moduleService";
+import {
+  CreateCourseModulePayload,
+  UpdateModulePayload,
+} from "@/services/moduleService";
 import { BookOpen, Trash2, Save } from "lucide-react";
 
 interface Props {
   courseId: string;
   module?: Module;
-  onSubmit: (courseId: string, data: CreateCourseModulePayload) => Promise<any>;
+  onCreate: (courseId: string, data: CreateCourseModulePayload) => Promise<any>;
+  onUpdate: (moduleId: string, data: UpdateModulePayload) => Promise<any>;
   onDelete?: () => void;
   onSuccess?: () => void;
   loading?: boolean;
@@ -19,7 +23,8 @@ interface Props {
 export default function ModuleForm({
   courseId,
   module,
-  onSubmit,
+  onCreate,
+  onUpdate,
   onDelete,
   onSuccess,
   loading,
@@ -42,14 +47,17 @@ export default function ModuleForm({
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    await onSubmit(courseId, values);
+    if (isEditing) {
+      await onUpdate(module!.id, values);
+    } else {
+      await onCreate(courseId, values);
+    }
     onSuccess?.();
     if (!isEditing) reset();
   }
 
   return (
     <div className="w-full max-w-lg flex flex-col gap-6">
-      {/* Header */}
       <div className="flex flex-col gap-1">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
@@ -66,7 +74,6 @@ export default function ModuleForm({
         </p>
       </div>
 
-      {/* Form */}
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div className="flex flex-col gap-1.5">
           <label className="text-xs font-semibold text-foreground">
@@ -96,7 +103,6 @@ export default function ModuleForm({
           />
         </div>
 
-        {/* Actions */}
         <div className="flex items-center justify-between pt-2">
           {isEditing && onDelete ? (
             <button

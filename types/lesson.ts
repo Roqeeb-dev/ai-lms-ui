@@ -1,4 +1,4 @@
-export type LessonType = "video" | "document" | "text";
+export type LessonType = "video" | "pdf" | "text" | "quiz";
 
 export type ServerLessonFile = {
   url: string;
