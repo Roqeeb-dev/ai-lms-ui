@@ -19,15 +19,14 @@ interface Props {
   selection: SelectionType;
   courseId: string;
   modules: Module[];
+  loading?: boolean;
   lessonsMap: Record<string, Lesson[]>;
-  // module handlers
   onAddModule: (
     courseId: string,
     data: CreateCourseModulePayload,
   ) => Promise<any>;
   onEditModule: (moduleId: string, data: UpdateModulePayload) => Promise<any>;
   onDeleteModule: (moduleId: string) => Promise<any>;
-  // lesson handlers
   onAddLesson: (moduleId: string, data: CreateLessonPayload) => Promise<any>;
   onEditLesson: (lessonId: string, data: UpdateLessonPayload) => Promise<any>;
   onDeleteLesson: (lessonId: string) => Promise<any>;
@@ -40,6 +39,7 @@ export default function BuilderEditor({
   courseId,
   modules,
   lessonsMap,
+  loading,
   onAddModule,
   onEditModule,
   onDeleteModule,
@@ -92,6 +92,7 @@ export default function BuilderEditor({
             selectedModule ? () => onDeleteModule(selectedModule.id) : undefined
           }
           onSuccess={onSuccess}
+          loading={loading}
         />
       ) : (
         <LessonForm
@@ -107,6 +108,7 @@ export default function BuilderEditor({
             selectedLesson ? () => onDeleteLesson(selectedLesson.id) : undefined
           }
           onSuccess={onSuccess}
+          loading={loading}
         />
       )}
     </main>

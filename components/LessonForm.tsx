@@ -14,6 +14,7 @@ import {
   Trash2,
   Save,
   Upload,
+  Loader2,
 } from "lucide-react";
 
 interface Props {
@@ -220,7 +221,11 @@ export default function LessonForm({
             }
             className="flex items-center gap-1.5 text-xs font-semibold px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50"
           >
-            <Save size={13} />
+            {loading ? (
+              <Loader2 size={13} className="animate-spin" />
+            ) : (
+              <Save size={13} />
+            )}
             {loading
               ? "Saving..."
               : isEditing

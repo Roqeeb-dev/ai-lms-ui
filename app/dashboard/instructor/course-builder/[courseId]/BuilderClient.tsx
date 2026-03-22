@@ -10,6 +10,14 @@ import BuilderHeader from "@/components/BuilderHeader";
 import BuilderContent from "@/components/BuilderContent";
 import BuilderEditor from "@/components/BuilderEditor";
 import { Lesson } from "@/types/lesson";
+import {
+  CreateCourseModulePayload,
+  UpdateModulePayload,
+} from "@/services/moduleService";
+import {
+  CreateLessonPayload,
+  UpdateLessonPayload,
+} from "@/services/lessonService";
 
 export type SelectionType =
   | { type: "new-module" }
@@ -25,6 +33,7 @@ export default function BuilderClient() {
   const [selectedItem, setSelectedItem] = useState<SelectionType>({
     type: null,
   });
+  const [loading, setLoading] = useState(false);
 
   const { fetchingCourseDetails, getCourseDetails } = useCourse();
 
@@ -45,6 +54,68 @@ export default function BuilderClient() {
     const res = await fetchModuleLessons(moduleId);
     if (!res) return;
     setLessonsMap((prev) => ({ ...prev, [moduleId]: res.lessons }));
+  }
+
+  async function handleAddModule(
+    courseId: string,
+    data: CreateCourseModulePayload,
+  ) {
+    setLoading(true);
+    try {
+      await addModule(courseId, data);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleEditModule(moduleId: string, data: UpdateModulePayload) {
+    setLoading(true);
+    try {
+      await editModule(moduleId, data);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleRemoveModule(moduleId: string) {
+    setLoading(true);
+    try {
+      await removeModule(moduleId);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleAddLesson(moduleId: string, data: CreateLessonPayload) {
+    setLoading(true);
+    try {
+      const res = await addLesson(moduleId, data);
+      if (!res) return;
+      setLessonsMap((prev) => ({
+        ...prev,
+        [moduleId]: [...(prev[moduleId] ?? []), res.lesson],
+      }));
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleEditLesson(lessonId: string, data: UpdateLessonPayload) {
+    setLoading(true);
+    try {
+      await editLesson(lessonId, data);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleRemoveLesson(lessonId: string) {
+    setLoading(true);
+    try {
+      await removeLesson(lessonId);
+    } finally {
+      setLoading(false);
+    }
   }
 
   useEffect(() => {
@@ -96,12 +167,13 @@ export default function BuilderClient() {
           courseId={params.courseId}
           modules={modules}
           lessonsMap={lessonsMap}
-          onAddModule={addModule}
-          onEditModule={editModule}
-          onDeleteModule={removeModule}
-          onAddLesson={addLesson}
-          onEditLesson={editLesson}
-          onDeleteLesson={removeLesson}
+          loading={loading}
+          onAddModule={handleAddModule}
+          onEditModule={handleEditModule}
+          onDeleteModule={handleRemoveModule}
+          onAddLesson={handleAddLesson}
+          onEditLesson={handleEditLesson}
+          onDeleteLesson={handleRemoveLesson}
           onSuccess={() => setSelectedItem({ type: null })}
         />
       </div>
