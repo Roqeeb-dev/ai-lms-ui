@@ -119,9 +119,7 @@ export default function Client() {
         onBack={() => router.push("/dashboard/student/courses")}
       />
 
-      {/* Scrollable main content — full width stacked */}
       <div className="flex-1 overflow-y-auto">
-        {/* Lesson viewer — full width */}
         <LessonViewer
           lesson={selectedLesson}
           completing={completing}
@@ -137,7 +135,8 @@ export default function Client() {
           }
           hasNext={
             selectedLesson
-              ? allLessons.findIndex((l) => l.id === selectedLesson.id) > 0
+              ? allLessons.findIndex((l) => l.id === selectedLesson.id) <
+                allLessons.length - 1
               : false
           }
           onComplete={handleComplete}
