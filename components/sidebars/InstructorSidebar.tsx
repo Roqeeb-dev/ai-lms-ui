@@ -40,12 +40,13 @@ const bottomLinks = [
 export default function InstructorSidebar({ open }: { open: boolean }) {
   return (
     <aside
-      className={`shrink-0 h-full bg-background border-r border-border flex flex-col transition-all duration-300 ease-in-out
-      ${open ? "w-64" : "w-[68px]"}`}
+      className={`shrink-0 h-full bg-card border-r border-border flex flex-col transition-all duration-300 ease-in-out ${
+        open ? "w-56" : "w-[60px]"
+      }`}
     >
-      {/* Header */}
+      {/* Logo */}
       <div
-        className={`h-14 flex items-center px-4 shrink-0 ${
+        className={`h-14 flex items-center shrink-0 border-b border-border px-4 ${
           open ? "justify-start" : "justify-center"
         }`}
       >
@@ -57,17 +58,14 @@ export default function InstructorSidebar({ open }: { open: boolean }) {
       </div>
 
       {/* Main Nav */}
-      <nav className="flex-1 flex flex-col gap-1 px-2 py-3 overflow-y-auto">
+      <nav className="flex-1 flex flex-col gap-0.5 px-2 py-4 overflow-y-auto">
         {links.map((link) => (
           <SidebarLink key={link.href} {...link} open={open} />
         ))}
       </nav>
 
-      {/* Divider */}
-      <div className="mx-3 my-2 h-px bg-border" />
-
       {/* Bottom Nav */}
-      <div className="px-2 pb-3 flex flex-col gap-1">
+      <div className="px-2 py-3 border-t border-border flex flex-col gap-0.5">
         {bottomLinks.map((link) => (
           <SidebarLink key={link.href} {...link} open={open} />
         ))}

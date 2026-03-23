@@ -41,10 +41,12 @@ export function normalizeLesson(data: ServerLesson): Lesson {
     title: data.title,
     moduleId: data.module,
     type: data.type,
-    file: {
-      url: data.file.url,
-      publicId: data.file.public_id,
-    },
+    file: data.file
+      ? {
+          url: data.file.url,
+          publicId: data.file.public_id,
+        }
+      : { url: "", publicId: "" },
     duration: data.duration,
     order: data.order,
     createdAt: new Date(data.createdAt),
