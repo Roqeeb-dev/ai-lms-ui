@@ -1,18 +1,21 @@
-import { Trash2, Pencil, ToggleRight } from "lucide-react";
+import { Trash2, Pencil, ToggleRight, Edit } from "lucide-react";
 
 interface DropdownProps {
   onDelete: () => void;
   onEdit: () => void;
   onToggle: () => void;
+  onUpdate: () => void;
 }
 
 export default function CourseDropdown({
   onDelete,
   onEdit,
   onToggle,
+  onUpdate,
 }: DropdownProps) {
   const dropdownLinks = [
     { text: "Manage Course", action: onEdit, icon: Pencil, danger: false },
+    { text: "Edit Course", action: onUpdate, icon: Edit, danger: false },
     {
       text: "Toggle Status",
       action: onToggle,

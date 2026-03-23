@@ -9,6 +9,7 @@ interface InstructorFooterProps {
   onEdit: () => void;
   onDelete?: () => void;
   onToggle?: () => void;
+  onUpdate?: () => void;
 }
 
 export function InstructorFooter({
@@ -16,6 +17,7 @@ export function InstructorFooter({
   onEdit,
   onDelete,
   onToggle,
+  onUpdate,
 }: InstructorFooterProps) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -61,6 +63,10 @@ export function InstructorFooter({
             }}
             onToggle={() => {
               onToggle?.();
+              setDropdownOpen(false);
+            }}
+            onUpdate={() => {
+              onUpdate?.();
               setDropdownOpen(false);
             }}
           />

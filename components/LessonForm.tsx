@@ -90,29 +90,32 @@ export default function LessonForm({
   }
 
   return (
-    <div className="w-full max-w-lg flex flex-col gap-6">
+    <div className="w-full max-w-5xl mx-auto bg-background border border-border rounded-xl p-5 md:p-6 shadow-sm flex flex-col gap-6">
       {/* Header */}
-      <div className="flex flex-col gap-1">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-            <PlayCircle size={15} className="text-primary" />
-          </div>
-          <h2 className="text-sm font-bold text-foreground">
+      <div className="flex items-start gap-3">
+        <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center">
+          <PlayCircle size={16} className="text-primary" />
+        </div>
+        <div>
+          <h2 className="text-base font-semibold text-foreground">
             {isEditing ? "Edit Lesson" : "New Lesson"}
           </h2>
+          <p className="text-xs text-foreground-muted">
+            {isEditing
+              ? "Update the lesson details below"
+              : "Fill in the details to create a new lesson"}
+          </p>
         </div>
-        <p className="text-xs text-foreground-muted pl-10">
-          {isEditing
-            ? "Update the lesson details below"
-            : "Fill in the details to create a new lesson"}
-        </p>
       </div>
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      <form
+        onSubmit={handleSubmit}
+        className="grid grid-cols-1 md:grid-cols-2 gap-5"
+      >
         {/* Title */}
         <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-semibold text-foreground">
+          <label className="text-xs font-medium text-foreground">
             Title <span className="text-destructive">*</span>
           </label>
           <input
@@ -121,25 +124,25 @@ export default function LessonForm({
             onChange={(e) => update("title", e.target.value)}
             placeholder="e.g. How the knight moves"
             required
-            className="w-full text-sm px-3 py-2 rounded-lg border border-border bg-background text-foreground placeholder:text-foreground-muted focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors"
+            className="w-full text-sm px-3 py-2 rounded-lg border border-border bg-background focus:ring-2 focus:ring-primary/30"
           />
         </div>
 
-        {/* Lesson type */}
+        {/* Type */}
         <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-semibold text-foreground">
+          <label className="text-xs font-medium text-foreground">
             Type <span className="text-destructive">*</span>
           </label>
-          <div className="flex items-center gap-2">
+          <div className="grid grid-cols-3 gap-2">
             {lessonTypes.map((t) => (
               <button
                 key={t.value}
                 type="button"
                 onClick={() => update("type", t.value)}
-                className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg border text-xs font-medium transition-colors ${
+                className={`flex items-center justify-center gap-1 py-2 rounded-lg border text-xs ${
                   values.type === t.value
                     ? "border-primary bg-primary/10 text-primary"
-                    : "border-border bg-background text-foreground-muted hover:border-primary/50 hover:text-foreground"
+                    : "border-border hover:border-primary/50"
                 }`}
               >
                 {t.icon}
@@ -149,21 +152,17 @@ export default function LessonForm({
           </div>
         </div>
 
-        {/* File upload — video and document only */}
+        {/* Upload */}
         {values.type !== "text" && (
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-semibold text-foreground">
+          <div className="md:col-span-2 flex flex-col gap-1.5">
+            <label className="text-xs font-medium text-foreground">
               {values.type === "video" ? "Video File" : "Document File"}
-              {!isEditing && <span className="text-destructive"> *</span>}
             </label>
-            <label className="w-full flex flex-col items-center justify-center gap-2 px-3 py-6 rounded-lg border border-dashed border-border bg-background hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
-              <Upload size={18} className="text-foreground-muted" />
-              <span className="text-xs text-foreground-muted text-center">
-                {values.file
-                  ? values.file.name
-                  : isEditing
-                    ? "Upload a new file to replace the current one"
-                    : `Click to upload a ${values.type} file`}
+
+            <label className="w-full flex flex-col items-center justify-center gap-2 px-3 py-6 rounded-lg border border-dashed border-border hover:border-primary hover:bg-primary/5 cursor-pointer">
+              <Upload size={18} />
+              <span className="text-xs text-foreground-muted">
+                {values.file ? values.file.name : "Click to upload file"}
               </span>
               <input
                 type="file"
@@ -173,41 +172,26 @@ export default function LessonForm({
                 className="hidden"
               />
             </label>
-            {isEditing && lesson.file?.url && (
-              <a
-                href={lesson.file.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs text-primary hover:underline"
-              >
-                View current file
-              </a>
-            )}
           </div>
         )}
 
-        {/* Text type placeholder */}
+        {/* Text */}
         {values.type === "text" && (
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-semibold text-foreground">
-              Content <span className="text-destructive">*</span>
-            </label>
-            <div className="w-full px-3 py-4 rounded-lg border border-dashed border-border bg-background text-xs text-foreground-muted text-center">
-              Text editor coming soon
-            </div>
+          <div className="md:col-span-2 border border-dashed border-border rounded-lg p-6 text-center text-xs text-foreground-muted">
+            Text editor coming soon
           </div>
         )}
 
         {/* Actions */}
-        <div className="flex items-center justify-between pt-2">
+        <div className="md:col-span-2 flex justify-between items-center pt-3 border-t border-border">
           {isEditing && onDelete ? (
             <button
               type="button"
               onClick={onDelete}
               disabled={deleting}
-              className="flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-lg text-destructive hover:bg-destructive/10 transition-colors disabled:opacity-50"
+              className="flex items-center gap-1.5 text-xs px-3 py-2 text-destructive hover:bg-destructive/10 rounded-md"
             >
-              <Trash2 size={13} />
+              <Trash2 size={14} />
               {deleting ? "Deleting..." : "Delete Lesson"}
             </button>
           ) : (
@@ -219,12 +203,12 @@ export default function LessonForm({
             disabled={
               loading || (!isEditing && values.type !== "text" && !values.file)
             }
-            className="flex items-center gap-1.5 text-xs font-semibold px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50"
+            className="flex items-center gap-1.5 text-xs px-4 py-2 rounded-md bg-primary text-primary-foreground"
           >
             {loading ? (
-              <Loader2 size={13} className="animate-spin" />
+              <Loader2 size={14} className="animate-spin" />
             ) : (
-              <Save size={13} />
+              <Save size={14} />
             )}
             {loading
               ? "Saving..."

@@ -11,6 +11,8 @@ import { useState } from "react";
 import Dialog from "./Dialog";
 import { useInstructorCourses } from "@/hooks/useInstructorCourses";
 import { useEnrollment } from "@/hooks/useEnrollment";
+import CourseModal from "./CreateCourseModal";
+import type { CourseFormData } from "./CreateCourseModal";
 
 interface StudentCardProps {
   variant?: "student";
@@ -35,7 +37,9 @@ export default function CourseCard({
   ...props
 }: CourseCardProps) {
   const [isDialogShown, setIsDialogShown] = useState(false);
-  const { deleting, deleteCourse } = useInstructorCourses();
+  const [isModalShown, setIsModalShown] = useState(false);
+  const { deleting, deleteCourse, updateCourse, updating } =
+    useInstructorCourses();
   const isInstructor = variant === "instructor";
   const enrolled =
     !isInstructor && "enrolled" in props ? (props.enrolled ?? false) : false;
@@ -70,6 +74,12 @@ export default function CourseCard({
     const res = await enroll(courseId);
     if (!res) return;
     await refetchEnrollments();
+  }
+
+  async function handleUpdate(data: CourseFormData) {
+    if (updating) return;
+    const res = await updateCourse(course.id, data);
+    setIsModalShown(false);
   }
 
   return (
@@ -116,6 +126,7 @@ export default function CourseCard({
               onEdit={handleEdit}
               onDelete={() => setIsDialogShown(true)}
               onToggle={onToggle}
+              onUpdate={() => setIsModalShown(true)}
             />
           ) : (
             <StudentFooter
@@ -138,6 +149,14 @@ export default function CourseCard({
         message="Are you sure you want to delete this item?"
         confirmText="Yes, Delete it"
         cancelText="No, Keep it"
+      />
+
+      <CourseModal
+        open={isModalShown}
+        onClose={() => setIsModalShown(false)}
+        mode="update"
+        defaultValues={course}
+        onSubmit={(data) => handleUpdate(data)}
       />
     </div>
   );
