@@ -78,7 +78,7 @@ export default function CourseCard({
 
   async function handleUpdate(data: CourseFormData) {
     if (updating) return;
-    const res = await updateCourse(course.id, data);
+    await updateCourse(course.id, data);
     setIsModalShown(false);
   }
 
@@ -131,6 +131,7 @@ export default function CourseCard({
           ) : (
             <StudentFooter
               instructorName={course.instructor?.name ?? "Instructor"}
+              instructorId={course.instructor?._id ?? ""}
               enrolled={enrolled}
               onEnroll={() => handleEnroll(course.id)}
               loading={enrolling}

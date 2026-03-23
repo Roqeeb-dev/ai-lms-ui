@@ -21,7 +21,7 @@ export default function DashboardTopbar({
   onSidebarToggle,
 }: DashboardTopbarProps) {
   return (
-    <header className="sticky top-0 z-40 w-full h-16 bg-background/90 backdrop-blur-md border-b border-border flex items-center px-4 gap-4">
+    <header className="sticky top-0 z-40 w-full h-14 bg-background/90 backdrop-blur-md border-b border-border flex items-center px-4 gap-4">
       {/* Left */}
       <div className="flex items-center gap-3 flex-1 min-w-0">
         <button

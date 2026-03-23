@@ -2,6 +2,7 @@
 
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export function StudentFooter({
   instructorName,
@@ -9,19 +10,26 @@ export function StudentFooter({
   onEnroll,
   loading,
   courseId,
+  instructorId,
 }: {
   instructorName: string;
   enrolled: boolean;
   onEnroll: () => void;
   loading: boolean;
   courseId: string;
+  instructorId: string;
 }) {
   const router = useRouter();
 
   return (
     <div className="flex flex-col gap-3 w-full">
       <div className="flex items-center justify-between pt-2 border-t border-border">
-        <span className="text-xs text-foreground-muted">{instructorName}</span>
+        <Link
+          href={`/instructor/${instructorId}`}
+          className="text-xs text-foreground-muted"
+        >
+          {instructorName}
+        </Link>
         <span
           className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
             enrolled
