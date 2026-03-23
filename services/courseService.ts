@@ -69,14 +69,12 @@ function normalizeAllCourses(data: ServerCourse[]): Course[] {
   return data.map((d) => normalizeCourse(d));
 }
 
-function toFormData(payload: CreateCoursePayload): FormData {
+function toFormData(payload: Partial<CreateCoursePayload>): FormData {
   const fd = new FormData();
-  fd.append("title", payload.title);
-  fd.append("description", payload.description);
-  fd.append("status", payload.status);
-  if (payload.thumbnail) {
-    fd.append("thumbnail", payload.thumbnail);
-  }
+  if (payload.title) fd.append("title", payload.title);
+  if (payload.description) fd.append("description", payload.description);
+  if (payload.status) fd.append("status", payload.status);
+  if (payload.thumbnail) fd.append("thumbnail", payload.thumbnail);
   return fd;
 }
 
@@ -130,14 +128,10 @@ export const course = {
   },
 
   async updateCourse(courseId: string, payload: Partial<CreateCoursePayload>) {
-    if (Object.keys(payload).length === 0)
-      throw new Error("No fields to update");
-
     const res = await apiClient.patchForm<UpdateCourseResponse>(
       `/api/courses/${courseId}`,
-      toFormData(payload as CreateCoursePayload),
+      toFormData(payload),
     );
-
     return {
       course: normalizeCourse(res.course),
       message: res.message,

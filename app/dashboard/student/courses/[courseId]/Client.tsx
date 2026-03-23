@@ -7,7 +7,6 @@ import { useModule } from "@/hooks/useModule";
 import { useLesson } from "@/hooks/useLesson";
 import { useEnrollment } from "@/hooks/useEnrollment";
 import { Course } from "@/types/course";
-import { Module } from "@/types/module";
 import { Lesson } from "@/types/lesson";
 import CourseContentHeader from "@/components/CourseContentHeader";
 import CourseOutline from "@/components/CourseOutline";
@@ -33,7 +32,6 @@ export default function Client() {
   const { fetchModuleLessons, markLessonComplete, completing } = useLesson();
   const { enrollments } = useEnrollment();
 
-  // fetch course
   useEffect(() => {
     async function init() {
       const res = await getCourseDetails(params.courseId);
@@ -43,7 +41,6 @@ export default function Client() {
     init();
   }, [params.courseId]);
 
-  // fetch modules
   useEffect(() => {
     async function initModules() {
       await fetchCourseModules(params.courseId);
@@ -51,7 +48,6 @@ export default function Client() {
     initModules();
   }, [params.courseId]);
 
-  // fetch all lessons for all modules once modules are loaded
   useEffect(() => {
     async function initLessons() {
       if (!modules.length) return;
@@ -67,11 +63,10 @@ export default function Client() {
     initLessons();
   }, [modules]);
 
-  // get completedLessons from enrollment
   useEffect(() => {
     const enrollment = enrollments.find((e) => e.course.id === params.courseId);
     if (enrollment) {
-      setCompletedLessons([]); // backend doesn't return this on populated enrollment yet
+      setCompletedLessons([]);
     }
   }, [enrollments, params.courseId]);
 
@@ -116,20 +111,17 @@ export default function Client() {
 
   return (
     <div className="flex flex-col h-full">
+      {/* Fixed top bar */}
       <CourseContentHeader
         courseTitle={courseDetails.title}
         completedCount={completedCount}
         totalLessons={totalLessons}
         onBack={() => router.push("/dashboard/student/courses")}
       />
-      <div className="flex flex-1 overflow-hidden">
-        <CourseOutline
-          modules={modules}
-          lessonsMap={lessonsMap}
-          selectedLesson={selectedLesson}
-          completedLessons={completedLessons}
-          onSelectLesson={handleSelectLesson}
-        />
+
+      {/* Scrollable main content — full width stacked */}
+      <div className="flex-1 overflow-y-auto">
+        {/* Lesson viewer — full width */}
         <LessonViewer
           lesson={selectedLesson}
           completing={completing}
@@ -143,15 +135,22 @@ export default function Client() {
               ? allLessons.findIndex((l) => l.id === selectedLesson.id) > 0
               : false
           }
-          //   hasNext={
-          //     selectedLesson
-          //       ? allLessons.findIndex((l) => l.id === selectedLesson.id)
-          //         allLessons.length - 1
-          //       : false
-          //   }
-          //   onComplete={handleComplete}
-          //   onPrev={handlePrev}
-          //   onNext={handleNext}
+          hasNext={
+            selectedLesson
+              ? allLessons.findIndex((l) => l.id === selectedLesson.id) > 0
+              : false
+          }
+          onComplete={handleComplete}
+          onPrev={handlePrev}
+          onNext={handleNext}
+        />
+
+        <CourseOutline
+          modules={modules}
+          lessonsMap={lessonsMap}
+          selectedLesson={selectedLesson}
+          completedLessons={completedLessons}
+          onSelectLesson={handleSelectLesson}
         />
       </div>
     </div>

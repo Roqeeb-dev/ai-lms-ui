@@ -49,10 +49,10 @@ function ModuleItem({
   ).length;
 
   return (
-    <article className="flex flex-col">
+    <article className="border border-border rounded-xl overflow-hidden">
       <button
         onClick={() => setIsExpanded((prev) => !prev)}
-        className="flex items-center justify-between px-3 py-2.5 hover:bg-muted transition-colors"
+        className="w-full flex items-center justify-between px-4 py-3 bg-card hover:bg-muted transition-colors"
       >
         <div className="flex items-center gap-2 min-w-0">
           {isExpanded ? (
@@ -68,12 +68,12 @@ function ModuleItem({
           </span>
         </div>
         <span className="text-xs text-foreground-muted shrink-0 ml-2">
-          {completedInModule}/{lessons.length}
+          {completedInModule}/{lessons.length} completed
         </span>
       </button>
 
       {isExpanded && (
-        <div className="flex flex-col">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-border border-t border-border">
           {lessons.map((lesson) => {
             const isSelected = selectedLesson?.id === lesson.id;
             const isCompleted = completedLessons.includes(lesson.id);
@@ -82,10 +82,8 @@ function ModuleItem({
               <button
                 key={lesson.id}
                 onClick={() => onSelectLesson(lesson)}
-                className={`flex items-center gap-2 px-4 py-2.5 text-left transition-colors ${
-                  isSelected
-                    ? "bg-primary/10 border-r-2 border-primary"
-                    : "hover:bg-muted"
+                className={`flex items-center gap-2.5 px-4 py-3 text-left transition-colors ${
+                  isSelected ? "bg-primary/10" : "hover:bg-muted bg-background"
                 }`}
               >
                 {isCompleted ? (
@@ -126,14 +124,11 @@ export default function CourseOutline({
   onSelectLesson,
 }: Props) {
   return (
-    <aside className="w-72 shrink-0 border-r border-border bg-card flex flex-col overflow-hidden">
-      <div className="p-4 border-b border-border shrink-0">
-        <h2 className="text-xs font-semibold uppercase tracking-widest text-foreground-muted">
-          Course Content
-        </h2>
-      </div>
-
-      <div className="flex-1 overflow-y-auto flex flex-col divide-y divide-border">
+    <div className="w-full max-w-4xl mx-auto px-6 pb-12 flex flex-col gap-4">
+      <h2 className="text-xs font-semibold uppercase tracking-widest text-foreground-muted">
+        Course Content
+      </h2>
+      <div className="flex flex-col gap-3">
         {modules.map((mod) => (
           <ModuleItem
             key={mod.id}
@@ -145,6 +140,6 @@ export default function CourseOutline({
           />
         ))}
       </div>
-    </aside>
+    </div>
   );
 }
