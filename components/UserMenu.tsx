@@ -4,17 +4,16 @@ import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Settings, LogOut, ChevronDown, User2 } from "lucide-react";
 import { TopbarUser } from "./DashboardTopbar";
-import { useUserStore } from "@/store/useUserStore";
 import Link from "next/link";
 import Dialog from "./Dialog";
-import { auth } from "@/services/authService";
+import { useUser } from "@/hooks/useUser";
 
 export default function UserMenu({ user }: { user: TopbarUser }) {
   const [open, setOpen] = useState(false);
   const [isDialogShown, setIsDialogShown] = useState<boolean>(false);
   const ref = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  const { clearUser } = useUserStore();
+  const { logoutUser, loggingOut } = useUser();
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -37,12 +36,11 @@ export default function UserMenu({ user }: { user: TopbarUser }) {
 
   async function handleLogout() {
     try {
-      await auth.logout();
+      await logoutUser();
+      setIsDialogShown(false);
       router.replace("/login");
-      clearUser();
-    } catch (err: any) {
-      console.error("Logout failed:", err);
-      alert("Failed to log out. Please try again.");
+    } catch {
+      // error toast already handled in the hook
     }
   }
 
@@ -116,12 +114,13 @@ export default function UserMenu({ user }: { user: TopbarUser }) {
       <Dialog
         type="confirm"
         open={isDialogShown}
-        onClose={() => setIsDialogShown(false)}
-        title="Logout Confirmation"
+        onClose={() => !loggingOut && setIsDialogShown(false)}
+        title="Log out"
         message="Are you sure you want to log out?"
         confirmText="Yes, Log out"
-        cancelText="No, Don't Log out"
+        cancelText="Cancel"
         onConfirm={handleLogout}
+        loading={loggingOut}
       />
     </div>
   );

@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import Dialog from "./Dialog";
 
 export default function DangerSection() {
-  const [confirming, setConfirming] = useState(false);
+  const [isDialogShown, setIsDialogShown] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   return (
     <div className="flex flex-col gap-4 rounded-2xl border border-destructive/30 bg-card p-5 shadow-sm">
@@ -24,27 +26,25 @@ export default function DangerSection() {
             Permanently delete your account and all associated data.
           </span>
         </div>
-        {!confirming ? (
-          <button
-            onClick={() => setConfirming(true)}
-            className="shrink-0 px-3 py-1.5 rounded-lg border border-destructive/40 text-destructive text-sm font-semibold hover:bg-destructive hover:text-destructive-foreground transition-all duration-200"
-          >
-            Delete account
-          </button>
-        ) : (
-          <div className="flex items-center gap-2 shrink-0">
-            <button
-              onClick={() => setConfirming(false)}
-              className="px-3 py-1.5 rounded-lg border border-border text-sm font-semibold text-foreground-muted hover:text-foreground transition-all duration-200"
-            >
-              Cancel
-            </button>
-            <button className="px-3 py-1.5 rounded-lg bg-destructive text-destructive-foreground text-sm font-semibold hover:opacity-90 transition-all duration-200">
-              Confirm delete
-            </button>
-          </div>
-        )}
+
+        <button
+          onClick={() => setIsDialogShown(true)}
+          className="shrink-0 px-3 py-1.5 rounded-lg border border-destructive/40 text-destructive text-sm font-semibold hover:bg-destructive hover:text-destructive-foreground transition-all duration-200"
+        >
+          Delete account
+        </button>
       </div>
+
+      <Dialog
+        type="confirm"
+        open={isDialogShown}
+        onClose={() => setIsDialogShown(false)}
+        title="Delete Account?"
+        message="Are you sure you want to delete your account?"
+        confirmText="Yes, Delete my account"
+        cancelText="No, don't delete"
+        loading={deleting}
+      />
     </div>
   );
 }

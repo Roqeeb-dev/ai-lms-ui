@@ -48,22 +48,6 @@ export default function LoginClient() {
         </p>
       </div>
 
-      {/* Google OAuth */}
-      <div className="flex flex-col gap-4">
-        <button
-          type="button"
-          className="w-full flex items-center justify-center gap-3 rounded-lg border border-border bg-card px-3 py-3 lg:py-2 text-sm font-medium text-foreground hover:bg-muted transition-colors duration-200"
-        >
-          Continue with Google
-        </button>
-
-        <div className="flex items-center gap-3">
-          <div className="flex-1 h-px bg-border" />
-          <span className="text-xs text-foreground-muted">or</span>
-          <div className="flex-1 h-px bg-border" />
-        </div>
-      </div>
-
       {/* Form */}
       <form onSubmit={handleSubmit} className="flex flex-col gap-5 lg:gap-4">
         {/* Email */}

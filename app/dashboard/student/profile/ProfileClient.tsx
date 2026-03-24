@@ -1,20 +1,37 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useUserStore } from "@/store/useUserStore";
 import { useForm } from "@/hooks/useForm";
-import { Pencil, X, Check } from "lucide-react";
-import { auth } from "@/services/authService";
-import { UpdateProfilePayload } from "@/services/authService";
-import { User } from "@/types/user";
+import { useUser } from "@/hooks/useUser";
+import { Pencil, X, Check, Loader2, Lock } from "lucide-react";
 
-type ProfileFormValues = Omit<User, "id" | "createdAt" | "password" | "role">;
+type ProfileFormValues = {
+  firstName: string;
+  lastName: string;
+  bio: string;
+};
 
 export default function ProfileClient() {
   const user = useUserStore((state) => state.user);
-  const setUser = useUserStore((state) => state.setUser);
-
+  const { updateProfile, updatingProfile } = useUser();
   const [editing, setEditing] = useState(false);
+
+  const { values, update, reset, setAll } = useForm<ProfileFormValues>({
+    firstName: "",
+    lastName: "",
+    bio: "",
+  });
+
+  useEffect(() => {
+    if (!user) return;
+    const [firstName, ...rest] = user.name.split(" ");
+    setAll({
+      firstName: firstName ?? "",
+      lastName: rest.join(" ") ?? "",
+      bio: user.bio ?? "",
+    });
+  }, [user]);
 
   if (!user)
     return (
@@ -22,16 +39,6 @@ export default function ProfileClient() {
         <p className="text-sm text-foreground-muted">No user session found.</p>
       </div>
     );
-
-  const { values, update, reset } = useForm<ProfileFormValues>({
-    name: user?.name ?? "",
-    email: user?.email ?? "",
-    profile: {
-      firstName: user?.profile?.firstName ?? "",
-      lastName: user?.profile?.lastName ?? "",
-      bio: user?.profile?.bio ?? "",
-    },
-  });
 
   const initials = user.name
     .split(" ")
@@ -41,30 +48,14 @@ export default function ProfileClient() {
     .toUpperCase();
 
   async function handleSave() {
-    const payload: UpdateProfilePayload = {
-      name: values.name,
-      email: values.email,
-      profile: {
-        firstName: values.profile.firstName,
-        lastName: values.profile.lastName || undefined,
-        bio: values.profile.bio || undefined,
-      },
-    };
-
+    const fullName = `${values.firstName} ${values.lastName}`.trim();
     try {
-      const response = await auth.updateProfile(payload);
-
-      if (response.success) {
-        setUser(response.user);
-        setEditing(false);
-      }
-    } catch (error) {
-      console.error("Profile update failed:", error);
-    }
+      await updateProfile({ name: fullName, bio: values.bio });
+      setEditing(false);
+    } catch {}
   }
 
   function handleCancel() {
-    if (!user) return;
     reset();
     setEditing(false);
   }
@@ -75,7 +66,7 @@ export default function ProfileClient() {
     "text-xs font-semibold tracking-widest uppercase text-foreground-muted";
 
   return (
-    <div className="flex flex-col gap-6 w-full">
+    <div className="flex flex-col gap-6 max-w-6xl mx-auto">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex flex-col gap-1">
@@ -97,15 +88,26 @@ export default function ProfileClient() {
           <div className="flex items-center gap-2">
             <button
               onClick={handleCancel}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border bg-card text-sm font-semibold text-foreground-muted hover:text-foreground transition-all duration-200"
+              disabled={updatingProfile}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border bg-card text-sm font-semibold text-foreground-muted hover:text-foreground transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <X size={14} /> Cancel
             </button>
             <button
               onClick={handleSave}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary-hover active:scale-[0.98] transition-all duration-200 shadow-sm"
+              disabled={updatingProfile}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 active:scale-[0.98] transition-all duration-200 shadow-sm disabled:opacity-70 disabled:cursor-not-allowed"
             >
-              <Check size={14} /> Save
+              {updatingProfile ? (
+                <>
+                  <Loader2 size={14} className="animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                <>
+                  <Check size={14} /> Save
+                </>
+              )}
             </button>
           </div>
         )}
@@ -135,14 +137,8 @@ export default function ProfileClient() {
           <div className="flex flex-col gap-1.5">
             <label className={labelClass}>First Name</label>
             <input
-              name="firstName"
-              value={values.profile.firstName}
-              onChange={(e) =>
-                update("profile", {
-                  ...values.profile,
-                  firstName: e.target.value,
-                })
-              }
+              value={values.firstName}
+              onChange={(e) => update("firstName", e.target.value)}
               disabled={!editing}
               autoComplete="given-name"
               placeholder="Ada"
@@ -153,14 +149,8 @@ export default function ProfileClient() {
           <div className="flex flex-col gap-1.5">
             <label className={labelClass}>Last Name</label>
             <input
-              name="lastName"
-              value={values.profile.lastName}
-              onChange={(e) =>
-                update("profile", {
-                  ...values.profile,
-                  lastName: e.target.value,
-                })
-              }
+              value={values.lastName}
+              onChange={(e) => update("lastName", e.target.value)}
               disabled={!editing}
               autoComplete="family-name"
               placeholder="Lovelace"
@@ -168,44 +158,28 @@ export default function ProfileClient() {
             />
           </div>
 
+          {/* Email — read only */}
           <div className="flex flex-col gap-1.5 lg:col-span-2">
-            <label className={labelClass}>Display Name</label>
-            <input
-              name="name"
-              value={values.name}
-              onChange={(e) => update("name", e.target.value)}
-              disabled={!editing}
-              placeholder="Ada Lovelace"
-              autoComplete="name"
-              className={inputClass}
-            />
-          </div>
-
-          <div className="flex flex-col gap-1.5 lg:col-span-2">
-            <label className={labelClass}>Email</label>
+            <div className="flex items-center gap-1.5">
+              <label className={labelClass}>Email</label>
+              <Lock size={10} className="text-foreground-muted" />
+            </div>
             <input
               type="email"
-              name="email"
-              value={values.email}
-              onChange={(e) => update("email", e.target.value)}
-              disabled={!editing}
-              placeholder="ada@cognify.com"
-              autoComplete="email"
+              value={user.email}
+              disabled
               className={inputClass}
             />
+            <p className="text-xs text-foreground-muted">
+              Email cannot be changed. Contact support if you need to update it.
+            </p>
           </div>
 
           <div className="flex flex-col gap-1.5 lg:col-span-2">
             <label className={labelClass}>Bio</label>
             <textarea
-              name="bio"
-              value={values.profile.bio}
-              onChange={(e) =>
-                update("profile", {
-                  ...values.profile,
-                  bio: e.target.value,
-                })
-              }
+              value={values.bio}
+              onChange={(e) => update("bio", e.target.value)}
               disabled={!editing}
               placeholder="Tell us a little about yourself..."
               rows={3}
@@ -235,7 +209,7 @@ export default function ProfileClient() {
           ].map(({ label, value }) => (
             <div
               key={label}
-              className="flex items-center justify-between py-3 border-b border-border-subtle last:border-0"
+              className="flex items-center justify-between py-3 border-b border-border last:border-0"
             >
               <span className="text-xs font-semibold tracking-widest uppercase text-foreground-muted">
                 {label}
