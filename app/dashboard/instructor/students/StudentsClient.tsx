@@ -5,3 +5,40 @@ export default function StudentsClient() {
     </main>
   );
 }
+
+//top part: instructor level metrics
+
+// mid oart: course level metrics
+
+// student level data
+
+// {
+//   overview: {
+//     totalStudents: number;
+//     activeStudents: number;
+//     averageProgress: number;
+//     completionRate: number;
+//   },
+
+//   courses: [
+//     {
+//       courseId: string;
+//       title: string;
+//       studentCount: number;
+//       averageProgress: number;
+//       completionRate: number;
+//     }
+//   ],
+
+//   students: [
+//     {
+//       id: string;
+//       name: string;
+//       email: string;
+//       enrolledCourses: number;
+//       overallProgress: number;
+//       lastActive: string;
+//       status: "active" | "inactive";
+//     }
+//   ]
+// }
