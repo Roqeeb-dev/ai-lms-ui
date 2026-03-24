@@ -26,7 +26,7 @@ export function StudentFooter({
       <div className="flex items-center justify-between pt-2 border-t border-border">
         <Link
           href={`/instructor/${instructorId}`}
-          className="text-xs text-foreground-muted"
+          className="text-xs text-foreground-muted hover:text-primary"
         >
           {instructorName}
         </Link>
