@@ -10,6 +10,9 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Dialog from "./Dialog";
 import { useInstructorCourses } from "@/hooks/useInstructorCourses";
+import { useEnrollment } from "@/hooks/useEnrollment";
+import CourseModal from "./CreateCourseModal";
+import type { CourseFormData } from "./CreateCourseModal";
 
 interface StudentCardProps {
   variant?: "student";
@@ -34,7 +37,9 @@ export default function CourseCard({
   ...props
 }: CourseCardProps) {
   const [isDialogShown, setIsDialogShown] = useState(false);
-  const { deleting, deleteCourse } = useInstructorCourses();
+  const [isModalShown, setIsModalShown] = useState(false);
+  const { deleting, deleteCourse, updateCourse, updating } =
+    useInstructorCourses();
   const isInstructor = variant === "instructor";
   const enrolled =
     !isInstructor && "enrolled" in props ? (props.enrolled ?? false) : false;
@@ -52,6 +57,7 @@ export default function CourseCard({
     : undefined;
 
   const router = useRouter();
+  const { enrolling, enroll, refetchEnrollments } = useEnrollment();
 
   function handleEdit() {
     router.push(`/dashboard/instructor/course-builder/${course.id}`);
@@ -62,6 +68,18 @@ export default function CourseCard({
     await deleteCourse(course.id);
     setIsDialogShown(false);
     onDelete?.();
+  }
+
+  async function handleEnroll(courseId: string) {
+    const res = await enroll(courseId);
+    if (!res) return;
+    await refetchEnrollments();
+  }
+
+  async function handleUpdate(data: CourseFormData) {
+    if (updating) return;
+    await updateCourse(course.id, data);
+    setIsModalShown(false);
   }
 
   return (
@@ -101,18 +119,23 @@ export default function CourseCard({
           <CourseProgress progress={progress} />
         )}
 
-        <div className="flex items-center justify-between mt-auto pt-2 border-t border-border-subtle">
+        <div className="flex items-center justify-between mt-auto">
           {isInstructor ? (
             <InstructorFooter
               totalStudents={totalStudents}
               onEdit={handleEdit}
               onDelete={() => setIsDialogShown(true)}
               onToggle={onToggle}
+              onUpdate={() => setIsModalShown(true)}
             />
           ) : (
             <StudentFooter
-              instructorName={course.instructor?.name ?? "Instructor Name"}
+              instructorName={course.instructor?.name ?? "Instructor"}
+              instructorId={course.instructor?._id ?? ""}
               enrolled={enrolled}
+              onEnroll={() => handleEnroll(course.id)}
+              loading={enrolling}
+              courseId={course.id}
             />
           )}
         </div>
@@ -127,6 +150,14 @@ export default function CourseCard({
         message="Are you sure you want to delete this item?"
         confirmText="Yes, Delete it"
         cancelText="No, Keep it"
+      />
+
+      <CourseModal
+        open={isModalShown}
+        onClose={() => setIsModalShown(false)}
+        mode="update"
+        defaultValues={course}
+        onSubmit={(data) => handleUpdate(data)}
       />
     </div>
   );

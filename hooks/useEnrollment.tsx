@@ -82,6 +82,11 @@ export function useEnrollment() {
     }
   }
 
+  async function refetchEnrollments() {
+    const res = await getCoursesEnrollment();
+    if (res) setEnrollments(res.enrollments);
+  }
+
   const avgProgress =
     enrollments.length > 0
       ? Math.round(
@@ -100,5 +105,6 @@ export function useEnrollment() {
     avgProgress,
     enroll,
     fetchCourseStudents,
+    refetchEnrollments,
   };
 }

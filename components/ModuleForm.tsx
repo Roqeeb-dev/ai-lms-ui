@@ -57,26 +57,32 @@ export default function ModuleForm({
   }
 
   return (
-    <div className="w-full max-w-lg flex flex-col gap-6">
-      <div className="flex flex-col gap-1">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-            <BookOpen size={15} className="text-primary" />
-          </div>
-          <h2 className="text-sm font-bold text-foreground">
+    <div className="w-full max-w-4xl mx-auto bg-background border border-border rounded-xl p-5 md:p-6 shadow-sm flex flex-col gap-6">
+      {/* Header */}
+      <div className="flex items-start gap-3">
+        <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center">
+          <BookOpen size={16} className="text-primary" />
+        </div>
+        <div>
+          <h2 className="text-base font-semibold text-foreground">
             {isEditing ? "Edit Module" : "New Module"}
           </h2>
+          <p className="text-xs text-foreground-muted">
+            {isEditing
+              ? "Update the module details below"
+              : "Fill in the details to create a new module"}
+          </p>
         </div>
-        <p className="text-xs text-foreground-muted pl-10">
-          {isEditing
-            ? "Update the module details below"
-            : "Fill in the details to create a new module"}
-        </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      {/* Form */}
+      <form
+        onSubmit={handleSubmit}
+        className="grid grid-cols-1 md:grid-cols-2 gap-5"
+      >
+        {/* Title */}
         <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-semibold text-foreground">
+          <label className="text-xs font-medium text-foreground">
             Title <span className="text-destructive">*</span>
           </label>
           <input
@@ -85,12 +91,13 @@ export default function ModuleForm({
             onChange={(e) => update("title", e.target.value)}
             placeholder="e.g. Introduction to Chess"
             required
-            className="w-full text-sm px-3 py-2 rounded-lg border border-border bg-background text-foreground placeholder:text-foreground-muted focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors"
+            className="w-full text-sm px-3 py-2 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
           />
         </div>
 
-        <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-semibold text-foreground">
+        {/* Description */}
+        <div className="flex flex-col gap-1.5 md:col-span-2">
+          <label className="text-xs font-medium text-foreground">
             Description <span className="text-destructive">*</span>
           </label>
           <textarea
@@ -99,19 +106,20 @@ export default function ModuleForm({
             placeholder="What will students learn in this module?"
             required
             rows={4}
-            className="w-full text-sm px-3 py-2 rounded-lg border border-border bg-background text-foreground placeholder:text-foreground-muted focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-colors resize-none"
+            className="w-full text-sm px-3 py-2 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary resize-none"
           />
         </div>
 
-        <div className="flex items-center justify-between pt-2">
+        {/* Actions */}
+        <div className="md:col-span-2 flex items-center justify-between pt-3 border-t border-border">
           {isEditing && onDelete ? (
             <button
               type="button"
               onClick={onDelete}
               disabled={deleting}
-              className="flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-lg text-destructive hover:bg-destructive/10 transition-colors disabled:opacity-50"
+              className="flex items-center gap-1.5 text-xs font-medium px-3 py-2 rounded-md text-destructive hover:bg-destructive/10"
             >
-              <Trash2 size={13} />
+              <Trash2 size={14} />
               {deleting ? "Deleting..." : "Delete Module"}
             </button>
           ) : (
@@ -121,12 +129,12 @@ export default function ModuleForm({
           <button
             type="submit"
             disabled={loading}
-            className="flex items-center gap-1.5 text-xs font-semibold px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50"
+            className="flex items-center gap-1.5 text-xs font-medium px-4 py-2 rounded-md bg-primary text-primary-foreground hover:bg-primary/90"
           >
             {loading ? (
-              <Loader2 size={13} className="animate-spin" />
+              <Loader2 size={14} className="animate-spin" />
             ) : (
-              <Save size={13} />
+              <Save size={14} />
             )}
             {loading
               ? "Saving..."

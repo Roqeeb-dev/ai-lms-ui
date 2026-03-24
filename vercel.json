@@ -4,5 +4,10 @@
       "source": "/api/:path*",
       "destination": "https://lms-backend-xaxg.onrender.com/api/:path*"
     }
-  ]
+  ],
+  "functions": {
+    "app/api/**": {
+      "maxDuration": 60
+    }
+  }
 }

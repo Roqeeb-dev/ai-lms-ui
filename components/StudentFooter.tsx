@@ -1,22 +1,69 @@
+"use client";
+
+import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+
 export function StudentFooter({
   instructorName,
   enrolled,
+  onEnroll,
+  loading,
+  courseId,
+  instructorId,
 }: {
   instructorName: string;
   enrolled: boolean;
+  onEnroll: () => void;
+  loading: boolean;
+  courseId: string;
+  instructorId: string;
 }) {
+  const router = useRouter();
+
   return (
-    <>
-      <span className="text-xs text-foreground-muted">{instructorName}</span>
+    <div className="flex flex-col gap-3 w-full">
+      <div className="flex items-center justify-between pt-2 border-t border-border">
+        <Link
+          href={`/instructor/${instructorId}`}
+          className="text-xs text-foreground-muted"
+        >
+          {instructorName}
+        </Link>
+        <span
+          className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
+            enrolled
+              ? "bg-emerald-500/10 text-emerald-600"
+              : "bg-muted text-foreground-muted"
+          }`}
+        >
+          {enrolled ? "Enrolled" : "Not enrolled"}
+        </span>
+      </div>
       <button
-        className={`text-xs font-semibold px-2.5 py-1 rounded-lg transition-all duration-200 ${
+        onClick={
+          enrolled
+            ? () => router.push(`/dashboard/student/courses/${courseId}`)
+            : onEnroll
+        }
+        disabled={loading}
+        className={`w-full py-2 rounded-lg text-xs font-semibold transition-all duration-200 flex items-center justify-center gap-1.5 disabled:opacity-70 disabled:cursor-not-allowed ${
           enrolled
             ? "bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground"
-            : "bg-muted text-foreground hover:bg-primary hover:text-primary-foreground"
+            : "bg-primary text-primary-foreground hover:bg-primary/90"
         }`}
       >
-        {enrolled ? "Continue" : "Enroll"}
+        {loading ? (
+          <>
+            <Loader2 size={12} className="animate-spin" />
+            Enrolling...
+          </>
+        ) : enrolled ? (
+          "Continue Learning"
+        ) : (
+          "Enroll Now"
+        )}
       </button>
-    </>
+    </div>
   );
 }
