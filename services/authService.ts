@@ -8,9 +8,16 @@ export type RegisterPayload = Pick<
   "name" | "email" | "password" | "role"
 >;
 
-export type UpdateProfilePayload = Partial<
-  Pick<User, "name" | "email" | "profile">
->;
+export type UpdateProfilePayload = {
+  name?: string;
+  bio?: string;
+};
+
+export type UpdateProfileWithPicPayload = {
+  name?: string;
+  bio?: string;
+  profilePic?: File;
+};
 
 export type AuthResponse = {
   success: boolean;
@@ -21,8 +28,7 @@ export type AuthResponse = {
 
 export type UpdateProfileResponse = {
   success: boolean;
-  message?: string;
-  user: User;
+  data: ServerUser;
 };
 
 type ForgotPasswordResponse = {
@@ -38,9 +44,7 @@ export type VerifyEmailResponse = {
 };
 
 function mapRole(r: string): Role {
-  if (r === "instructor") return "instructor";
   if (r === "student" || r === "instructor" || r === "admin") return r as Role;
-
   return "student";
 }
 
@@ -113,15 +117,20 @@ export const auth = {
     );
   },
 
-  async updateProfile(payload: UpdateProfilePayload) {
-    const res = await apiClient.patch<
-      { success: boolean; message?: string; user: ServerUser },
-      UpdateProfilePayload
-    >("/me", payload);
+  async updateProfile(payload: UpdateProfileWithPicPayload) {
+    const formData = new FormData();
+    if (payload.name) formData.append("name", payload.name);
+    if (payload.bio) formData.append("bio", payload.bio);
+    if (payload.profilePic) formData.append("profilePic", payload.profilePic);
+
+    const res = await apiClient.patchForm<UpdateProfileResponse>(
+      "/api/users/me",
+      formData,
+    );
     return {
-      ...res,
-      user: normalizeUser(res.user),
-    } as UpdateProfileResponse;
+      success: res.success,
+      data: normalizeUser(res.data),
+    };
   },
 
   async forgotPassword(payload: { email: string }) {

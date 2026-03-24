@@ -141,9 +141,10 @@ export function useUser() {
   async function updateProfile(data: UpdateProfilePayload) {
     setUpdatingProfile(true);
     setError(null);
+
     try {
       const res = await auth.updateProfile(data);
-      setUser(res.user);
+      setUser(res.data);
       addToast("Profile updated successfully!", "success");
       return res;
     } catch (err: any) {
