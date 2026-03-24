@@ -8,6 +8,7 @@ import {
   UpdateProfilePayload,
 } from "@/services/authService";
 import { useUserStore } from "@/store/useUserStore";
+import { useToastStore } from "@/store/useToastStore";
 
 function getErrorMessage(err: any): string {
   return (
@@ -20,6 +21,7 @@ function getErrorMessage(err: any): string {
 
 export function useUser() {
   const { user, setUser, clearUser } = useUserStore();
+  const { addToast } = useToastStore();
 
   const [registering, setRegistering] = useState(false);
   const [loggingIn, setLoggingIn] = useState(false);
@@ -38,10 +40,12 @@ export function useUser() {
     try {
       const res = await auth.register(data);
       setUser(res.user);
+      addToast("Account created successfully!", "success");
       return res;
     } catch (err: any) {
       const message = getErrorMessage(err);
       setError(message);
+      addToast(message, "error");
       throw new Error(message);
     } finally {
       setRegistering(false);
@@ -54,10 +58,12 @@ export function useUser() {
     try {
       const res = await auth.login(data);
       setUser(res.user);
+      addToast(`Welcome back, ${res.user.name.split(" ")[0]}!`, "success");
       return res;
     } catch (err: any) {
       const message = getErrorMessage(err);
       setError(message);
+      addToast(message, "error");
       throw new Error(message);
     } finally {
       setLoggingIn(false);
@@ -70,9 +76,11 @@ export function useUser() {
     try {
       await auth.logout();
       clearUser();
+      addToast("You've been logged out.", "success");
     } catch (err: any) {
       const message = getErrorMessage(err);
       setError(message);
+      addToast(message, "error");
       throw new Error(message);
     } finally {
       setLoggingOut(false);
@@ -101,10 +109,12 @@ export function useUser() {
     try {
       const res = await auth.verifyEmail({ token });
       setUser(res.user);
+      addToast("Email verified successfully!", "success");
       return res;
     } catch (err: any) {
       const message = getErrorMessage(err);
       setError(message);
+      addToast(message, "error");
       throw new Error(message);
     } finally {
       setVerifying(false);
@@ -116,10 +126,12 @@ export function useUser() {
     setError(null);
     try {
       const res = await auth.resetVerification({ email });
+      addToast("Verification email sent!", "success");
       return res;
     } catch (err: any) {
       const message = getErrorMessage(err);
       setError(message);
+      addToast(message, "error");
       throw new Error(message);
     } finally {
       setResendingVerification(false);
@@ -132,10 +144,12 @@ export function useUser() {
     try {
       const res = await auth.updateProfile(data);
       setUser(res.user);
+      addToast("Profile updated successfully!", "success");
       return res;
     } catch (err: any) {
       const message = getErrorMessage(err);
       setError(message);
+      addToast(message, "error");
       throw new Error(message);
     } finally {
       setUpdatingProfile(false);
@@ -147,10 +161,12 @@ export function useUser() {
     setError(null);
     try {
       const res = await auth.forgotPassword({ email });
+      addToast("Password reset email sent!", "success");
       return res;
     } catch (err: any) {
       const message = getErrorMessage(err);
       setError(message);
+      addToast(message, "error");
       throw new Error(message);
     } finally {
       setSendingReset(false);
@@ -162,10 +178,12 @@ export function useUser() {
     setError(null);
     try {
       const res = await auth.resetPassword(token, { password });
+      addToast("Password reset successfully!", "success");
       return res;
     } catch (err: any) {
       const message = getErrorMessage(err);
       setError(message);
+      addToast(message, "error");
       throw new Error(message);
     } finally {
       setResettingPassword(false);
@@ -175,7 +193,6 @@ export function useUser() {
   return {
     user,
     error,
-
     registering,
     loggingIn,
     loggingOut,
@@ -185,7 +202,6 @@ export function useUser() {
     updatingProfile,
     sendingReset,
     resettingPassword,
-
     registerUser,
     loginUser,
     logoutUser,
