@@ -43,6 +43,22 @@ export type VerifyEmailResponse = {
   user: User;
 };
 
+export type ChangePasswordPayload = {
+  password: string;
+  passwordUpdate: string;
+};
+
+export type ChangePasswordResponse = {
+  success: boolean;
+  message: string;
+  data: ServerUser;
+};
+
+export type DeleteUserAccountResponse = {
+  success: boolean;
+  message: string;
+};
+
 function mapRole(r: string): Role {
   if (r === "student" || r === "instructor" || r === "admin") return r as Role;
   return "student";
@@ -153,5 +169,22 @@ export const auth = {
       ...res,
       user: normalizeUser(res),
     };
+  },
+
+  async changePassword(payload: ChangePasswordPayload) {
+    const res = await apiClient.patch<
+      ChangePasswordResponse,
+      ChangePasswordPayload
+    >(`/api/auth/change-password`, payload);
+
+    return {
+      success: res.success,
+      message: res.message,
+      user: normalizeUser(res.data),
+    };
+  },
+
+  async deleteUserAccount() {
+    return apiClient.delete<DeleteUserAccountResponse>("/api/users/me");
   },
 };
