@@ -1,7 +1,10 @@
+"use client";
+
 import { course, CreateCoursePayload } from "@/services/courseService";
 import { Course } from "@/types/course";
 import { useState, useEffect } from "react";
 import { useUserStore } from "@/store/useUserStore";
+import { useToastStore } from "@/store/useToastStore";
 
 export function getErrorMessage(err: any): string {
   return (
@@ -14,6 +17,8 @@ export function getErrorMessage(err: any): string {
 
 export function useInstructorCourses() {
   const { user } = useUserStore();
+  const { addToast } = useToastStore();
+
   const [fetching, setFetching] = useState<boolean>(false);
   const [creating, setCreating] = useState<boolean>(false);
   const [deleting, setDeleting] = useState<boolean>(false);
@@ -32,10 +37,16 @@ export function useInstructorCourses() {
 
       try {
         const res = await course.getLoggedInInstructorCourses();
-        if (isMounted) setCourses(res.courses ?? []);
+        if (isMounted) {
+          setCourses(res.courses ?? []);
+          addToast("Courses fetched successfully!", "success");
+        }
       } catch (err: any) {
         const message = getErrorMessage(err);
-        if (isMounted) setError(message);
+        if (isMounted) {
+          setError(message);
+          addToast(message, "error");
+        }
         console.error(message);
       } finally {
         if (isMounted) setFetching(false);
@@ -47,7 +58,7 @@ export function useInstructorCourses() {
     return () => {
       isMounted = false;
     };
-  }, [user]);
+  }, [user, addToast]);
 
   async function createCourse(data: CreateCoursePayload) {
     setCreating(true);
@@ -55,11 +66,14 @@ export function useInstructorCourses() {
     try {
       const res = await course.createCourse(data);
       setCourses((prev) => [...prev, res.course]);
+      addToast("Course created successfully!", "success");
       return res;
     } catch (err: any) {
       const message = getErrorMessage(err);
       setError(message);
+      addToast(message, "error");
       console.error(message);
+      throw new Error(message);
     } finally {
       setCreating(false);
     }
@@ -77,10 +91,14 @@ export function useInstructorCourses() {
       setCourses((prev) =>
         prev.map((c) => (c.id === courseId ? res.course : c)),
       );
+      addToast("Course updated successfully!", "success");
+      return res;
     } catch (err: any) {
       const message = getErrorMessage(err);
       setError(message);
+      addToast(message, "error");
       console.error(message);
+      throw new Error(message);
     } finally {
       setUpdating(false);
     }
@@ -92,10 +110,13 @@ export function useInstructorCourses() {
     try {
       await course.deleteCourse(courseId);
       setCourses((prev) => prev.filter((c) => c.id !== courseId));
+      addToast("Course deleted successfully!", "success");
     } catch (err: any) {
       const message = getErrorMessage(err);
       setError(message);
+      addToast(message, "error");
       console.error(message);
+      throw new Error(message);
     } finally {
       setDeleting(false);
     }
