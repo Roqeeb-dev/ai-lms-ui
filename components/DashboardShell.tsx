@@ -5,10 +5,9 @@ import { usePathname, useRouter } from "next/navigation";
 import type { Role } from "@/types/user";
 import { useUserStore } from "@/store/useUserStore";
 import { auth } from "@/services/authService";
-
 import DashboardTopbar from "@/components/DashboardTopbar";
 import StudentSidebar from "./sidebars/StudentSidebar";
-import InstructorSidebar from "./sidebars/InstructorSidebar"; // updated import
+import InstructorSidebar from "./sidebars/InstructorSidebar";
 import AdminSidebar from "./sidebars/AdminSidebar";
 
 function getPageTitle(pathname: string): string {
@@ -16,9 +15,10 @@ function getPageTitle(pathname: string): string {
     "/dashboard/student": "Home",
     "/dashboard/student/courses": "My Courses",
     "/dashboard/student/progress": "Progress",
+    "/dashboard/student/browse": "Explore Courses",
+    "/dashboard/student/quizzes": "Quizzes",
     "/dashboard/student/ai-tutor": "AI Tutor",
     "/dashboard/instructor": "Home",
-    "/dashboard/instructor/classrooms": "Classrooms",
     "/dashboard/instructor/students": "Students",
     "/dashboard/instructor/analytics": "Analytics",
     "/dashboard/admin": "Home",
@@ -33,7 +33,8 @@ export default function DashboardShell({
 }: {
   children: React.ReactNode;
 }) {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [desktopPinned, setDesktopPinned] = useState(false);
   const [hydrating, setHydrating] = useState(true);
 
   const user = useUserStore((state) => state.user);
@@ -42,12 +43,16 @@ export default function DashboardShell({
   const router = useRouter();
   const pageTitle = getPageTitle(pathname);
 
+  // close mobile sidebar on route change
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
+
   useEffect(() => {
     if (user) {
       setHydrating(false);
       return;
     }
-
     async function fetchUser() {
       try {
         const res = await auth.checkUser();
@@ -58,14 +63,18 @@ export default function DashboardShell({
         setHydrating(false);
       }
     }
-
     fetchUser();
   }, []);
 
   function displayDynamicSidebar(role: Role) {
-    if (role === "student") return <StudentSidebar open={sidebarOpen} />;
-    if (role === "instructor") return <InstructorSidebar open={sidebarOpen} />;
-    return <AdminSidebar open={sidebarOpen} />;
+    const props = {
+      mobileOpen,
+      desktopPinned,
+      onMobileClose: () => setMobileOpen(false),
+    };
+    if (role === "student") return <StudentSidebar {...props} />;
+    if (role === "instructor") return <InstructorSidebar {...props} />;
+    return <AdminSidebar {...props} />;
   }
 
   if (hydrating) {
@@ -86,8 +95,14 @@ export default function DashboardShell({
         <DashboardTopbar
           user={user}
           pageTitle={pageTitle}
-          notificationCount={3}
-          onSidebarToggle={() => setSidebarOpen((prev) => !prev)}
+          onSidebarToggle={() => {
+            if (window.innerWidth < 768) {
+              setMobileOpen((prev) => !prev);
+            } else {
+              setDesktopPinned((prev) => !prev);
+            }
+          }}
+          sidebarOpen={desktopPinned}
         />
         <main className="flex-1 overflow-y-auto p-6 bg-background">
           {children}

@@ -48,7 +48,7 @@ export default function UserMenu({ user }: { user: TopbarUser }) {
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-2.5 rounded-lg px-2.5 py-1.5 hover:bg-muted transition-all duration-200"
+        className="flex items-center gap-2.5 rounded-lg px-2 py-1 hover:bg-muted transition-all duration-200"
       >
         {/* Avatar */}
         <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-xs font-bold text-primary-foreground shrink-0">

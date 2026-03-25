@@ -19,32 +19,34 @@ export default function CourseContentHeader({
     totalLessons > 0 ? Math.round((completedCount / totalLessons) * 100) : 0;
 
   return (
-    <div className="h-14 shrink-0 border-b border-border bg-card flex items-center justify-between px-6">
-      <div className="flex items-center gap-3">
+    <div className="shrink-0 border-b border-border bg-card px-4 md:px-6 py-3 md:py-0 md:h-14 flex flex-col md:flex-row md:items-center md:justify-between gap-2 md:gap-0">
+      <div className="flex items-center gap-3 min-w-0">
         <button
           onClick={onBack}
-          className="flex items-center gap-1.5 text-sm text-foreground-muted hover:text-foreground transition-colors"
+          className="flex items-center gap-1.5 text-sm text-foreground-muted hover:text-foreground transition-colors shrink-0"
         >
           <ArrowLeft size={15} />
-          Back
+          <span className="hidden sm:inline">Back</span>
         </button>
-        <span className="text-border">|</span>
-        <span className="text-sm font-semibold text-foreground truncate max-w-xs">
+        <span className="text-border hidden sm:inline">|</span>
+        <span className="text-sm font-semibold text-foreground truncate">
           {courseTitle}
         </span>
       </div>
 
       <div className="flex items-center gap-3">
-        <span className="text-xs text-foreground-muted">
+        <span className="text-xs text-foreground-muted shrink-0">
           {completedCount}/{totalLessons} lessons
         </span>
-        <div className="w-32 h-1.5 rounded-full bg-muted overflow-hidden">
+        <div className="flex-1 md:w-32 md:flex-none h-1.5 rounded-full bg-muted overflow-hidden">
           <div
             className="h-full rounded-full bg-primary transition-all duration-500"
             style={{ width: `${progress}%` }}
           />
         </div>
-        <span className="text-xs font-semibold text-primary">{progress}%</span>
+        <span className="text-xs font-semibold text-primary shrink-0">
+          {progress}%
+        </span>
       </div>
     </div>
   );

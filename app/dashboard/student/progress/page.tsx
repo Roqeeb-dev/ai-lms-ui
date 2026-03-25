@@ -1,3 +1,5 @@
+import ProgressClient from "./ProgressClient";
+
 export const metadata = {
   title: "My Progress | Cognify LMS",
   description:
@@ -7,7 +9,7 @@ export const metadata = {
 export default function StudentProgress() {
   return (
     <main>
-      <h1>Progress page</h1>
+      <ProgressClient />
     </main>
   );
 }

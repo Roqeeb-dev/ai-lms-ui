@@ -1,3 +1,5 @@
+import QuizzClient from "./QuizzClient";
+
 export const metadata = {
   title: "Instructor Quizzes | Cognify LMS",
   description: "Create, edit, and manage quizzes for your students.",
@@ -6,7 +8,7 @@ export const metadata = {
 export default function InstructorQuizzes() {
   return (
     <main>
-      <h1>Instructor Quiz page</h1>
+      <QuizzClient />
     </main>
   );
 }
