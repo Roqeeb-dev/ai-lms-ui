@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Mail, Check } from "lucide-react";
 import Link from "next/link";
 import { useUser } from "@/hooks/useUser";
+import Logo from "@/components/Logo";
 
 export default function VerifyClient() {
   const {
@@ -42,9 +43,17 @@ export default function VerifyClient() {
   if (success) {
     return (
       <div className="w-full max-w-md px-5 pt-10 pb-8 lg:p-6 flex flex-col gap-6 text-center">
+        {/* Mobile Logo */}
+        <div className="lg:hidden flex items-center justify-start text-left">
+          <Link href="/">
+            <Logo />
+          </Link>
+        </div>
+
         <div className="w-16 h-16 lg:w-14 lg:h-14 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto">
           <Check className="text-primary" size={24} />
         </div>
+
         <div className="flex flex-col gap-2">
           <h1 className="text-2xl lg:text-xl font-bold text-foreground tracking-tight">
             Account verified!
@@ -54,6 +63,7 @@ export default function VerifyClient() {
             your account.
           </p>
         </div>
+
         <Link
           href="/login"
           className="w-full rounded-lg bg-primary text-primary-foreground px-4 py-3 lg:py-2.5 text-sm font-semibold hover:bg-primary-hover active:scale-[0.98] transition-all duration-200 shadow-sm text-center"
@@ -68,6 +78,13 @@ export default function VerifyClient() {
 
   return (
     <div className="w-full max-w-md px-5 pt-10 pb-8 lg:p-6 flex flex-col gap-8 lg:gap-6 text-center">
+      {/* Mobile Logo */}
+      <div className="lg:hidden flex items-center justify-start text-left">
+        <Link href="/">
+          <Logo />
+        </Link>
+      </div>
+
       {/* Icon */}
       <div className="w-16 h-16 lg:w-14 lg:h-14 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto">
         <Mail className="text-primary" size={24} />
@@ -129,6 +146,7 @@ export default function VerifyClient() {
         >
           {resent ? "Code sent ✓" : "Resend verification code"}
         </button>
+
         <p className="text-xs text-foreground-muted">
           Wrong email?{" "}
           <Link

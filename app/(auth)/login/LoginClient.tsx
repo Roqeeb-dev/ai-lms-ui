@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { LoadingDots } from "@/components/LoadingDots";
 import { useUser } from "@/hooks/useUser";
 import type { User } from "@/types/user";
+import Logo from "@/components/Logo";
 
 type LoginDetails = Pick<User, "email" | "password">;
 
@@ -32,6 +33,13 @@ export default function LoginClient() {
 
   return (
     <div className="w-full max-w-md px-5 pt-10 pb-8 lg:p-6 flex flex-col gap-8 lg:gap-6">
+      {/* Mobile Logo */}
+      <div className="lg:hidden flex items-center justify-start">
+        <Link href="/">
+          <Logo />
+        </Link>
+      </div>
+
       {/* Header */}
       <div className="flex flex-col gap-2 lg:gap-1.5">
         <h1 className="text-2xl lg:text-xl font-bold text-foreground tracking-tight">
