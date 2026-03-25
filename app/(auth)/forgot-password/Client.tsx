@@ -5,6 +5,7 @@ import Link from "next/link";
 import { LoadingDots } from "@/components/LoadingDots";
 import { useUser } from "@/hooks/useUser";
 import { Mail } from "lucide-react";
+import Logo from "@/components/Logo";
 
 export default function ForgotPasswordClient() {
   const [email, setEmail] = useState("");
@@ -21,6 +22,13 @@ export default function ForgotPasswordClient() {
 
   return (
     <div className="w-full max-w-md px-5 pt-10 pb-8 lg:p-6 flex flex-col gap-8 lg:gap-6">
+      {/* Mobile Logo */}
+      <div className="lg:hidden flex items-center justify-start">
+        <Link href="/">
+          <Logo />
+        </Link>
+      </div>
+
       {submitted ? (
         <div className="flex flex-col gap-6 lg:gap-4 text-center">
           <div className="w-16 h-16 lg:w-12 lg:h-12 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto">
