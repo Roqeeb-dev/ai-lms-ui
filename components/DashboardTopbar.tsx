@@ -1,7 +1,6 @@
 "use client";
 
 import { PanelLeft, PanelLeftClose } from "lucide-react";
-import NotificationBell from "./NotificationBell";
 import UserMenu from "./UserMenu";
 import { PublicUser } from "@/types/user";
 
@@ -10,7 +9,6 @@ export type TopbarUser = PublicUser;
 interface DashboardTopbarProps {
   user: TopbarUser;
   pageTitle: string;
-  notificationCount?: number;
   onSidebarToggle: () => void;
   sidebarOpen: boolean;
 }
@@ -18,7 +16,6 @@ interface DashboardTopbarProps {
 export default function DashboardTopbar({
   user,
   pageTitle,
-  notificationCount = 0,
   onSidebarToggle,
   sidebarOpen,
 }: DashboardTopbarProps) {
@@ -41,7 +38,6 @@ export default function DashboardTopbar({
 
       {/* Right */}
       <div className="flex items-center gap-1.5">
-        <NotificationBell count={notificationCount} />
         <UserMenu user={user} />
       </div>
     </header>

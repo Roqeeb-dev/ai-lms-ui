@@ -69,7 +69,7 @@ export default function LessonViewer({
   }
 
   return (
-    <div className="w-full max-w-5xl mx-auto px-8 py-8 flex flex-col gap-6">
+    <div className="w-full max-w-6xl mx-auto px-3 md:px-8 py-3 md:py-8 flex flex-col gap-6">
       {/* Lesson meta */}
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-2">
@@ -107,32 +107,32 @@ export default function LessonViewer({
         <button
           onClick={onPrev}
           disabled={!hasPrev}
-          className="flex items-center gap-2 text-xs font-semibold px-4 py-2.5 rounded-lg border border-border hover:bg-muted transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          className="flex items-center gap-2 text-xs font-semibold px-3 md:px-4 py-2.5 rounded-lg border border-border hover:bg-muted transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
         >
           <ChevronLeft size={14} />
-          Previous
+          <span className="hidden sm:inline">Previous</span>
         </button>
 
         {isCompleted ? (
-          <div className="flex items-center gap-2 text-sm font-semibold text-emerald-600 bg-emerald-500/10 px-4 py-2 rounded-lg">
+          <div className="flex items-center gap-2 text-sm font-semibold text-emerald-600 bg-emerald-500/10 px-3 md:px-4 py-2 rounded-lg">
             <CheckCircle size={15} />
-            Completed
+            <span className="hidden sm:inline">Completed</span>
           </div>
         ) : (
           <button
             onClick={onComplete}
             disabled={completing}
-            className="flex items-center gap-2 text-xs font-semibold px-5 py-2.5 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50"
+            className="flex items-center gap-2 text-xs font-semibold px-3 md:px-5 py-2.5 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50"
           >
             {completing ? (
               <>
                 <Loader2 size={13} className="animate-spin" />
-                Marking...
+                <span className="hidden sm:inline">Marking...</span>
               </>
             ) : (
               <>
                 <CheckCircle size={13} />
-                Mark as Complete
+                <span className="hidden sm:inline">Mark as Complete</span>
               </>
             )}
           </button>
@@ -141,9 +141,9 @@ export default function LessonViewer({
         <button
           onClick={onNext}
           disabled={!hasNext}
-          className="flex items-center gap-2 text-xs font-semibold px-4 py-2.5 rounded-lg border border-border hover:bg-muted transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          className="flex items-center gap-2 text-xs font-semibold px-3 md:px-4 py-2.5 rounded-lg border border-border hover:bg-muted transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
         >
-          Next
+          <span className="hidden sm:inline">Next</span>
           <ChevronRight size={14} />
         </button>
       </div>

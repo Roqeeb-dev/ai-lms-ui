@@ -137,7 +137,7 @@ export default function CourseOutline({
   onSelectLesson,
 }: Props) {
   return (
-    <div className="w-full max-w-5xl mx-auto px-8 pb-16 flex flex-col gap-4">
+    <div className="w-full max-w-6xl mx-auto px-3 md:px-8 pb-16 flex flex-col gap-4">
       <h2 className="text-xs font-semibold uppercase tracking-widest text-foreground-muted">
         Course Content
       </h2>

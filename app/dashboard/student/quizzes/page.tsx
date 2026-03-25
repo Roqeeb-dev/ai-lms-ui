@@ -1,3 +1,5 @@
+import StudentQuizzClient from "./StudentQuizzClient";
+
 export const metadata = {
   title: "My Quizzes | Cognify LMS",
   description:
@@ -7,7 +9,7 @@ export const metadata = {
 export default function Quizzes() {
   return (
     <main>
-      <h1>Quizzes page</h1>
+      <StudentQuizzClient />
     </main>
   );
 }

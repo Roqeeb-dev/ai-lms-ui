@@ -95,10 +95,7 @@ export default function DashboardShell({
         <DashboardTopbar
           user={user}
           pageTitle={pageTitle}
-          notificationCount={3}
           onSidebarToggle={() => {
-            // on mobile toggle mobile overlay
-            // on desktop toggle pin state
             if (window.innerWidth < 768) {
               setMobileOpen((prev) => !prev);
             } else {
