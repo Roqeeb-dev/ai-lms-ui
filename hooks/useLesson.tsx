@@ -13,6 +13,7 @@ import {
 } from "@/services/lessonService";
 import { Lesson } from "@/types/lesson";
 import { getErrorMessage } from "./useInstructorCourses";
+import { useToastStore } from "@/store/useToastStore";
 
 export function useLesson() {
   const [lessons, setLessons] = useState<Lesson[]>([]);
@@ -25,17 +26,22 @@ export function useLesson() {
   const [completing, setCompleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const { addToast } = useToastStore();
+
   async function addLesson(moduleId: string, data: CreateLessonPayload) {
     setCreating(true);
     setError(null);
     try {
       const res = await createLesson(moduleId, data);
       setLessons((prev) => [...prev, res.lesson]);
+      addToast("Lesson created successfully!", "success");
       return res;
     } catch (err: any) {
       const message = getErrorMessage(err);
       setError(message);
+      addToast(message, "error");
       console.error(message);
+      throw new Error(message);
     } finally {
       setCreating(false);
     }
@@ -47,11 +53,14 @@ export function useLesson() {
     try {
       const res = await getModuleLessons(moduleId);
       setLessons(res.lessons);
+      addToast("Module lessons fetched successfully!", "success");
       return res;
     } catch (err: any) {
       const message = getErrorMessage(err);
       setError(message);
+      addToast(message, "error");
       console.error(message);
+      throw new Error(message);
     } finally {
       setFetching(false);
     }
@@ -63,11 +72,14 @@ export function useLesson() {
     try {
       const res = await getSingleLesson(lessonId);
       setSelectedLesson(res.lesson);
+      addToast("Lesson fetched successfully!", "success");
       return res;
     } catch (err: any) {
       const message = getErrorMessage(err);
       setError(message);
+      addToast(message, "error");
       console.error(message);
+      throw new Error(message);
     } finally {
       setFetchingSingle(false);
     }
@@ -82,11 +94,14 @@ export function useLesson() {
         prev.map((l) => (l.id === lessonId ? res.lesson : l)),
       );
       if (selectedLesson?.id === lessonId) setSelectedLesson(res.lesson);
+      addToast("Lesson updated successfully!", "success");
       return res;
     } catch (err: any) {
       const message = getErrorMessage(err);
       setError(message);
+      addToast(message, "error");
       console.error(message);
+      throw new Error(message);
     } finally {
       setUpdating(false);
     }
@@ -99,11 +114,14 @@ export function useLesson() {
       const res = await deleteLesson(lessonId);
       setLessons((prev) => prev.filter((l) => l.id !== lessonId));
       if (selectedLesson?.id === lessonId) setSelectedLesson(null);
+      addToast("Lesson deleted successfully!", "success");
       return res;
     } catch (err: any) {
       const message = getErrorMessage(err);
       setError(message);
+      addToast(message, "error");
       console.error(message);
+      throw new Error(message);
     } finally {
       setDeleting(false);
     }
@@ -114,11 +132,14 @@ export function useLesson() {
     setError(null);
     try {
       const res = await completeLesson(lessonId);
+      addToast("Lesson marked as complete!", "success");
       return res;
     } catch (err: any) {
       const message = getErrorMessage(err);
       setError(message);
+      addToast(message, "error");
       console.error(message);
+      throw new Error(message);
     } finally {
       setCompleting(false);
     }

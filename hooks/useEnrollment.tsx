@@ -12,9 +12,12 @@ import {
 } from "@/types/enrollment";
 import { getErrorMessage } from "./useInstructorCourses";
 import { useUserStore } from "@/store/useUserStore";
+import { useToastStore } from "@/store/useToastStore";
 
 export function useEnrollment() {
   const { user } = useUserStore();
+  const { addToast } = useToastStore();
+
   const [enrollments, setEnrollments] = useState<EnrollmentWithCourse[]>([]);
   const [courseStudents, setCourseStudents] = useState<EnrollmentWithStudent[]>(
     [],
@@ -34,10 +37,16 @@ export function useEnrollment() {
       setError(null);
       try {
         const res = await getCoursesEnrollment();
-        if (isMounted) setEnrollments(res.enrollments);
+        if (isMounted) {
+          setEnrollments(res.enrollments);
+          addToast("Enrollments fetched successfully!", "success");
+        }
       } catch (err: any) {
         const message = getErrorMessage(err);
-        if (isMounted) setError(message);
+        if (isMounted) {
+          setError(message);
+          addToast(message, "error");
+        }
         console.error(message);
       } finally {
         if (isMounted) setFetching(false);
@@ -49,18 +58,21 @@ export function useEnrollment() {
     return () => {
       isMounted = false;
     };
-  }, [user]);
+  }, [user, addToast]);
 
   async function enroll(courseId: string) {
     setEnrolling(true);
     setError(null);
     try {
       const res = await createCourseEnrollment(courseId);
+      addToast("Enrolled in course successfully!", "success");
       return res;
     } catch (err: any) {
       const message = getErrorMessage(err);
       setError(message);
+      addToast(message, "error");
       console.error(message);
+      throw new Error(message);
     } finally {
       setEnrolling(false);
     }
@@ -72,19 +84,32 @@ export function useEnrollment() {
     try {
       const res = await getCourseStudents(courseId);
       setCourseStudents(res.enrollments);
+      addToast("Course students fetched successfully!", "success");
       return res;
     } catch (err: any) {
       const message = getErrorMessage(err);
       setError(message);
+      addToast(message, "error");
       console.error(message);
+      throw new Error(message);
     } finally {
       setFetchingStudents(false);
     }
   }
 
   async function refetchEnrollments() {
-    const res = await getCoursesEnrollment();
-    if (res) setEnrollments(res.enrollments);
+    try {
+      const res = await getCoursesEnrollment();
+      if (res) setEnrollments(res.enrollments);
+      addToast("Enrollments refreshed!", "success");
+      return res;
+    } catch (err: any) {
+      const message = getErrorMessage(err);
+      setError(message);
+      addToast(message, "error");
+      console.error(message);
+      throw new Error(message);
+    }
   }
 
   const avgProgress =

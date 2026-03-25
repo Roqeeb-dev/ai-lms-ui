@@ -12,6 +12,7 @@ import {
 } from "@/services/moduleService";
 import { Module } from "@/types/module";
 import { getErrorMessage } from "./useInstructorCourses";
+import { useToastStore } from "@/store/useToastStore";
 
 export function useModule() {
   const [modules, setModules] = useState<Module[]>([]);
@@ -23,17 +24,22 @@ export function useModule() {
   const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const { addToast } = useToastStore();
+
   async function addModule(courseId: string, data: CreateCourseModulePayload) {
     setCreating(true);
     setError(null);
     try {
       const res = await createCourseModule(courseId, data);
       setModules((prev) => [...prev, res.module]);
+      addToast("Module created successfully!", "success");
       return res;
     } catch (err: any) {
       const message = getErrorMessage(err);
       setError(message);
+      addToast(message, "error");
       console.error(message);
+      throw new Error(message);
     } finally {
       setCreating(false);
     }
@@ -45,11 +51,14 @@ export function useModule() {
     try {
       const res = await getCourseModules(courseId);
       setModules(res.modules);
+      addToast("Course modules fetched successfully!", "success");
       return res;
     } catch (err: any) {
       const message = getErrorMessage(err);
       setError(message);
+      addToast(message, "error");
       console.error(message);
+      throw new Error(message);
     } finally {
       setFetching(false);
     }
@@ -61,11 +70,14 @@ export function useModule() {
     try {
       const res = await getSingleModule(moduleId);
       setSelectedModule(res.module);
+      addToast("Module fetched successfully!", "success");
       return res;
     } catch (err: any) {
       const message = getErrorMessage(err);
       setError(message);
+      addToast(message, "error");
       console.error(message);
+      throw new Error(message);
     } finally {
       setFetchingSingle(false);
     }
@@ -79,11 +91,15 @@ export function useModule() {
       setModules((prev) =>
         prev.map((m) => (m.id === moduleId ? res.module : m)),
       );
+      if (selectedModule?.id === moduleId) setSelectedModule(res.module);
+      addToast("Module updated successfully!", "success");
       return res;
     } catch (err: any) {
       const message = getErrorMessage(err);
       setError(message);
+      addToast(message, "error");
       console.error(message);
+      throw new Error(message);
     } finally {
       setUpdating(false);
     }
@@ -96,11 +112,14 @@ export function useModule() {
       const res = await deleteModule(moduleId);
       setModules((prev) => prev.filter((m) => m.id !== moduleId));
       if (selectedModule?.id === moduleId) setSelectedModule(null);
+      addToast("Module deleted successfully!", "success");
       return res;
     } catch (err: any) {
       const message = getErrorMessage(err);
       setError(message);
+      addToast(message, "error");
       console.error(message);
+      throw new Error(message);
     } finally {
       setDeleting(false);
     }
