@@ -1,6 +1,6 @@
 "use client";
 
-import { Menu } from "lucide-react";
+import { PanelLeft, PanelLeftClose } from "lucide-react";
 import NotificationBell from "./NotificationBell";
 import UserMenu from "./UserMenu";
 import { PublicUser } from "@/types/user";
@@ -12,6 +12,7 @@ interface DashboardTopbarProps {
   pageTitle: string;
   notificationCount?: number;
   onSidebarToggle: () => void;
+  sidebarOpen: boolean;
 }
 
 export default function DashboardTopbar({
@@ -19,6 +20,7 @@ export default function DashboardTopbar({
   pageTitle,
   notificationCount = 0,
   onSidebarToggle,
+  sidebarOpen,
 }: DashboardTopbarProps) {
   return (
     <header className="sticky top-0 z-40 w-full h-14 bg-card/80 backdrop-blur-md border-b border-border flex items-center px-4 gap-4">
@@ -29,11 +31,9 @@ export default function DashboardTopbar({
           className="p-1.5 rounded-lg text-foreground-muted hover:text-foreground hover:bg-muted transition-all duration-200 shrink-0"
           aria-label="Toggle sidebar"
         >
-          <Menu size={17} />
+          {sidebarOpen ? <PanelLeftClose size={17} /> : <PanelLeft size={17} />}
         </button>
-
         <div className="h-4 w-px bg-border mx-1 shrink-0" />
-
         <h1 className="text-sm font-semibold text-foreground truncate">
           {pageTitle}
         </h1>
