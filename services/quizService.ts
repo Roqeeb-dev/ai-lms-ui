@@ -6,9 +6,15 @@ export interface CreateQuizPayload {
   passingScore: number;
   shuffleQuestions: boolean;
 }
+
 export interface CreateQuizResponse {
   success: boolean;
   data: ServerQuiz;
+}
+
+export interface Answer {
+  questionId: string;
+  selectedOption: number;
 }
 
 export interface StartQuizResponse {
@@ -17,39 +23,51 @@ export interface StartQuizResponse {
     user: string;
     quiz: string;
     startedAt: string;
-    _id: string;
-    answers: {
-      questionId: string;
-      selectedOption: number;
-    }[];
+    _id: string; // ID of the quiz attempt
+    answers: Answer[];
     createdAt: string;
     updatedAt: string;
     __v: number;
   };
 }
 
-export interface Answer {
-  questionId: string;
-  selectedOption: number;
-}
-
 export interface QuizAttempt {
-  id: string;
+  id: string; // Attempt ID
   userId: string;
   quizId: string;
-
   startedAt: Date;
-
   answers: Answer[];
-
   createdAt: Date;
   updatedAt: Date;
 }
 
-export interface SubmitQuizPayload {}
-export interface SubmitQuizResponse {}
+export interface SubmitQuizPayload {
+  answers: Answer[];
+}
 
-export interface GetQuizResponse {}
+export interface SubmitQuizResponse {
+  success: boolean;
+  data: {
+    _id: string; // Attempt ID
+    user: string;
+    quiz: ServerQuiz;
+    startedAt: string;
+    answers: Answer[];
+    duration: number;
+    passed: boolean;
+    score: number;
+    percentage: number;
+    submittedAt: string;
+    createdAt: string;
+    updatedAt: string;
+    __v: number;
+  };
+}
+
+export interface GetQuizResponse {
+  success: boolean;
+  data: ServerQuiz;
+}
 
 export async function createQuiz(lessonId: string, data: CreateQuizPayload) {
   const res = await apiClient.post<CreateQuizResponse, CreateQuizPayload>(
@@ -73,7 +91,7 @@ export async function startQuiz(quizId: string) {
   return {
     success: res.success,
     data: {
-      id: data._id,
+      id: data._id, // Quiz attempt ID
       userId: data.user,
       quizId: data.quiz,
       startedAt: new Date(data.startedAt),
@@ -84,6 +102,38 @@ export async function startQuiz(quizId: string) {
   };
 }
 
-// submit quiz
+export async function submitQuiz(attemptId: string, data: SubmitQuizPayload) {
+  const res = await apiClient.post<SubmitQuizResponse, SubmitQuizPayload>(
+    `/api/quizzes/attempts/${attemptId}/submit`,
+    data,
+  );
 
-// get quiz questions
+  return {
+    success: res.success,
+    data: {
+      id: res.data._id, // Attempt ID
+      userId: res.data.user,
+      quiz: normalizeQuiz(res.data.quiz),
+      answers: res.data.answers,
+      passed: res.data.passed,
+      score: res.data.score,
+      percentage: res.data.percentage,
+      duration: res.data.duration,
+      startedAt: new Date(res.data.startedAt),
+      submittedAt: new Date(res.data.submittedAt),
+      createdAt: new Date(res.data.createdAt),
+      updatedAt: new Date(res.data.updatedAt),
+    },
+  };
+}
+
+export async function getQuiz(quizId: string) {
+  const res = await apiClient.get<GetQuizResponse>(
+    `/api/quizzes/${quizId}/quiz`,
+  );
+
+  return {
+    success: res.success,
+    data: normalizeQuiz(res.data),
+  };
+}
