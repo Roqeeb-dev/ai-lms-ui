@@ -17,7 +17,7 @@ export default function SettingsClient() {
     );
 
   return (
-    <div className="flex flex-col gap-6 w-full">
+    <div className="flex flex-col gap-6 max-w-6xl mx-auto w-full">
       <div className="flex flex-col gap-1">
         <h1 className="text-xl font-bold text-foreground tracking-tight">
           Settings
