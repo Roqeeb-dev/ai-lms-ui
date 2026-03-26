@@ -2,10 +2,22 @@
 
 import { useState } from "react";
 import Dialog from "./Dialog";
+import { useUser } from "@/hooks/useUser";
+import { useRouter } from "next/navigation";
 
 export default function DangerSection() {
   const [isDialogShown, setIsDialogShown] = useState(false);
-  const [deleting, setDeleting] = useState(false);
+  const { deleting, deleteAccount } = useUser();
+  const router = useRouter();
+
+  async function handleDelete() {
+    try {
+      await deleteAccount();
+      router.replace("/register");
+    } catch {
+      // error toast is already handled in the hook, just don't redirect
+    }
+  }
 
   return (
     <div className="flex flex-col gap-4 rounded-2xl border border-destructive/30 bg-card p-5 shadow-sm">
@@ -43,6 +55,7 @@ export default function DangerSection() {
         message="Are you sure you want to delete your account?"
         confirmText="Yes, Delete my account"
         cancelText="No, don't delete"
+        onConfirm={handleDelete}
         loading={deleting}
       />
     </div>

@@ -6,6 +6,7 @@ import {
   RegisterPayload,
   LoginPayload,
   UpdateProfilePayload,
+  ChangePasswordPayload,
 } from "@/services/authService";
 import { useUserStore } from "@/store/useUserStore";
 import { useToastStore } from "@/store/useToastStore";
@@ -32,6 +33,8 @@ export function useUser() {
   const [updatingProfile, setUpdatingProfile] = useState(false);
   const [sendingReset, setSendingReset] = useState(false);
   const [resettingPassword, setResettingPassword] = useState(false);
+  const [changing, setChanging] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   async function registerUser(data: RegisterPayload) {
@@ -191,6 +194,42 @@ export function useUser() {
     }
   }
 
+  async function changePassword(data: ChangePasswordPayload) {
+    setChanging(true);
+    setError(null);
+
+    try {
+      const res = await auth.changePassword(data);
+      addToast("Password changed successfully!", "success");
+      return res;
+    } catch (err: any) {
+      const message = getErrorMessage(err);
+      setError(message);
+      addToast(message, "error");
+      throw new Error(message);
+    } finally {
+      setChanging(false);
+    }
+  }
+
+  async function deleteAccount() {
+    setDeleting(true);
+    setError(null);
+
+    try {
+      await auth.deleteUserAccount();
+      clearUser();
+      addToast("Account deleted successfully", "success");
+    } catch (err: any) {
+      const message = getErrorMessage(err);
+      setError(message);
+      addToast(message, "error");
+      throw new Error(message);
+    } finally {
+      setDeleting(false);
+    }
+  }
+
   return {
     user,
     error,
@@ -203,6 +242,9 @@ export function useUser() {
     updatingProfile,
     sendingReset,
     resettingPassword,
+    changing,
+    deleting,
+
     registerUser,
     loginUser,
     logoutUser,
@@ -212,5 +254,7 @@ export function useUser() {
     updateProfile,
     forgotPassword,
     resetPassword,
+    changePassword,
+    deleteAccount,
   };
 }
