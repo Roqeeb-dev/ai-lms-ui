@@ -20,7 +20,7 @@ export default function Navbar() {
             <a
               key={idx}
               href={`#${link.to}`}
-              className="relative text-sm font-medium text-foreground-muted transition-colors duration-200 hover:text-foreground after:absolute after:-bottom-0.5 after:left-0 after:h-px after:w-0 after:bg-primary after:transition-all after:duration-200 hover:after:w-full"
+              className="relative text-sm font-medium text-foreground-muted transition-colors duration-200 hover:text-primary after:absolute after:-bottom-0.5 after:left-0 after:h-px after:w-0 after:bg-primary after:transition-all after:duration-200 hover:after:w-full"
             >
               {link.text}
             </a>
