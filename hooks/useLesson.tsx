@@ -53,7 +53,6 @@ export function useLesson() {
     try {
       const res = await getModuleLessons(moduleId);
       setLessons(res.lessons);
-      addToast("Module lessons fetched successfully!", "success");
       return res;
     } catch (err: any) {
       const message = getErrorMessage(err);
