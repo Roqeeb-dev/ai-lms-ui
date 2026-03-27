@@ -23,7 +23,6 @@ export default function DashboardTopbar({
 }: DashboardTopbarProps) {
   const { theme, toggleTheme } = useThemeStore();
 
-  // Prevent hydration mismatch flash
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
@@ -48,7 +47,6 @@ export default function DashboardTopbar({
 
       {/* Right */}
       <div className="flex items-center gap-1.5">
-        {/* Theme Toggle */}
         {mounted && (
           <button
             onClick={toggleTheme}
@@ -58,20 +56,19 @@ export default function DashboardTopbar({
             {/* Sun */}
             <Sun
               size={16}
-              className={`absolute transition-all duration-300 ${
+              className={`absolute transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
                 theme === "light"
-                  ? "rotate-0 scale-100 opacity-100"
-                  : "rotate-90 scale-0 opacity-0"
+                  ? "opacity-100 scale-100 rotate-0 translate-y-0"
+                  : "opacity-0 scale-75 -rotate-45 translate-y-1"
               }`}
             />
 
-            {/* Moon */}
             <Moon
               size={16}
-              className={`absolute transition-all duration-300 ${
+              className={`absolute transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
                 theme === "dark"
-                  ? "rotate-0 scale-100 opacity-100"
-                  : "-rotate-90 scale-0 opacity-0"
+                  ? "opacity-100 scale-100 rotate-0 translate-y-0"
+                  : "opacity-0 scale-75 rotate-45 -translate-y-1"
               }`}
             />
           </button>
