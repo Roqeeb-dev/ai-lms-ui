@@ -25,25 +25,35 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <Script
           id="theme-init"
           strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
             __html: `
-              (function() {
-                try {
-                  const theme = localStorage.getItem("theme-storage");
-                  const parsed = theme ? JSON.parse(theme) : null;
-                  const current = parsed?.state?.theme;
+      (function() {
+        try {
+          const theme = localStorage.getItem("theme-storage");
+          const parsed = theme ? JSON.parse(theme) : null;
+          const stored = parsed?.state?.theme;
 
-                  if (current === "dark") {
-                    document.documentElement.classList.add("dark");
-                  }
-                } catch (e) {}
-              })();
-            `,
+          const finalTheme =
+  stored ||
+  (window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light");
+
+          if (finalTheme === "dark") {
+            document.documentElement.classList.add("dark");
+            document.documentElement.style.colorScheme = "dark";
+          } else {
+            document.documentElement.classList.remove("dark");
+            document.documentElement.style.colorScheme = "light";
+          }
+        } catch (e) {}
+      })();
+    `,
           }}
         />
       </head>
