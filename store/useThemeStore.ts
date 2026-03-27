@@ -22,7 +22,7 @@ const applyTheme = (theme: Theme) => {
 export const useThemeStore = create<ThemeStore>()(
   persist(
     (set, get) => ({
-      theme: "light",
+      theme: "dark",
 
       setTheme: (theme) => {
         applyTheme(theme);
