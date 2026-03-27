@@ -1,27 +1,30 @@
 @import "tailwindcss";
 
+/* =========================
+   LIGHT THEME (DEFAULT)
+========================= */
 :root {
   /* ── Surfaces ── */
-  --background: #f2e8dc; /* sand — lightest base */
-  --background-subtle: #ede0d0; /* slightly deeper sand for subtle sections */
+  --background: #f2e8dc;
+  --background-subtle: #ede0d0;
 
-  --card: #f8f2ea; /* warm parchment — elevated surface */
-  --card-raised: #ffffff; /* modals, dropdowns, top-layer cards */
+  --card: #f8f2ea;
+  --card-raised: #ffffff;
 
-  --foreground: #1a0f0a; /* espresso — primary text */
-  --foreground-muted: #6b4f3a; /* warm brown — secondary text */
+  --foreground: #1a0f0a;
+  --foreground-muted: #6b4f3a;
 
-  /* ── Primary: Burnt Terracotta ── */
+  /* ── Primary ── */
   --primary: #c0522a;
   --primary-hover: #a8441f;
   --primary-foreground: #f8f2ea;
 
-  /* ── Accent: Saffron ── */
+  /* ── Accent ── */
   --accent: #f5a623;
   --accent-hover: #e09510;
   --accent-foreground: #1a0f0a;
 
-  /* ── Secondary: Forest Green ── */
+  /* ── Secondary ── */
   --secondary: #2d4a3e;
   --secondary-hover: #223a30;
   --secondary-foreground: #f2e8dc;
@@ -44,14 +47,68 @@
   --input: #f8f2ea;
   --input-focus: #c0522a;
 
-  /* ── Focus ring ── */
   --ring: #c0522a;
 
-  /* ── Highlight / Achievement ── */
-  --highlight: #f5a623; /* streaks, badges, completions */
+  --highlight: #f5a623;
   --highlight-foreground: #1a0f0a;
 }
 
+/* =========================
+   DARK THEME (OVERRIDES)
+========================= */
+.dark {
+  /* ── Surfaces ── */
+  --background: #0f0a07; /* deep espresso */
+  --background-subtle: #1a120e;
+
+  --card: #1a120e;
+  --card-raised: #241813;
+
+  --foreground: #f5ede6;
+  --foreground-muted: #c2a892;
+
+  /* ── Primary ── */
+  --primary: #e76f3c;
+  --primary-hover: #d65f2d;
+  --primary-foreground: #1a0f0a;
+
+  /* ── Accent ── */
+  --accent: #ffb347;
+  --accent-hover: #f5a623;
+  --accent-foreground: #1a0f0a;
+
+  /* ── Secondary ── */
+  --secondary: #3f6b5a;
+  --secondary-hover: #35594b;
+  --secondary-foreground: #f2e8dc;
+
+  /* ── Muted ── */
+  --muted: #2a1d16;
+  --muted-foreground: #a98b73;
+
+  /* ── Semantic ── */
+  --success: #3f6b5a;
+  --success-foreground: #cfe7d0;
+  --warning: #ffb347;
+  --warning-foreground: #1a0f0a;
+  --destructive: #e76f3c;
+  --destructive-foreground: #1a0f0a;
+
+  /* ── Borders & Inputs ── */
+  --border: #3a2a20;
+  --border-subtle: #2a1d16;
+  --input: #1a120e;
+  --input-focus: #e76f3c;
+
+  --ring: #e76f3c;
+
+  --highlight: #ffb347;
+  --highlight-foreground: #1a0f0a;
+}
+
+/* =========================
+   THEME MAPPING
+========================= */
 @theme inline {
   --color-background: var(--background);
   --color-background-subtle: var(--background-subtle);
@@ -98,6 +155,9 @@
   --font-mono: var(--font-geist-mono);
 }
 
+/* =========================
+   GLOBAL STYLES
+========================= */
 html {
   scroll-behavior: smooth;
 }
