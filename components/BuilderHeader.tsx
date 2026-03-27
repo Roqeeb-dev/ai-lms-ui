@@ -18,7 +18,7 @@ export default function BuilderHeader({ courseDetails }: Props) {
           className="flex items-center gap-1.5 text-sm text-foreground-muted hover:text-foreground transition-colors"
         >
           <ArrowLeft size={15} />
-          Back to Courses
+          <span className="hidden md:flex">Back to Courses</span>
         </button>
         <span className="text-border">|</span>
         <span className="text-sm font-semibold text-foreground truncate max-w-xs">

@@ -21,7 +21,6 @@ export function useCourse() {
 
     try {
       const res = await course.getSingleCourse(courseId);
-      addToast("Course details fetched successfully!", "success");
       return res;
     } catch (err: any) {
       const message = getErrorMessage(err);
@@ -59,7 +58,6 @@ export function useCourse() {
     try {
       const res = await course.getAllCourses();
       setAllCourses(res.courses);
-      addToast("All courses fetched successfully!", "success");
       return res;
     } catch (err: any) {
       const message = getErrorMessage(err);

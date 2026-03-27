@@ -15,6 +15,7 @@ import {
   Save,
   Upload,
   Loader2,
+  ClipboardList,
 } from "lucide-react";
 
 interface Props {
@@ -36,6 +37,7 @@ const lessonTypes: {
   { value: "video", label: "Video", icon: <PlayCircle size={13} /> },
   { value: "pdf", label: "Document", icon: <FileText size={13} /> },
   { value: "text", label: "Text", icon: <AlignLeft size={13} /> },
+  { value: "quiz", label: "Quiz", icon: <ClipboardList size={13} /> },
 ];
 
 export default function LessonForm({

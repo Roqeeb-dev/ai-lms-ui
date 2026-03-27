@@ -34,7 +34,7 @@ export default function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-6 gap-10">
           {/* Brand col */}
           <div className="col-span-2 flex flex-col gap-4">
-            <Logo />
+            <Logo size="lg" />
             <p className="text-sm text-foreground-muted leading-relaxed max-w-xs">
               AI-powered personalized learning for students, educators, and
               institutions.
