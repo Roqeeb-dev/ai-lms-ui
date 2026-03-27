@@ -114,7 +114,7 @@ export default function InstructorProfileClient() {
 
         <Link
           href={`/instructor/${user.id}`}
-          className="ml-auto text-sm font-medium text-primary hover:underline whitespace-nowrap"
+          className="ml-auto text-xs md:text-sm font-medium text-primary hover:underline whitespace-nowrap"
         >
           View public profile →
         </Link>

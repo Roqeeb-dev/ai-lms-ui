@@ -21,6 +21,8 @@ function getPageTitle(pathname: string): string {
     "/dashboard/instructor": "Home",
     "/dashboard/instructor/students": "Students",
     "/dashboard/instructor/analytics": "Analytics",
+    "/dashboard/instructor/settings": "Settings",
+    "/dashboard/instructor/quizzes": "Quizzes",
     "/dashboard/admin": "Home",
     "/dashboard/admin/users": "Users",
     "/dashboard/admin/settings": "Settings",

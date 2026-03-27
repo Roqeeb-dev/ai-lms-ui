@@ -55,12 +55,8 @@ export default function StudentSidebar({
         className={`
           fixed inset-y-0 left-0 z-50 flex flex-col bg-card border-r border-border
           transition-all duration-300 ease-in-out
-
-          /* Mobile — off screen by default, slides in as overlay */
           ${mobileOpen ? "translate-x-0 w-56" : "-translate-x-full w-56"}
           md:translate-x-0
-
-          /* Desktop — icon-only by default, expands when pinned */
           md:relative md:inset-auto md:z-auto
           ${desktopPinned ? "md:w-56" : "md:w-[60px]"}
         `}

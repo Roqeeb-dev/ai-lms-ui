@@ -148,7 +148,7 @@ export default function BuilderClient() {
     <div className="flex flex-col h-full">
       <BuilderHeader courseDetails={courseDetails} />
 
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
         <BuilderContent
           courseDetails={courseDetails}
           courseModules={modules}

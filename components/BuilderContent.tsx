@@ -22,7 +22,7 @@ export default function BuilderContent({
   onAddLesson,
 }: Props) {
   return (
-    <aside className="w-72 shrink-0 border-r border-border bg-card flex flex-col overflow-hidden">
+    <aside className="w-full px-2 md:w-72 shrink-0 border-r border-border bg-card flex flex-col overflow-hidden">
       <div className="p-4 border-b border-border shrink-0">
         <h2 className="text-xs font-semibold uppercase tracking-widest text-foreground-muted mb-1">
           Course Content
