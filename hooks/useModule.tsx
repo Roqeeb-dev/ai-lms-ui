@@ -51,7 +51,6 @@ export function useModule() {
     try {
       const res = await getCourseModules(courseId);
       setModules(res.modules);
-      addToast("Course modules fetched successfully!", "success");
       return res;
     } catch (err: any) {
       const message = getErrorMessage(err);
@@ -70,7 +69,6 @@ export function useModule() {
     try {
       const res = await getSingleModule(moduleId);
       setSelectedModule(res.module);
-      addToast("Module fetched successfully!", "success");
       return res;
     } catch (err: any) {
       const message = getErrorMessage(err);

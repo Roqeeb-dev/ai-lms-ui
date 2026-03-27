@@ -40,7 +40,6 @@ export function useCourse() {
 
     try {
       const res = await course.getInstructorCourses(instructorId);
-      addToast("Instructor courses fetched successfully!", "success");
       return res;
     } catch (err: any) {
       const message = getErrorMessage(err);

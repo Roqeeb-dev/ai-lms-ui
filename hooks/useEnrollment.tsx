@@ -39,7 +39,6 @@ export function useEnrollment() {
         const res = await getCoursesEnrollment();
         if (isMounted) {
           setEnrollments(res.enrollments);
-          addToast("Enrollments fetched successfully!", "success");
         }
       } catch (err: any) {
         const message = getErrorMessage(err);
@@ -84,7 +83,6 @@ export function useEnrollment() {
     try {
       const res = await getCourseStudents(courseId);
       setCourseStudents(res.enrollments);
-      addToast("Course students fetched successfully!", "success");
       return res;
     } catch (err: any) {
       const message = getErrorMessage(err);
@@ -101,7 +99,6 @@ export function useEnrollment() {
     try {
       const res = await getCoursesEnrollment();
       if (res) setEnrollments(res.enrollments);
-      addToast("Enrollments refreshed!", "success");
       return res;
     } catch (err: any) {
       const message = getErrorMessage(err);

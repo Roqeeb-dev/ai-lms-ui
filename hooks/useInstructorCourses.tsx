@@ -39,7 +39,6 @@ export function useInstructorCourses() {
         const res = await course.getLoggedInInstructorCourses();
         if (isMounted) {
           setCourses(res.courses ?? []);
-          addToast("Courses fetched successfully!", "success");
         }
       } catch (err: any) {
         const message = getErrorMessage(err);
