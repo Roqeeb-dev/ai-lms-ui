@@ -2,7 +2,6 @@
 
 import { useUserStore } from "@/store/useUserStore";
 import PasswordSection from "@/components/PasswordSection";
-import NotificationsSection from "@/components/NotificationSection";
 import DangerSection from "@/components/DangerSection";
 import AppearanceSection from "@/components/AppearanceSection";
 
@@ -29,7 +28,6 @@ export default function SettingsClient() {
         </div>
 
         <PasswordSection />
-        <NotificationsSection />
         <AppearanceSection />
         <DangerSection />
       </div>

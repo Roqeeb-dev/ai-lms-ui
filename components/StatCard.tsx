@@ -2,7 +2,7 @@ import { LucideIcon } from "lucide-react";
 
 interface Stat {
   label: string;
-  value: number;
+  value: number | string;
   icon: LucideIcon;
   color: string;
   bg: string;

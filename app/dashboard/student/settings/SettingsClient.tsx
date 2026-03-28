@@ -28,7 +28,6 @@ export default function SettingsClient() {
       </div>
 
       <PasswordSection />
-      <NotificationsSection />
       <AppearanceSection />
       <DangerSection />
     </div>

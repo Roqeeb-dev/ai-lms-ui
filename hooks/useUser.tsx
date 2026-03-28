@@ -36,6 +36,7 @@ export function useUser() {
   const [resettingPassword, setResettingPassword] = useState(false);
   const [changing, setChanging] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [fetchingProfile, setFetchingProfile] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   async function registerUser(data: RegisterPayload) {
@@ -231,6 +232,23 @@ export function useUser() {
     }
   }
 
+  async function getPublicUserProfile(userId: string) {
+    setFetchingProfile(true);
+    setError(null);
+
+    try {
+      const res = await auth.getUserProfile(userId);
+      return res;
+    } catch (err: any) {
+      const message = getErrorMessage(err);
+      setError(message);
+      addToast(message, "error");
+      throw new Error(message);
+    } finally {
+      setFetchingProfile(false);
+    }
+  }
+
   return {
     user,
     error,
@@ -245,6 +263,7 @@ export function useUser() {
     resettingPassword,
     changing,
     deleting,
+    fetchingProfile,
 
     registerUser,
     loginUser,
@@ -257,5 +276,6 @@ export function useUser() {
     resetPassword,
     changePassword,
     deleteAccount,
+    getPublicUserProfile,
   };
 }
