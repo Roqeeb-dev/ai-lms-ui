@@ -1,9 +1,10 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useCourse } from "@/hooks/useCourse";
 import { useEnrollment } from "@/hooks/useEnrollment";
+import { useUser } from "@/hooks/useUser";
 import { BookOpen, Users, Star, ArrowLeft } from "lucide-react";
 import CourseCard from "@/components/CourseCard";
 import Link from "next/link";
@@ -16,20 +17,55 @@ const placeholderInstructor = {
   profilePic: null as string | null,
 };
 
+interface PublicInstructor {
+  name: string;
+  bio: string;
+  profilePic: string | null;
+}
+
 export default function PublicInstructorClient() {
   const params = useParams<{ instructorId: string }>();
+
   const { allCourses, fetchingAllCourses, getInstructorCourses } = useCourse();
   const { enrollments } = useEnrollment();
+  const { getPublicUserProfile } = useUser();
+
+  const [publicInstructor, setPublicInstructor] =
+    useState<PublicInstructor | null>(null);
 
   useEffect(() => {
+    if (!params?.instructorId) return;
     getInstructorCourses(params.instructorId);
-  }, [params.instructorId]);
+  }, [params?.instructorId]);
+
+  useEffect(() => {
+    const fetchInstructor = async () => {
+      if (!params?.instructorId) return;
+
+      try {
+        const res = await getPublicUserProfile(params.instructorId);
+        setPublicInstructor(res.data);
+      } catch (err) {
+        console.error("Failed to fetch instructor", err);
+      }
+    };
+
+    fetchInstructor();
+  }, [params?.instructorId]);
 
   const publishedCourses = allCourses.filter((c) => c.status === "published");
-  const totalStudents = 0;
+
   const enrolledCourseIds = new Set(enrollments.map((e) => e.course.id));
 
-  const initials = placeholderInstructor.name
+  const instructor = {
+    name: publicInstructor?.name || placeholderInstructor.name,
+    bio: publicInstructor?.bio || placeholderInstructor.bio,
+    headline: placeholderInstructor.headline,
+    profilePic:
+      publicInstructor?.profilePic || placeholderInstructor.profilePic,
+  };
+
+  const initials = instructor.name
     .split(" ")
     .map((n) => n[0])
     .join("")
@@ -51,11 +87,11 @@ export default function PublicInstructorClient() {
       <div className="flex flex-col sm:flex-row items-start gap-6 p-6 rounded-2xl border border-border bg-card shadow-sm">
         {/* Avatar */}
         <div className="shrink-0">
-          {placeholderInstructor.profilePic ? (
+          {instructor.profilePic ? (
             <div className="relative w-20 h-20 rounded-2xl overflow-hidden border border-border">
               <Image
-                src={placeholderInstructor.profilePic}
-                alt={placeholderInstructor.name}
+                src={instructor.profilePic}
+                alt={instructor.name}
                 fill
                 className="object-cover"
               />
@@ -69,17 +105,17 @@ export default function PublicInstructorClient() {
 
         {/* Info */}
         <div className="flex flex-col gap-3 flex-1 min-w-0">
-          <div className="flex flex-col gap-0.5">
+          <div>
             <h1 className="text-xl font-bold text-foreground">
-              {placeholderInstructor.name}
+              {instructor.name}
             </h1>
             <p className="text-sm text-foreground-muted">
-              {placeholderInstructor.headline}
+              {instructor.headline}
             </p>
           </div>
 
           <p className="text-xs text-foreground-muted leading-relaxed max-w-xl">
-            {placeholderInstructor.bio}
+            {instructor.bio}
           </p>
 
           {/* Stats */}
@@ -90,18 +126,15 @@ export default function PublicInstructorClient() {
                 <span className="font-semibold text-foreground">
                   {publishedCourses.length}
                 </span>{" "}
-                {publishedCourses.length === 1 ? "course" : "courses"}
+                courses
               </span>
             </div>
+
             <div className="flex items-center gap-1.5 text-xs text-foreground-muted">
               <Users size={13} className="text-primary" />
-              <span>
-                <span className="font-semibold text-foreground">
-                  {totalStudents}
-                </span>{" "}
-                students
-              </span>
+              <span className="text-foreground">0 students</span>
             </div>
+
             <div className="flex items-center gap-1.5 text-xs text-foreground-muted">
               <Star size={13} className="text-amber-500" />
               <span className="font-semibold text-foreground">New</span>
@@ -110,33 +143,20 @@ export default function PublicInstructorClient() {
         </div>
       </div>
 
-      {/* Courses section */}
+      {/* Courses */}
       <div className="flex flex-col gap-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-xs font-semibold uppercase tracking-widest text-foreground-muted">
-            Courses by this instructor
-          </h2>
-          <span className="text-xs text-foreground-muted">
-            {publishedCourses.length}{" "}
-            {publishedCourses.length === 1 ? "course" : "courses"}
-          </span>
-        </div>
+        <h2 className="text-xs font-semibold uppercase tracking-widest text-foreground-muted">
+          Courses by this instructor
+        </h2>
 
         {fetchingAllCourses ? (
-          <div className="flex items-center justify-center py-16">
-            <p className="text-sm text-foreground-muted">Loading courses...</p>
-          </div>
+          <p className="text-sm text-foreground-muted text-center py-10">
+            Loading courses...
+          </p>
         ) : publishedCourses.length === 0 ? (
-          <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-border bg-card py-16 px-6 text-center">
-            <span className="text-4xl opacity-30">📭</span>
-            <p className="text-sm font-semibold text-foreground">
-              No published courses yet
-            </p>
-            <p className="text-xs text-foreground-muted">
-              This instructor hasn't published any courses yet. Check back
-              later.
-            </p>
-          </div>
+          <p className="text-sm text-foreground-muted text-center py-10">
+            No published courses yet
+          </p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {publishedCourses.map((c) => (

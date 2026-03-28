@@ -1,22 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import SectionCard from "./SectionCard";
 import { Sun, Moon, Check } from "lucide-react";
+import { useThemeStore } from "@/store/useThemeStore";
 
 export default function AppearanceSection() {
-  const [theme, setTheme] = useState<"light" | "dark">("light");
-
-  useEffect(() => {
-    const stored = localStorage.getItem("theme") as "light" | "dark" | null;
-    if (stored) setTheme(stored);
-  }, []);
-
-  function handleThemeChange(t: "light" | "dark") {
-    setTheme(t);
-    localStorage.setItem("theme", t);
-    document.documentElement.classList.toggle("dark", t === "dark");
-  }
+  const { theme, setTheme } = useThemeStore();
 
   return (
     <SectionCard
@@ -28,7 +17,7 @@ export default function AppearanceSection() {
           <button
             key={t}
             type="button"
-            onClick={() => handleThemeChange(t)}
+            onClick={() => setTheme(t)}
             className={`flex flex-col items-center gap-3 rounded-xl border p-4 transition-all duration-200 ${
               theme === t
                 ? "border-primary bg-primary/10"

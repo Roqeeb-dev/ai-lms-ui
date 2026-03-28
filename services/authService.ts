@@ -59,6 +59,15 @@ export type DeleteUserAccountResponse = {
   message: string;
 };
 
+export type GetUserProfileResponse = {
+  success: boolean;
+  data: {
+    name: string;
+    bio: string;
+    profilePic: string | null;
+  };
+};
+
 function mapRole(r: string): Role {
   if (r === "student" || r === "instructor" || r === "admin") return r as Role;
   return "student";
@@ -186,5 +195,13 @@ export const auth = {
 
   async deleteUserAccount() {
     return apiClient.delete<DeleteUserAccountResponse>("/api/users/me");
+  },
+
+  async getUserProfile(userId: string) {
+    const res = await apiClient.get<GetUserProfileResponse>(
+      `/api/users/${userId}`,
+    );
+
+    return res;
   },
 };
