@@ -37,7 +37,6 @@ export default function QuizPreviewModal({
           </button>
         </div>
 
-        {/* Settings summary */}
         <div className="flex items-center gap-4 px-6 py-3 bg-muted/40 border-b border-border text-xs text-foreground-muted shrink-0">
           <span>
             Passing Score:{" "}
@@ -61,12 +60,10 @@ export default function QuizPreviewModal({
           </span>
         </div>
 
-        {/* Scrollable questions */}
         <div className="flex-1 overflow-y-auto px-6 py-4">
           <QuizPreviewCard questions={questions} />
         </div>
 
-        {/* Footer */}
         <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-border shrink-0">
           <button
             onClick={onClose}

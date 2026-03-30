@@ -11,15 +11,54 @@ import {
   CheckCircle,
 } from "lucide-react";
 import { useInstructorCourses } from "@/hooks/useInstructorCourses";
+import {
+  getCourseAnalytics,
+  CourseAnalytics,
+} from "@/services/analyticsService";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function AnalyticsClient() {
   const { courses, fetching } = useInstructorCourses();
+  const [analyticsMap, setAnalyticsMap] = useState<
+    Map<string, CourseAnalytics>
+  >(new Map());
+  const [analyticsLoading, setAnalyticsLoading] = useState(false);
+
   const drafts = courses.filter((c) => c.status === "draft").length;
   const publishedCourses = courses.filter(
     (c) => c.status === "published",
   ).length;
+
+  useEffect(() => {
+    if (courses.length === 0) return;
+
+    const fetchAll = async () => {
+      setAnalyticsLoading(true);
+      try {
+        const results = await Promise.allSettled(
+          courses.map((c) => getCourseAnalytics(c.id)),
+        );
+        const map = new Map<string, CourseAnalytics>();
+        results.forEach((result, idx) => {
+          if (result.status === "fulfilled") {
+            map.set(courses[idx].id, result.value);
+          }
+        });
+        setAnalyticsMap(map);
+      } finally {
+        setAnalyticsLoading(false);
+      }
+    };
+
+    fetchAll();
+  }, [courses]);
+
+  const totalStudents = Array.from(analyticsMap.values()).reduce(
+    (sum, a) => sum + a.totalStudents,
+    0,
+  );
 
   const stats = [
     {
@@ -31,7 +70,7 @@ export default function AnalyticsClient() {
     },
     {
       label: "Total Students",
-      value: 0,
+      value: analyticsLoading ? "—" : totalStudents,
       icon: Users,
       color: "text-emerald-600",
       bg: "bg-emerald-500/10",
@@ -114,64 +153,74 @@ export default function AnalyticsClient() {
 
             {/* Table rows */}
             <div className="flex flex-col divide-y divide-border">
-              {courses.map((course) => (
-                <div
-                  key={course.id}
-                  className="grid grid-cols-[2fr_1fr_1fr] sm:grid-cols-[3fr_1fr_1fr_1fr] gap-4 px-5 py-4 items-center hover:bg-muted/30 transition-colors"
-                >
-                  {/* Course */}
-                  <div className="flex items-center gap-3 min-w-0">
-                    {course.thumbnail?.url ? (
-                      <div className="relative w-9 h-9 rounded-lg overflow-hidden shrink-0">
-                        <Image
-                          src={course.thumbnail.url}
-                          alt={course.title}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                    ) : (
-                      <div className="w-9 h-9 rounded-lg bg-muted flex items-center justify-center shrink-0">
-                        <BookOpen size={14} className="text-foreground-muted" />
-                      </div>
-                    )}
-                    <div className="flex flex-col min-w-0">
-                      <span className="text-sm font-semibold text-foreground truncate">
-                        {course.title}
-                      </span>
-                      <span className="text-xs text-foreground-muted truncate hidden sm:block">
-                        {course.description}
-                      </span>
-                    </div>
-                  </div>
+              {courses.map((course) => {
+                const analytics = analyticsMap.get(course.id);
+                const studentCount = analyticsLoading
+                  ? "—"
+                  : (analytics?.totalStudents ?? "—");
 
-                  {/* Students */}
-                  <div className="hidden sm:flex items-center gap-1.5 text-sm text-foreground-muted">
-                    <Users size={12} />
-                    <span>—</span>
-                  </div>
-
-                  {/* Status */}
-                  <span
-                    className={`text-xs font-semibold px-2 py-0.5 rounded-full border w-fit ${
-                      course.status === "published"
-                        ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20"
-                        : "bg-muted text-foreground-muted border-border"
-                    }`}
+                return (
+                  <div
+                    key={course.id}
+                    className="grid grid-cols-[2fr_1fr_1fr] sm:grid-cols-[3fr_1fr_1fr_1fr] gap-4 px-5 py-4 items-center hover:bg-muted/30 transition-colors"
                   >
-                    {course.status === "published" ? "Published" : "Draft"}
-                  </span>
+                    {/* Course */}
+                    <div className="flex items-center gap-3 min-w-0">
+                      {course.thumbnail?.url ? (
+                        <div className="relative w-9 h-9 rounded-lg overflow-hidden shrink-0">
+                          <Image
+                            src={course.thumbnail.url}
+                            alt={course.title}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                      ) : (
+                        <div className="w-9 h-9 rounded-lg bg-muted flex items-center justify-center shrink-0">
+                          <BookOpen
+                            size={14}
+                            className="text-foreground-muted"
+                          />
+                        </div>
+                      )}
+                      <div className="flex flex-col min-w-0">
+                        <span className="text-sm font-semibold text-foreground truncate">
+                          {course.title}
+                        </span>
+                        <span className="text-xs text-foreground-muted truncate hidden sm:block">
+                          {course.description}
+                        </span>
+                      </div>
+                    </div>
 
-                  {/* Created */}
-                  <span className="text-xs text-foreground-muted hidden sm:block">
-                    {new Date(course.createdAt).toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                      year: "numeric",
-                    })}
-                  </span>
-                </div>
-              ))}
+                    {/* Students */}
+                    <div className="hidden sm:flex items-center gap-1.5 text-sm text-foreground-muted">
+                      <Users size={12} />
+                      <span>{studentCount}</span>
+                    </div>
+
+                    {/* Status */}
+                    <span
+                      className={`text-xs font-semibold px-2 py-0.5 rounded-full border w-fit ${
+                        course.status === "published"
+                          ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20"
+                          : "bg-muted text-foreground-muted border-border"
+                      }`}
+                    >
+                      {course.status === "published" ? "Published" : "Draft"}
+                    </span>
+
+                    {/* Created */}
+                    <span className="text-xs text-foreground-muted hidden sm:block">
+                      {new Date(course.createdAt).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      })}
+                    </span>
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}
@@ -261,7 +310,10 @@ export default function AnalyticsClient() {
                 { label: "Total courses", value: courses.length },
                 { label: "Published", value: publishedCourses },
                 { label: "Drafts", value: drafts },
-                { label: "Total students", value: "—" },
+                {
+                  label: "Total students",
+                  value: analyticsLoading ? "—" : totalStudents,
+                },
                 { label: "Avg. completion rate", value: "—" },
               ].map(({ label, value }) => (
                 <div
