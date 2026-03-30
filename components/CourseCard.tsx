@@ -23,7 +23,8 @@ interface StudentCardProps {
 
 interface InstructorCardProps {
   variant: "instructor";
-  course: Course & { totalStudents?: number };
+  course: Course;
+  totalStudents?: number;
   enrolled?: never;
   onDelete?: () => void;
   onToggle?: () => void;
@@ -40,6 +41,7 @@ export default function CourseCard({
   const [isModalShown, setIsModalShown] = useState(false);
   const { deleting, deleteCourse, updateCourse, updating } =
     useInstructorCourses();
+
   const isInstructor = variant === "instructor";
   const enrolled =
     !isInstructor && "enrolled" in props ? (props.enrolled ?? false) : false;
@@ -47,8 +49,9 @@ export default function CourseCard({
     !isInstructor && "progress" in course ? course.progress : undefined;
   const reason =
     !isInstructor && "reason" in course ? course.reason : undefined;
-  const totalStudents =
-    isInstructor && "totalStudents" in course ? (course.totalStudents ?? 0) : 0;
+  const totalStudents = isInstructor
+    ? ((props as InstructorCardProps).totalStudents ?? 0)
+    : 0;
   const onDelete = isInstructor
     ? (props as InstructorCardProps).onDelete
     : undefined;

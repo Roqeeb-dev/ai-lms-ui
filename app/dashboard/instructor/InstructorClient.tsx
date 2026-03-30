@@ -1,17 +1,19 @@
 "use client";
 
 import { BookOpen, Users, LayoutGrid, ArrowRight } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import type { Course } from "@/types/course";
+import {
+  CourseAnalytics,
+  getCourseAnalytics,
+} from "@/services/analyticsService";
 import StatCard from "@/components/StatCard";
 import DashboardHeader from "@/components/DashboardHeader";
 import CourseCard from "@/components/CourseCard";
 import CourseModal, { CourseFormData } from "@/components/CreateCourseModal";
 import { useInstructorCourses } from "@/hooks/useInstructorCourses";
 import { useRouter } from "next/navigation";
-
-export type InstructorCourse = Course & { totalStudents?: number };
 
 export type ModalState =
   | { open: false }
@@ -22,15 +24,37 @@ export default function InstructorClient() {
   const [modalState, setModalState] = useState<ModalState>({ open: false });
   const { courses, fetching, createCourse, updateCourse } =
     useInstructorCourses();
+  const [analyticsMap, setAnalyticsMap] = useState<
+    Map<string, CourseAnalytics>
+  >(new Map());
+  const router = useRouter();
+
+  useEffect(() => {
+    if (courses.length === 0) return;
+
+    const fetchAll = async () => {
+      const results = await Promise.allSettled(
+        courses.map((c) => getCourseAnalytics(c.id)),
+      );
+      const map = new Map<string, CourseAnalytics>();
+      results.forEach((result, idx) => {
+        if (result.status === "fulfilled") {
+          map.set(courses[idx].id, result.value);
+        }
+      });
+      setAnalyticsMap(map);
+    };
+
+    fetchAll();
+  }, [courses]);
 
   const totalCourses = courses.length;
-  const totalStudents = courses.reduce(
-    (acc, c) => acc + ((c as InstructorCourse).totalStudents ?? 0),
+  const totalStudents = Array.from(analyticsMap.values()).reduce(
+    (sum, a) => sum + a.totalStudents,
     0,
   );
   const publishedCount = courses.filter((c) => c.status === "published").length;
   const draftCount = courses.filter((c) => c.status === "draft").length;
-  const router = useRouter();
 
   const stats = [
     {
@@ -78,7 +102,6 @@ export default function InstructorClient() {
   async function toggleCourse(courseId: string) {
     const courseToToggle = courses.find((c) => c.id === courseId);
     if (!courseToToggle) return;
-
     await updateCourse(courseId, {
       status: courseToToggle.status === "published" ? "draft" : "published",
     });
@@ -133,6 +156,7 @@ export default function InstructorClient() {
                 course={course}
                 variant="instructor"
                 onToggle={() => toggleCourse(course.id)}
+                totalStudents={analyticsMap.get(course.id)?.totalStudents ?? 0}
               />
             ))}
           </div>

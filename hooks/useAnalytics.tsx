@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import {
   getCourseAnalytics,
   getInstructorQuizAnalytics,
@@ -9,8 +9,6 @@ import {
   QuizAnalytics,
   StudentAnalytics,
 } from "@/services/analyticsService";
-
-// ─── Per-resource state shape ─────────────────────────────────────────────────
 
 type AsyncState<T> = {
   data: T | null;
@@ -22,8 +20,6 @@ function initialState<T>(): AsyncState<T> {
   return { data: null, loading: false, error: null };
 }
 
-// ─── Hook ─────────────────────────────────────────────────────────────────────
-
 export function useAnalytics() {
   const [courseAnalytics, setCourseAnalytics] =
     useState<AsyncState<CourseAnalytics>>(initialState());
@@ -33,8 +29,6 @@ export function useAnalytics() {
 
   const [studentAnalytics, setStudentAnalytics] =
     useState<AsyncState<StudentAnalytics>>(initialState());
-
-  // ── Fetchers ────────────────────────────────────────────────────────────────
 
   const fetchCourseAnalytics = useCallback(async (courseId: string) => {
     setCourseAnalytics({ data: null, loading: true, error: null });
