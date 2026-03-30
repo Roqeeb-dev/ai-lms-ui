@@ -6,7 +6,11 @@ import { Course } from "@/types/course";
 import { getErrorMessage } from "./useInstructorCourses";
 import { useToastStore } from "@/store/useToastStore";
 
-export function useCourse() {
+interface UseCourseOptions {
+  publishedOnly?: boolean;
+}
+
+export function useCourse({ publishedOnly = false }: UseCourseOptions = {}) {
   const [fetchingCourseDetails, setFetchingCourseDetails] = useState(false);
   const [gettingCourses, setGettingCourses] = useState(false);
   const [fetchingAllCourses, setFetchingAllCourses] = useState(false);
@@ -70,11 +74,15 @@ export function useCourse() {
     }
   }
 
+  const filteredCourses = publishedOnly
+    ? allCourses.filter((c) => c.status === "published")
+    : allCourses;
+
   return {
     fetchingCourseDetails,
     gettingCourses,
     fetchingAllCourses,
-    allCourses,
+    allCourses: filteredCourses,
     error,
     getCourseDetails,
     getInstructorCourses,

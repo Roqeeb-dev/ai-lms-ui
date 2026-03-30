@@ -51,7 +51,9 @@ export default function CourseClient() {
   const { enrollments, fetching: fetchingEnrollments } = useEnrollment({
     publishedOnly: true,
   });
-  const { allCourses, fetchingAllCourses, getAllCourses } = useCourse();
+  const { allCourses, fetchingAllCourses, getAllCourses } = useCourse({
+    publishedOnly: true,
+  });
 
   useEffect(() => {
     getAllCourses();

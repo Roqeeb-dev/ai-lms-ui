@@ -39,7 +39,7 @@ export default function StudentClient() {
 
   const statCards = [
     {
-      label: "Courses Enrolled",
+      label: `Course${enrollments.length === 1 ? "" : "s"} Enrolled`,
       value: enrollments.length,
       icon: BookOpen,
       color: "text-primary",
