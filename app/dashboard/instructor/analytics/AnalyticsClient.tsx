@@ -60,6 +60,16 @@ export default function AnalyticsClient() {
     0,
   );
 
+  const avgCompletionRate =
+    analyticsMap.size > 0
+      ? Math.round(
+          Array.from(analyticsMap.values()).reduce(
+            (sum, a) => sum + a.avgProgress,
+            0,
+          ) / analyticsMap.size,
+        )
+      : null;
+
   const stats = [
     {
       label: `Total Course${courses.length === 1 ? "" : "s"}`,
@@ -314,7 +324,14 @@ export default function AnalyticsClient() {
                   label: "Total students",
                   value: analyticsLoading ? "—" : totalStudents,
                 },
-                { label: "Avg. completion rate", value: "—" },
+                {
+                  label: "Avg. completion rate",
+                  value: analyticsLoading
+                    ? "—"
+                    : avgCompletionRate !== null
+                      ? `${avgCompletionRate}%`
+                      : "—",
+                },
               ].map(({ label, value }) => (
                 <div
                   key={label}
