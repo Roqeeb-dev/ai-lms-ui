@@ -14,8 +14,9 @@ import {
 } from "lucide-react";
 import { CreateQuizPayload } from "@/services/quizService";
 import { Question } from "@/types/quiz";
+import QuizPreviewModal from "@/components/QuizPreviewModal";
 
-type LocalQuestion = Omit<Question, "_id"> & { localId: string };
+export type LocalQuestion = Omit<Question, "_id"> & { localId: string };
 
 const emptyQuestion = (): LocalQuestion => ({
   localId: crypto.randomUUID(),
@@ -34,6 +35,7 @@ export default function CreateQuizClient() {
   const params = useParams<{ lessonId: string }>();
   const router = useRouter();
   const { createQuizAsInstructor, creating } = useQuiz();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [questions, setQuestions] = useState<LocalQuestion[]>([
     emptyQuestion(),
@@ -313,7 +315,7 @@ export default function CreateQuizClient() {
           Cancel
         </button>
         <button
-          onClick={handleSubmit}
+          onClick={() => setIsModalOpen(true)}
           disabled={creating || questions.length < 5}
           className="flex items-center gap-2 px-5 py-2 rounded-lg bg-primary text-primary-foreground text-xs font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
@@ -325,11 +327,20 @@ export default function CreateQuizClient() {
           ) : (
             <>
               <Save size={13} />
-              Create Quiz
+              Open Preview
             </>
           )}
         </button>
       </div>
+
+      <QuizPreviewModal
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handleSubmit}
+        questions={questions}
+        passingScore={values.passingScore}
+        shuffleQuestions={values.shuffleQuestions}
+      />
     </div>
   );
 }
