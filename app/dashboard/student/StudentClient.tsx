@@ -25,7 +25,7 @@ function EnrollmentRowSkeleton() {
 
 export default function StudentClient() {
   const user = useUserStore((state) => state.user);
-  const { enrollments, fetching } = useEnrollment();
+  const { enrollments, fetching } = useEnrollment({ publishedOnly: true });
 
   if (!user)
     return (

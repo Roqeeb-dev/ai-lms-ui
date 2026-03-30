@@ -48,7 +48,9 @@ const recommendedCourses: RecommendedCourse[] = [
 
 export default function CourseClient() {
   const [activeCategory, setActiveCategory] = useState("All");
-  const { enrollments, fetching: fetchingEnrollments } = useEnrollment();
+  const { enrollments, fetching: fetchingEnrollments } = useEnrollment({
+    publishedOnly: true,
+  });
   const { allCourses, fetchingAllCourses, getAllCourses } = useCourse();
 
   useEffect(() => {

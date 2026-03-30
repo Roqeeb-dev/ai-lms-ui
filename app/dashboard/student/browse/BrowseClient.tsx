@@ -10,7 +10,7 @@ import CourseCardSkeleton from "@/components/CourseCardSkeleton";
 export default function BrowseClient() {
   const [search, setSearch] = useState("");
   const { allCourses, fetchingAllCourses, getAllCourses } = useCourse();
-  const { enrollments } = useEnrollment();
+  const { enrollments } = useEnrollment({ publishedOnly: true });
 
   useEffect(() => {
     getAllCourses();
