@@ -118,12 +118,19 @@ export default function ProfileClient() {
         <div className="w-14 h-14 rounded-full bg-primary flex items-center justify-center text-lg font-extrabold text-primary-foreground shrink-0">
           {initials}
         </div>
-        <div className="flex flex-col gap-1">
-          <p className="text-sm font-bold text-foreground">{user.name}</p>
+        <div className="flex flex-col gap-1 min-w-0 flex-1">
+          <div className="flex items-center justify-between gap-2">
+            <p className="text-sm font-bold text-foreground">{user.name}</p>
+            <span className="shrink-0 text-xs font-semibold tracking-widest uppercase bg-primary/10 text-primary border border-primary/20 rounded-full px-3 py-0.5 capitalize">
+              {user.role}
+            </span>
+          </div>
           <p className="text-sm text-foreground-muted">{user.email}</p>
-          <span className="self-start mt-1 text-xs font-semibold tracking-widest uppercase bg-primary/10 text-primary border border-primary/20 rounded-full px-3 py-0.5 capitalize">
-            {user.role}
-          </span>
+          {user.bio && (
+            <p className="text-xs text-foreground-muted leading-relaxed truncate">
+              {user.bio}
+            </p>
+          )}
         </div>
       </div>
 
