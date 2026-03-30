@@ -7,7 +7,7 @@ const config: Config = {
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/**/*.{js,ts,jsx,tsx,mdx}", // optional (if you use /src)
+    "./src/**/*.{js,ts,jsx,tsx,mdx}",
   ],
 
   theme: {
@@ -63,6 +63,16 @@ const config: Config = {
 
       ringColor: {
         DEFAULT: "var(--color-ring)",
+      },
+
+      keyframes: {
+        shimmer: {
+          "0%": { transform: "translateX(-100%)" },
+          "100%": { transform: "translateX(100%)" },
+        },
+      },
+      animation: {
+        shimmer: "shimmer 1.6s ease-in-out infinite",
       },
     },
   },

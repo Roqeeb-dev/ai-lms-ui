@@ -6,10 +6,26 @@ import StatCard from "@/components/StatCard";
 import DashboardHeader from "@/components/DashboardHeader";
 import { useEnrollment } from "@/hooks/useEnrollment";
 import Link from "next/link";
+import { Skeleton } from "@/components/Skeleton";
+
+function EnrollmentRowSkeleton() {
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-1.5">
+          <Skeleton className="h-3.5 w-48" />
+          <Skeleton className="h-3 w-20" />
+        </div>
+        <Skeleton className="h-3 w-7" />
+      </div>
+      <Skeleton className="h-1.5 w-full rounded-full" />
+    </div>
+  );
+}
 
 export default function StudentClient() {
   const user = useUserStore((state) => state.user);
-  const { enrollments, fetching } = useEnrollment();
+  const { enrollments, fetching } = useEnrollment({ publishedOnly: true });
 
   if (!user)
     return (
@@ -23,7 +39,7 @@ export default function StudentClient() {
 
   const statCards = [
     {
-      label: "Courses Enrolled",
+      label: `Course${enrollments.length === 1 ? "" : "s"} Enrolled`,
       value: enrollments.length,
       icon: BookOpen,
       color: "text-primary",
@@ -84,10 +100,10 @@ export default function StudentClient() {
           </div>
 
           {fetching ? (
-            <div className="flex items-center justify-center py-8">
-              <p className="text-xs text-foreground-muted">
-                Loading courses...
-              </p>
+            <div className="flex flex-col gap-4">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <EnrollmentRowSkeleton key={i} />
+              ))}
             </div>
           ) : recentEnrollments.length === 0 ? (
             <div className="flex flex-col items-center justify-center gap-3 py-8 text-center">

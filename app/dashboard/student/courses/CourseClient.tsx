@@ -6,6 +6,7 @@ import { Course } from "@/types/course";
 import CourseCard from "@/components/CourseCard";
 import { useEnrollment } from "@/hooks/useEnrollment";
 import { useCourse } from "@/hooks/useCourse";
+import CourseCardSkeleton from "@/components/CourseCardSkeleton";
 
 type RecommendedCourse = Course & { reason?: string };
 
@@ -47,8 +48,12 @@ const recommendedCourses: RecommendedCourse[] = [
 
 export default function CourseClient() {
   const [activeCategory, setActiveCategory] = useState("All");
-  const { enrollments, fetching: fetchingEnrollments } = useEnrollment();
-  const { allCourses, fetchingAllCourses, getAllCourses } = useCourse();
+  const { enrollments, fetching: fetchingEnrollments } = useEnrollment({
+    publishedOnly: true,
+  });
+  const { allCourses, fetchingAllCourses, getAllCourses } = useCourse({
+    publishedOnly: true,
+  });
 
   useEffect(() => {
     getAllCourses();
@@ -93,10 +98,10 @@ export default function CourseClient() {
         </div>
 
         {fetchingEnrollments ? (
-          <div className="flex items-center justify-center py-10">
-            <p className="text-xs text-foreground-muted">
-              Loading enrolled courses...
-            </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <CourseCardSkeleton key={i} />
+            ))}
           </div>
         ) : enrollments.length === 0 ? (
           <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-border bg-card py-12 px-6 text-center">
@@ -158,8 +163,10 @@ export default function CourseClient() {
         </div>
 
         {fetchingAllCourses ? (
-          <div className="flex items-center justify-center py-10">
-            <p className="text-xs text-foreground-muted">Loading courses...</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <CourseCardSkeleton key={i} />
+            ))}
           </div>
         ) : filteredBrowse.length === 0 ? (
           <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-border bg-card py-12 px-6 text-center">

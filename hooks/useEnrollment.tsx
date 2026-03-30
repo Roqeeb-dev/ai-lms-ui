@@ -14,7 +14,13 @@ import { getErrorMessage } from "./useInstructorCourses";
 import { useUserStore } from "@/store/useUserStore";
 import { useToastStore } from "@/store/useToastStore";
 
-export function useEnrollment() {
+interface UseEnrollmentOptions {
+  publishedOnly?: boolean;
+}
+
+export function useEnrollment({
+  publishedOnly = false,
+}: UseEnrollmentOptions = {}) {
   const { user } = useUserStore();
   const { addToast } = useToastStore();
 
@@ -109,16 +115,20 @@ export function useEnrollment() {
     }
   }
 
+  const filteredEnrollments = publishedOnly
+    ? enrollments.filter((e) => e.course?.status === "published")
+    : enrollments;
+
   const avgProgress =
-    enrollments.length > 0
+    filteredEnrollments.length > 0
       ? Math.round(
-          enrollments.reduce((acc, e) => acc + (e.course ? 0 : 0), 0) /
-            enrollments.length,
+          filteredEnrollments.reduce((acc, e) => acc + (e.course ? 0 : 0), 0) /
+            filteredEnrollments.length,
         )
       : 0;
 
   return {
-    enrollments,
+    enrollments: filteredEnrollments,
     courseStudents,
     fetching,
     fetchingStudents,

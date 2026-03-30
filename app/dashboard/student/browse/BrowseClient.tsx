@@ -5,21 +5,14 @@ import { Search, BookOpen } from "lucide-react";
 import CourseCard from "@/components/CourseCard";
 import { useCourse } from "@/hooks/useCourse";
 import { useEnrollment } from "@/hooks/useEnrollment";
-
-const categories = [
-  "All",
-  "Technology",
-  "Business",
-  "Design",
-  "Science",
-  "Languages",
-];
+import CourseCardSkeleton from "@/components/CourseCardSkeleton";
 
 export default function BrowseClient() {
   const [search, setSearch] = useState("");
-  const [activeCategory, setActiveCategory] = useState("All");
-  const { allCourses, fetchingAllCourses, getAllCourses } = useCourse();
-  const { enrollments } = useEnrollment();
+  const { allCourses, fetchingAllCourses, getAllCourses } = useCourse({
+    publishedOnly: true,
+  });
+  const { enrollments } = useEnrollment({ publishedOnly: true });
 
   useEffect(() => {
     getAllCourses();
@@ -32,11 +25,10 @@ export default function BrowseClient() {
       const matchesSearch = c.title
         .toLowerCase()
         .includes(search.toLowerCase());
-      const matchesCategory =
-        activeCategory === "All" || c.category === activeCategory;
-      return matchesSearch && matchesCategory;
+
+      return matchesSearch;
     });
-  }, [allCourses, search, activeCategory]);
+  }, [allCourses, search]);
 
   return (
     <div className="flex flex-col gap-6 max-w-6xl mx-auto">
@@ -65,23 +57,6 @@ export default function BrowseClient() {
         />
       </div>
 
-      {/* Category filter */}
-      <div className="flex flex-wrap gap-2">
-        {categories.map((cat) => (
-          <button
-            key={cat}
-            onClick={() => setActiveCategory(cat)}
-            className={`px-3 py-1 rounded-full text-xs font-semibold border transition-all duration-200 ${
-              activeCategory === cat
-                ? "bg-primary text-primary-foreground border-primary"
-                : "bg-card text-foreground-muted border-border hover:border-primary/50 hover:text-foreground"
-            }`}
-          >
-            {cat}
-          </button>
-        ))}
-      </div>
-
       {/* Results count */}
       {!fetchingAllCourses && (
         <div className="flex items-center gap-2 -mt-2">
@@ -92,15 +67,6 @@ export default function BrowseClient() {
               {filtered.length}
             </span>{" "}
             {filtered.length === 1 ? "course" : "courses"}
-            {activeCategory !== "All" && (
-              <span>
-                {" "}
-                · filtered by{" "}
-                <span className="font-semibold text-foreground">
-                  {activeCategory}
-                </span>
-              </span>
-            )}
             {search && (
               <span>
                 {" "}
@@ -116,8 +82,10 @@ export default function BrowseClient() {
 
       {/* Course grid */}
       {fetchingAllCourses ? (
-        <div className="flex items-center justify-center py-16">
-          <p className="text-sm text-foreground-muted">Loading courses...</p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <CourseCardSkeleton key={i} />
+          ))}
         </div>
       ) : filtered.length === 0 ? (
         <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-border bg-card py-16 px-6 text-center">
@@ -132,11 +100,10 @@ export default function BrowseClient() {
               ? "Try a different search term or clear the filters."
               : "Check back later for new courses."}
           </p>
-          {(search || activeCategory !== "All") && (
+          {search && (
             <button
               onClick={() => {
                 setSearch("");
-                setActiveCategory("All");
               }}
               className="text-xs font-semibold text-primary hover:underline underline-offset-4"
             >
