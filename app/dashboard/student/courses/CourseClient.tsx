@@ -103,7 +103,7 @@ export default function CourseClient() {
               No courses found
             </p>
             <p className="text-xs text-foreground-muted">
-              Try a different category or check back later.
+              Please check back later.
             </p>
           </div>
         ) : (

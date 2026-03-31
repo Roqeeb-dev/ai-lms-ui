@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "@/hooks/useForm";
+import { LessonEditor } from "./LessonEditor";
 import { Lesson, LessonType } from "@/types/lesson";
 import {
   CreateLessonPayload,
@@ -15,7 +16,6 @@ import {
   Save,
   Upload,
   Loader2,
-  ClipboardList,
 } from "lucide-react";
 
 interface Props {
@@ -37,7 +37,6 @@ const lessonTypes: {
   { value: "video", label: "Video", icon: <PlayCircle size={13} /> },
   { value: "pdf", label: "Document", icon: <FileText size={13} /> },
   { value: "text", label: "Text", icon: <AlignLeft size={13} /> },
-  { value: "quiz", label: "Quiz", icon: <ClipboardList size={13} /> },
 ];
 
 export default function LessonForm({
@@ -61,6 +60,7 @@ export default function LessonForm({
     type: "video",
     file: null,
   });
+  const [isLessonEditorShown, setIsLessonEditorShown] = useState(false);
 
   useEffect(() => {
     if (lesson) {
@@ -179,9 +179,9 @@ export default function LessonForm({
 
         {/* Text */}
         {values.type === "text" && (
-          <div className="md:col-span-2 border border-dashed border-border rounded-lg p-6 text-center text-xs text-foreground-muted">
-            Text editor coming soon
-          </div>
+          <button onClick={() => setIsLessonEditorShown(true)}>
+            Open Text Editor
+          </button>
         )}
 
         {/* Actions */}
@@ -220,6 +220,11 @@ export default function LessonForm({
           </button>
         </div>
       </form>
+
+      <LessonEditor
+        open={isLessonEditorShown}
+        onClose={() => setIsLessonEditorShown(false)}
+      />
     </div>
   );
 }
