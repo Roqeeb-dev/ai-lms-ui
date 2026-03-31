@@ -9,6 +9,7 @@ import { useInstructorCourses } from "@/hooks/useInstructorCourses";
 import type { ModalState } from "../InstructorClient";
 import CourseModal, { CourseFormData } from "@/components/CreateCourseModal";
 import { useRouter } from "next/navigation";
+import CourseCardSkeleton from "@/components/CourseCardSkeleton";
 
 type FilterStatus = "all" | "published" | "draft";
 
@@ -129,8 +130,10 @@ export default function CoursesClient() {
       )}
 
       {fetching ? (
-        <div className="flex items-center justify-center py-16">
-          <p className="text-sm text-foreground-muted">Loading courses...</p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <CourseCardSkeleton key={i} />
+          ))}
         </div>
       ) : filtered.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">

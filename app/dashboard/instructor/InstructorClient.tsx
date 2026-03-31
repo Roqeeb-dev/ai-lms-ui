@@ -14,6 +14,7 @@ import CourseCard from "@/components/CourseCard";
 import CourseModal, { CourseFormData } from "@/components/CreateCourseModal";
 import { useInstructorCourses } from "@/hooks/useInstructorCourses";
 import { useRouter } from "next/navigation";
+import CourseCardSkeleton from "@/components/CourseCardSkeleton";
 
 export type ModalState =
   | { open: false }
@@ -135,8 +136,10 @@ export default function InstructorClient() {
         </div>
 
         {fetching ? (
-          <div className="flex items-center justify-center py-16">
-            <p className="text-sm text-foreground-muted">Loading courses...</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <CourseCardSkeleton key={i} />
+            ))}
           </div>
         ) : courses.length === 0 ? (
           <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-border bg-card py-16 px-6 text-center">
