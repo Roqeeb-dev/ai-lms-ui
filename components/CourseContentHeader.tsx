@@ -19,7 +19,7 @@ export default function CourseContentHeader({
     totalLessons > 0 ? Math.round((completedCount / totalLessons) * 100) : 0;
 
   return (
-    <div className="shrink-0 border-b border-border bg-card px-4 md:px-6 py-3 md:py-0 md:h-14 flex flex-col md:flex-row md:items-center md:justify-between gap-2 md:gap-0">
+    <div className="shrink-0 border-b border-border bg-card px-4 md:px-6 py-3 md:py-0 md:h-14 flex flex-col md:flex-row md:items-center md:justify-between gap-3 md:gap-0">
       <div className="flex items-center gap-3 min-w-0">
         <button
           onClick={onBack}

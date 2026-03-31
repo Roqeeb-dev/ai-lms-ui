@@ -111,7 +111,6 @@ export default function Client() {
 
   return (
     <div className="flex flex-col h-full">
-      {/* Fixed top bar */}
       <CourseContentHeader
         courseTitle={courseDetails.title}
         completedCount={completedCount}

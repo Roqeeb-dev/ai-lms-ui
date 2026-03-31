@@ -130,9 +130,6 @@ export default function StudentClient() {
                       <span className="text-sm font-semibold text-foreground">
                         {enrollment.course.title}
                       </span>
-                      <span className="text-xs text-foreground-muted">
-                        {enrollment.course.status}
-                      </span>
                     </div>
                     <span className="text-xs font-bold text-primary">0%</span>
                   </div>
