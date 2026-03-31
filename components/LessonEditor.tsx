@@ -6,17 +6,10 @@ export interface EditorProps {
   open: boolean;
   onClose: () => void;
   onCreate?: () => void;
-  onSwitch?: () => void;
   onBack?: () => void;
 }
 
-export function LessonEditor({
-  open,
-  onClose,
-  onCreate,
-  onSwitch,
-  onBack,
-}: EditorProps) {
+export function LessonEditor({ open, onClose, onCreate, onBack }: EditorProps) {
   if (!open) return null;
 
   return (
@@ -25,7 +18,7 @@ export function LessonEditor({
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
       {/* Modal panel */}
-      <div className="relative flex flex-col w-full max-w-4xl max-h-[90vh] rounded-2xl border border-border bg-card shadow-2xl overflow-hidden animate-in fade-in-0 zoom-in-95 duration-200">
+      <div className="relative flex flex-col w-full max-w-5xl max-h-[90vh] rounded-2xl border border-border bg-card shadow-2xl overflow-hidden animate-in fade-in-0 zoom-in-95 duration-200">
         <header className="flex items-center justify-between gap-4 px-6 py-4 border-b border-border shrink-0">
           <button
             onClick={onBack ?? onClose}
@@ -66,7 +59,7 @@ export function LessonEditor({
             </div>
           </div>
 
-          <div className="flex flex-col overflow-hidden">
+          <div className="flex flex-col overflow-hidden h-[70vh]">
             <div className="px-4 py-2.5 border-b border-border bg-background/50">
               <span className="text-[10px] font-semibold uppercase tracking-widest text-foreground-muted">
                 Preview

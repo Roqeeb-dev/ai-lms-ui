@@ -16,6 +16,7 @@ import {
   Save,
   Upload,
   Loader2,
+  PencilLine,
 } from "lucide-react";
 
 interface Props {
@@ -177,11 +178,30 @@ export default function LessonForm({
           </div>
         )}
 
-        {/* Text */}
+        {/* Text editor trigger */}
         {values.type === "text" && (
-          <button onClick={() => setIsLessonEditorShown(true)}>
-            Open Text Editor
-          </button>
+          <div className="md:col-span-2 flex flex-col gap-1.5">
+            <label className="text-xs font-medium text-foreground">
+              Lesson Content <span className="text-destructive">*</span>
+            </label>
+            <button
+              type="button"
+              onClick={() => setIsLessonEditorShown(true)}
+              className="w-full flex items-center gap-3 px-4 py-6 rounded-lg border border-dashed border-border hover:border-primary hover:bg-primary/5 transition-colors duration-200 cursor-pointer group"
+            >
+              <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-colors duration-200">
+                <PencilLine size={15} className="text-primary" />
+              </div>
+              <div className="flex flex-col items-start gap-0.5">
+                <span className="text-sm font-medium text-foreground">
+                  Open Text Editor
+                </span>
+                <span className="text-xs text-foreground-muted">
+                  Write and format your lesson content
+                </span>
+              </div>
+            </button>
+          </div>
         )}
 
         {/* Actions */}
