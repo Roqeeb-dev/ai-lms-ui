@@ -7,8 +7,10 @@ import { useEnrollment } from "@/hooks/useEnrollment";
 import { useUser } from "@/hooks/useUser";
 import { BookOpen, Users, Star, ArrowLeft } from "lucide-react";
 import CourseCard from "@/components/CourseCard";
+import CourseCardSkeleton from "@/components/CourseCardSkeleton";
 import Link from "next/link";
 import Image from "next/image";
+import { Course } from "@/types/course";
 
 const placeholderInstructor = {
   name: "Instructor",
@@ -26,34 +28,42 @@ interface PublicInstructor {
 export default function PublicInstructorClient() {
   const params = useParams<{ instructorId: string }>();
 
-  const { allCourses, fetchingAllCourses, getInstructorCourses } = useCourse();
-  const { enrollments } = useEnrollment();
+  const { gettingCourses, getInstructorCourses } = useCourse();
+  const { enrollments } = useEnrollment({ publishedOnly: true });
   const { getPublicUserProfile } = useUser();
 
   const [publicInstructor, setPublicInstructor] =
     useState<PublicInstructor | null>(null);
+  const [instructorCourses, setInstructorCourses] = useState<Course[]>([]);
+  const [imgError, setImgError] = useState(false);
 
   useEffect(() => {
     if (!params?.instructorId) return;
-    getInstructorCourses(params.instructorId);
-  }, [params?.instructorId]);
 
-  useEffect(() => {
-    const fetchInstructor = async () => {
-      if (!params?.instructorId) return;
+    async function fetchCourses() {
+      try {
+        const res = await getInstructorCourses(params.instructorId);
+        const published = (res?.courses ?? []).filter(
+          (c: Course) => c.status === "published",
+        );
+        setInstructorCourses(published);
+      } catch (err) {
+        console.error("Failed to fetch instructor courses", err);
+      }
+    }
 
+    async function fetchInstructor() {
       try {
         const res = await getPublicUserProfile(params.instructorId);
         setPublicInstructor(res.data);
       } catch (err) {
         console.error("Failed to fetch instructor", err);
       }
-    };
+    }
 
+    fetchCourses();
     fetchInstructor();
   }, [params?.instructorId]);
-
-  const publishedCourses = allCourses.filter((c) => c.status === "published");
 
   const enrolledCourseIds = new Set(enrollments.map((e) => e.course.id));
 
@@ -61,8 +71,7 @@ export default function PublicInstructorClient() {
     name: publicInstructor?.name || placeholderInstructor.name,
     bio: publicInstructor?.bio || placeholderInstructor.bio,
     headline: placeholderInstructor.headline,
-    profilePic:
-      publicInstructor?.profilePic || placeholderInstructor.profilePic,
+    profilePic: publicInstructor?.profilePic || null,
   };
 
   const initials = instructor.name
@@ -72,8 +81,10 @@ export default function PublicInstructorClient() {
     .slice(0, 2)
     .toUpperCase();
 
+  const showAvatar = !!instructor.profilePic && !imgError;
+
   return (
-    <div className="max-w-5xl mx-auto px-6 py-8 flex flex-col gap-8">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 flex flex-col gap-8">
       {/* Back */}
       <Link
         href="/dashboard/student/browse"
@@ -87,13 +98,14 @@ export default function PublicInstructorClient() {
       <div className="flex flex-col sm:flex-row items-start gap-6 p-6 rounded-2xl border border-border bg-card shadow-sm">
         {/* Avatar */}
         <div className="shrink-0">
-          {instructor.profilePic ? (
+          {showAvatar ? (
             <div className="relative w-20 h-20 rounded-2xl overflow-hidden border border-border">
               <Image
-                src={instructor.profilePic}
+                src={instructor.profilePic!}
                 alt={instructor.name}
                 fill
                 className="object-cover"
+                onError={() => setImgError(true)}
               />
             </div>
           ) : (
@@ -124,9 +136,9 @@ export default function PublicInstructorClient() {
               <BookOpen size={13} className="text-primary" />
               <span>
                 <span className="font-semibold text-foreground">
-                  {publishedCourses.length}
+                  {instructorCourses.length}
                 </span>{" "}
-                courses
+                {instructorCourses.length === 1 ? "course" : "courses"}
               </span>
             </div>
 
@@ -149,17 +161,25 @@ export default function PublicInstructorClient() {
           Courses by this instructor
         </h2>
 
-        {fetchingAllCourses ? (
-          <p className="text-sm text-foreground-muted text-center py-10">
-            Loading courses...
-          </p>
-        ) : publishedCourses.length === 0 ? (
-          <p className="text-sm text-foreground-muted text-center py-10">
-            No published courses yet
-          </p>
+        {gettingCourses ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <CourseCardSkeleton key={i} />
+            ))}
+          </div>
+        ) : instructorCourses.length === 0 ? (
+          <div className="flex flex-col items-center justify-center gap-2 py-16 text-center">
+            <span className="text-3xl opacity-30">📚</span>
+            <p className="text-sm font-semibold text-foreground">
+              No published courses yet
+            </p>
+            <p className="text-xs text-foreground-muted">
+              This instructor hasn't published any courses yet.
+            </p>
+          </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {publishedCourses.map((c) => (
+            {instructorCourses.map((c) => (
               <CourseCard
                 key={c.id}
                 course={c}
