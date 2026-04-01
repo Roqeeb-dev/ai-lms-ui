@@ -1,5 +1,10 @@
 export type Role = "student" | "instructor" | "admin";
 
+export interface ProfilePic {
+  url: string;
+  public_id: string;
+}
+
 export interface ServerUser {
   _id: string;
   name: string;
@@ -8,7 +13,7 @@ export interface ServerUser {
   role: string;
   isVerified: boolean;
   isApproved: boolean;
-  profilePic?: string;
+  profilePic?: ProfilePic;
   verificationToken?: string;
   verificationTokenExpiresAt?: string;
   lastLogin: string;
@@ -35,7 +40,7 @@ export interface User {
   profile: Profile;
   createdAt: Date;
   bio?: string;
-  profilePic?: string;
+  profilePic?: ProfilePic;
   isVerified?: boolean;
   isApproved?: boolean;
   lastLogin?: Date;
