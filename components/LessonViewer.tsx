@@ -10,6 +10,7 @@ import {
   FileText,
 } from "lucide-react";
 import { Lesson } from "@/types/lesson";
+import { getPdfViewUrl } from "@/lib/cloudinary";
 
 interface Props {
   lesson: Lesson | null;
@@ -35,9 +36,11 @@ function VideoPlayer({ url }: { url: string }) {
 }
 
 function DocumentViewer({ url }: { url: string }) {
+  const viewUrl = getPdfViewUrl(url);
+
   return (
     <div className="w-full rounded-2xl overflow-hidden border border-border shadow-sm">
-      <iframe src={url} className="w-full h-[600px]" />
+      <iframe src={viewUrl} className="w-full h-[600px]" title="PDF Viewer" />
     </div>
   );
 }
