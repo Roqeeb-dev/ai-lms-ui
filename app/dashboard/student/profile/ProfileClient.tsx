@@ -1,10 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useUserStore } from "@/store/useUserStore";
 import { useForm } from "@/hooks/useForm";
 import { useUser } from "@/hooks/useUser";
-import { Pencil, X, Check, Loader2, Lock } from "lucide-react";
+import { Pencil, X, Check, Loader2, Lock, Camera } from "lucide-react";
+import Image from "next/image";
+
+type ProfilePic = {
+  url: string;
+  public_id: string;
+} | null;
 
 type ProfileFormValues = {
   firstName: string;
@@ -16,6 +22,11 @@ export default function ProfileClient() {
   const user = useUserStore((state) => state.user);
   const { updateProfile, updatingProfile } = useUser();
   const [editing, setEditing] = useState(false);
+  const [profilePic, setProfilePic] = useState<File | null>(null);
+  const [profilePicPreview, setProfilePicPreview] = useState<string | null>(
+    null,
+  );
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { values, update, reset, setAll } = useForm<ProfileFormValues>({
     firstName: "",
@@ -47,17 +58,33 @@ export default function ProfileClient() {
     .slice(0, 2)
     .toUpperCase();
 
+  const avatarSrc = profilePicPreview ?? user.profilePic?.url ?? null;
+
+  function handlePicChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setProfilePic(file);
+    setProfilePicPreview(URL.createObjectURL(file));
+  }
+
   async function handleSave() {
     const fullName = `${values.firstName} ${values.lastName}`.trim();
     try {
-      await updateProfile({ name: fullName, bio: values.bio });
+      await updateProfile({
+        name: fullName,
+        bio: values.bio,
+        ...(profilePic && { profilePic }),
+      });
       setEditing(false);
+      setProfilePic(null);
     } catch {}
   }
 
   function handleCancel() {
     reset();
     setEditing(false);
+    setProfilePic(null);
+    setProfilePicPreview(null);
   }
 
   const inputClass =
@@ -115,9 +142,43 @@ export default function ProfileClient() {
 
       {/* Avatar + identity */}
       <div className="flex items-center gap-5 rounded-2xl border border-border bg-card p-5 shadow-sm">
-        <div className="w-14 h-14 rounded-full bg-primary flex items-center justify-center text-lg font-extrabold text-primary-foreground shrink-0">
-          {initials}
+        {/* Avatar with upload overlay */}
+        <div className="relative shrink-0 group">
+          <div className="w-14 h-14 rounded-full overflow-hidden bg-primary flex items-center justify-center text-lg font-extrabold text-primary-foreground">
+            {avatarSrc ? (
+              <Image
+                src={avatarSrc}
+                alt={user.name}
+                width={56}
+                height={56}
+                className="object-cover w-full h-full"
+              />
+            ) : (
+              initials
+            )}
+          </div>
+
+          {/* Camera overlay — only shown when editing */}
+          {editing && (
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="absolute inset-0 flex items-center justify-center rounded-full bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+              aria-label="Change profile picture"
+            >
+              <Camera size={16} className="text-white" />
+            </button>
+          )}
+
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={handlePicChange}
+          />
         </div>
+
         <div className="flex flex-col gap-1 min-w-0 flex-1">
           <div className="flex items-center justify-between gap-2">
             <p className="text-sm font-bold text-foreground">{user.name}</p>
@@ -129,6 +190,12 @@ export default function ProfileClient() {
           {user.bio && (
             <p className="text-xs text-foreground-muted leading-relaxed truncate">
               {user.bio}
+            </p>
+          )}
+          {/* Selected file name hint */}
+          {editing && profilePic && (
+            <p className="text-xs text-primary mt-0.5 truncate">
+              {profilePic.name}
             </p>
           )}
         </div>

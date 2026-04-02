@@ -6,6 +6,7 @@ import {
   createQuiz,
   startQuiz,
   submitQuiz,
+  getQuizzesByLesson,
   CreateQuizPayload,
   SubmitQuizPayload,
 } from "@/services/quizService";
@@ -25,11 +26,10 @@ export function useQuiz() {
   const [starting, setStarting] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [fetching, setFetching] = useState(false);
+  const [fetchingByLesson, setFetchingByLesson] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const { addToast } = useToastStore();
-
-  // Create quiz (Instructor)
 
   async function createQuizAsInstructor(
     lessonId: string,
@@ -37,7 +37,6 @@ export function useQuiz() {
   ) {
     setCreating(true);
     setError(null);
-
     try {
       const res = await createQuiz(lessonId, data);
       addToast("Quiz created successfully!", "success");
@@ -52,12 +51,26 @@ export function useQuiz() {
     }
   }
 
-  // Start quiz (Student)
+  async function fetchQuizzesByLesson(lessonId: string) {
+    setFetchingByLesson(true);
+    setError(null);
+    try {
+      const res = await getQuizzesByLesson(lessonId);
+      return res;
+    } catch (err: any) {
+      const message = getErrorMessage(err);
+      setError(message);
+      addToast(message, "error");
+      throw new Error(message);
+    } finally {
+      setFetchingByLesson(false);
+    }
+  }
 
+  // Start quiz (Student)
   async function startQuizAsStudent(quizId: string) {
     setStarting(true);
     setError(null);
-
     try {
       const res = await startQuiz(quizId);
       addToast("Quiz started!", "info");
@@ -73,14 +86,12 @@ export function useQuiz() {
   }
 
   // Submit quiz (Student)
-
   async function submitQuizAsStudent(
     attemptId: string,
     data: SubmitQuizPayload,
   ) {
     setSubmitting(true);
     setError(null);
-
     try {
       const res = await submitQuiz(attemptId, data);
       addToast("Quiz submitted successfully!", "success");
@@ -95,12 +106,10 @@ export function useQuiz() {
     }
   }
 
-  // Get quiz (Student)
-
+  // Get single quiz by ID (Student)
   async function getQuizAsStudent(quizId: string) {
     setFetching(true);
     setError(null);
-
     try {
       const res = await getQuiz(quizId);
       return res;
@@ -119,9 +128,11 @@ export function useQuiz() {
     starting,
     submitting,
     fetching,
+    fetchingByLesson,
     error,
 
     createQuizAsInstructor,
+    fetchQuizzesByLesson,
     startQuizAsStudent,
     submitQuizAsStudent,
     getQuizAsStudent,
