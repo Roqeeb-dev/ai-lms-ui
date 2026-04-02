@@ -12,8 +12,10 @@ import {
 import StatCard from "@/components/StatCard";
 import DashboardHeader from "@/components/DashboardHeader";
 import { useEnrollment } from "@/hooks/useEnrollment";
+import { useCourse } from "@/hooks/useCourse";
 import Link from "next/link";
 import { Skeleton } from "@/components/Skeleton";
+import { useEffect, useState, useMemo } from "react";
 
 function EnrollmentRowSkeleton() {
   return (
@@ -33,6 +35,43 @@ function EnrollmentRowSkeleton() {
 export default function StudentClient() {
   const user = useUserStore((state) => state.user);
   const { enrollments, fetching } = useEnrollment({ publishedOnly: true });
+  const { getCourseProgress } = useCourse();
+
+  const [progressMap, setProgressMap] = useState<Record<string, number>>({});
+  const [fetchingProgress, setFetchingProgress] = useState(false);
+
+  const recentEnrollments = useMemo(
+    () => enrollments.slice(0, 3),
+    [enrollments],
+  );
+
+  const enrollmentIds = useMemo(
+    () => recentEnrollments.map((e) => e.course.id).join(","),
+    [recentEnrollments],
+  );
+
+  useEffect(() => {
+    if (!enrollmentIds) return;
+
+    async function loadProgress() {
+      setFetchingProgress(true);
+      const entries = await Promise.allSettled(
+        recentEnrollments.map((e) => getCourseProgress(e.course.id)),
+      );
+
+      const map: Record<string, number> = {};
+      entries.forEach((result, i) => {
+        if (result.status === "fulfilled" && result.value) {
+          map[recentEnrollments[i].course.id] = result.value.progress.progress;
+        }
+      });
+
+      setProgressMap(map);
+      setFetchingProgress(false);
+    }
+
+    loadProgress();
+  }, [enrollmentIds]);
 
   if (!user)
     return (
@@ -42,7 +81,14 @@ export default function StudentClient() {
     );
 
   const firstName = user.name.split(" ")[0] ?? "User";
-  const recentEnrollments = enrollments.slice(0, 3);
+
+  const avgProgress =
+    enrollments.length > 0
+      ? Math.round(
+          Object.values(progressMap).reduce((sum, p) => sum + p, 0) /
+            enrollments.length,
+        )
+      : 0;
 
   const statCards = [
     {
@@ -61,7 +107,7 @@ export default function StudentClient() {
     },
     {
       label: "Avg. Progress",
-      value: 0,
+      value: `${avgProgress}%`,
       icon: BarChart2,
       color: "text-secondary",
       bg: "bg-secondary/10",
@@ -75,24 +121,22 @@ export default function StudentClient() {
     },
   ];
 
+  const isLoadingEnrollments = fetching || fetchingProgress;
+
   return (
     <div className="flex flex-col gap-6 max-w-6xl mx-auto">
-      {/* Header */}
       <DashboardHeader
         title={`Welcome back, ${firstName}`}
         text="Here's what's happening with your learning today."
       />
 
-      {/* Stat cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {statCards.map((stat) => (
           <StatCard key={stat.label} stat={stat} />
         ))}
       </div>
 
-      {/* Continue learning + AI tutor */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        {/* Continue learning */}
         <div className="lg:col-span-2 flex flex-col gap-4 rounded-2xl border border-border bg-card p-5 shadow-sm">
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-bold text-foreground uppercase tracking-widest">
@@ -106,7 +150,7 @@ export default function StudentClient() {
             </Link>
           </div>
 
-          {fetching ? (
+          {isLoadingEnrollments ? (
             <div className="flex flex-col gap-4">
               {Array.from({ length: 3 }).map((_, i) => (
                 <EnrollmentRowSkeleton key={i} />
@@ -130,29 +174,31 @@ export default function StudentClient() {
             </div>
           ) : (
             <div className="flex flex-col gap-4">
-              {recentEnrollments.map((enrollment) => (
-                <div key={enrollment.id} className="flex flex-col gap-2">
-                  <div className="flex items-center justify-between">
-                    <div className="flex flex-col gap-0.5">
+              {recentEnrollments.map((enrollment) => {
+                const progress = progressMap[enrollment.course.id] ?? 0;
+                return (
+                  <div key={enrollment.id} className="flex flex-col gap-2">
+                    <div className="flex items-center justify-between">
                       <span className="text-sm font-semibold text-foreground">
                         {enrollment.course.title}
                       </span>
+                      <span className="text-xs font-bold text-primary">
+                        {progress}%
+                      </span>
                     </div>
-                    <span className="text-xs font-bold text-primary">0%</span>
+                    <div className="w-full h-1.5 rounded-full bg-muted overflow-hidden">
+                      <div
+                        className="h-full rounded-full bg-primary transition-all duration-500"
+                        style={{ width: `${progress}%` }}
+                      />
+                    </div>
                   </div>
-                  <div className="w-full h-1.5 rounded-full bg-muted overflow-hidden">
-                    <div
-                      className="h-full rounded-full bg-primary transition-all duration-500"
-                      style={{ width: `0%` }}
-                    />
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
 
-        {/* AI Tutor CTA */}
         <div className="relative flex flex-col justify-between rounded-2xl border border-primary/20 bg-primary p-6 shadow-sm overflow-hidden">
           <div
             className="pointer-events-none absolute inset-0 opacity-10"
@@ -163,7 +209,6 @@ export default function StudentClient() {
             }}
           />
           <div className="pointer-events-none absolute -bottom-10 -right-10 w-40 h-40 rounded-full bg-accent opacity-20 blur-2xl" />
-
           <div className="relative flex flex-col gap-2">
             <div className="w-9 h-9 rounded-lg bg-white/20 flex items-center justify-center">
               <Sparkles size={17} className="text-white" />
@@ -174,7 +219,6 @@ export default function StudentClient() {
               clear explanations.
             </p>
           </div>
-
           <Link
             href="/dashboard/student/ai-tutor"
             className="relative mt-6 inline-flex items-center justify-center rounded-lg bg-white text-primary px-3 py-2 text-sm font-semibold hover:bg-white/90 active:scale-[0.98] transition-all duration-200"
@@ -184,7 +228,6 @@ export default function StudentClient() {
         </div>
       </div>
 
-      {/* Quick actions */}
       <div className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-6 shadow-sm">
         <h2 className="text-sm font-bold text-foreground uppercase tracking-widest">
           Quick Actions
