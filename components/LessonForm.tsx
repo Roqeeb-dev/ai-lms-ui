@@ -56,16 +56,23 @@ export default function LessonForm({
     title: string;
     type: LessonType;
     file: File | null;
+    content: string;
   }>({
     title: "",
     type: "video",
     file: null,
+    content: "",
   });
   const [isLessonEditorShown, setIsLessonEditorShown] = useState(false);
 
   useEffect(() => {
     if (lesson) {
-      setAll({ title: lesson.title, type: lesson.type, file: null });
+      setAll({
+        title: lesson.title,
+        type: lesson.type,
+        file: null,
+        content: lesson.content ?? "",
+      });
     } else {
       reset();
     }
@@ -79,12 +86,14 @@ export default function LessonForm({
         title: values.title,
         type: values.type,
         ...(values.file && { file: values.file }),
+        ...(values.type === "text" && { content: values.content }),
       });
     } else {
       await onCreate(moduleId, {
         title: values.title,
         type: values.type,
         file: values.file!,
+        ...(values.type === "text" && { content: values.content }),
       });
     }
 
@@ -194,10 +203,14 @@ export default function LessonForm({
               </div>
               <div className="flex flex-col items-start gap-0.5">
                 <span className="text-sm font-medium text-foreground">
-                  Open Text Editor
+                  {values.content.trim()
+                    ? "Edit Lesson Content"
+                    : "Open Text Editor"}{" "}
                 </span>
                 <span className="text-xs text-foreground-muted">
-                  Write and format your lesson content
+                  {values.content.trim()
+                    ? `${values.content.slice(0, 60)}${values.content.length > 60 ? "…" : ""}`
+                    : "Write and format your lesson content"}
                 </span>
               </div>
             </button>
@@ -223,7 +236,9 @@ export default function LessonForm({
           <button
             type="submit"
             disabled={
-              loading || (!isEditing && values.type !== "text" && !values.file)
+              loading ||
+              (!isEditing && values.type !== "text" && !values.file) ||
+              (values.type === "text" && !values.content.trim())
             }
             className="flex items-center gap-1.5 text-xs px-4 py-2 rounded-md bg-primary text-primary-foreground"
           >
@@ -244,6 +259,12 @@ export default function LessonForm({
       <LessonEditor
         open={isLessonEditorShown}
         onClose={() => setIsLessonEditorShown(false)}
+        onBack={() => setIsLessonEditorShown(false)}
+        initialContent={values.content}
+        onCreate={(content) => {
+          update("content", content);
+          setIsLessonEditorShown(false);
+        }}
       />
     </div>
   );
