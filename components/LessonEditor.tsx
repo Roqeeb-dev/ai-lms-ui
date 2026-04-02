@@ -253,7 +253,7 @@ export function LessonEditor({
             onClick={() => onCreate?.(content)}
             className="px-4 py-2 text-sm font-semibold rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 active:scale-[0.98] transition-all duration-150"
           >
-            Create Lesson
+            Save Content
           </button>
         </footer>
       </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import ReactMarkdown from "react-markdown";
 import {
   BookOpen,
   CheckCircle,
@@ -98,10 +99,71 @@ export default function LessonViewer({
         <DocumentViewer url={lesson.file.url} />
       )}
       {lesson.type === "text" && (
-        <div className="w-full rounded-2xl border border-border bg-card p-6">
-          <p className="text-sm text-foreground-muted">
-            Text content coming soon.
-          </p>
+        <div className="w-full rounded-2xl border border-border bg-card p-6 md:p-8">
+          {lesson.content ? (
+            <ReactMarkdown
+              components={{
+                h1: ({ children }) => (
+                  <h1 className="text-2xl font-bold text-foreground mb-4 mt-6 first:mt-0">
+                    {children}
+                  </h1>
+                ),
+                h2: ({ children }) => (
+                  <h2 className="text-xl font-bold text-foreground mb-3 mt-5 first:mt-0">
+                    {children}
+                  </h2>
+                ),
+                h3: ({ children }) => (
+                  <h3 className="text-lg font-semibold text-foreground mb-2 mt-4 first:mt-0">
+                    {children}
+                  </h3>
+                ),
+                p: ({ children }) => (
+                  <p className="text-sm text-foreground leading-relaxed mb-3">
+                    {children}
+                  </p>
+                ),
+                strong: ({ children }) => (
+                  <strong className="font-semibold text-foreground">
+                    {children}
+                  </strong>
+                ),
+                em: ({ children }) => (
+                  <em className="italic text-foreground">{children}</em>
+                ),
+                code: ({ children }) => (
+                  <code className="px-1.5 py-0.5 rounded text-xs font-mono bg-muted text-foreground border border-border">
+                    {children}
+                  </code>
+                ),
+                ul: ({ children }) => (
+                  <ul className="list-disc list-inside text-sm text-foreground space-y-1 mb-3 pl-2">
+                    {children}
+                  </ul>
+                ),
+                ol: ({ children }) => (
+                  <ol className="list-decimal list-inside text-sm text-foreground space-y-1 mb-3 pl-2">
+                    {children}
+                  </ol>
+                ),
+                li: ({ children }) => (
+                  <li className="text-foreground">{children}</li>
+                ),
+                hr: () => <hr className="border-border my-4" />,
+                blockquote: ({ children }) => (
+                  <blockquote className="border-l-4 border-primary/40 pl-4 italic text-foreground-muted my-3">
+                    {children}
+                  </blockquote>
+                ),
+              }}
+            >
+              {lesson.content}
+            </ReactMarkdown>
+          ) : (
+            <p className="text-sm text-foreground-muted italic">
+              This lesson has no content yet.
+            </p>
+          )}
         </div>
       )}
 

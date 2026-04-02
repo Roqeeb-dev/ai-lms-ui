@@ -92,7 +92,8 @@ export default function LessonForm({
       await onCreate(moduleId, {
         title: values.title,
         type: values.type,
-        file: values.file!,
+        // ✅ only attach file if it's not a text lesson
+        ...(values.type !== "text" && { file: values.file! }),
         ...(values.type === "text" && { content: values.content }),
       });
     }
