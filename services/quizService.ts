@@ -1,5 +1,5 @@
 import { apiClient } from "@/lib/apiClient";
-import { normalizeQuiz, Question, ServerQuiz } from "@/types/quiz";
+import { normalizeQuiz, Question, ServerQuiz, Quiz } from "@/types/quiz";
 
 export interface CreateQuizPayload {
   questions: Omit<Question, "_id">[];
@@ -23,7 +23,7 @@ export interface StartQuizResponse {
     user: string;
     quiz: string;
     startedAt: string;
-    _id: string; // ID of the quiz attempt
+    _id: string;
     answers: Answer[];
     createdAt: string;
     updatedAt: string;
@@ -32,7 +32,7 @@ export interface StartQuizResponse {
 }
 
 export interface QuizAttempt {
-  id: string; // Attempt ID
+  id: string;
   userId: string;
   quizId: string;
   startedAt: Date;
@@ -48,7 +48,7 @@ export interface SubmitQuizPayload {
 export interface SubmitQuizResponse {
   success: boolean;
   data: {
-    _id: string; // Attempt ID
+    _id: string;
     user: string;
     quiz: ServerQuiz;
     startedAt: string;
@@ -69,12 +69,16 @@ export interface GetQuizResponse {
   data: ServerQuiz;
 }
 
+export interface GetQuizzesByLessonResponse {
+  success: boolean;
+  data: ServerQuiz[];
+}
+
 export async function createQuiz(lessonId: string, data: CreateQuizPayload) {
   const res = await apiClient.post<CreateQuizResponse, CreateQuizPayload>(
     `/api/lessons/${lessonId}/quiz`,
     data,
   );
-
   return {
     success: res.success,
     data: normalizeQuiz(res.data),
@@ -85,13 +89,11 @@ export async function startQuiz(quizId: string) {
   const res = await apiClient.post<StartQuizResponse>(
     `/api/quizzes/${quizId}/start`,
   );
-
   const data = res.data;
-
   return {
     success: res.success,
     data: {
-      id: data._id, // Quiz attempt ID
+      id: data._id,
       userId: data.user,
       quizId: data.quiz,
       startedAt: new Date(data.startedAt),
@@ -107,11 +109,10 @@ export async function submitQuiz(attemptId: string, data: SubmitQuizPayload) {
     `/api/quizzes/attempts/${attemptId}/submit`,
     data,
   );
-
   return {
     success: res.success,
     data: {
-      id: res.data._id, // Attempt ID
+      id: res.data._id,
       userId: res.data.user,
       quiz: normalizeQuiz(res.data.quiz),
       answers: res.data.answers,
@@ -131,9 +132,18 @@ export async function getQuiz(quizId: string) {
   const res = await apiClient.get<GetQuizResponse>(
     `/api/quizzes/${quizId}/quiz`,
   );
-
   return {
     success: res.success,
     data: normalizeQuiz(res.data),
+  };
+}
+
+export async function getQuizzesByLesson(lessonId: string) {
+  const res = await apiClient.get<GetQuizzesByLessonResponse>(
+    `/api/lessons/${lessonId}/quizzes`,
+  );
+  return {
+    success: res.success,
+    data: res.data.map(normalizeQuiz) as Quiz[],
   };
 }
