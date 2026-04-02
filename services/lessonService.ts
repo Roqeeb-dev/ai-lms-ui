@@ -7,11 +7,12 @@ import {
 import { ServerEnrollment, normalizeEnrollment } from "@/types/enrollment";
 import { apiClient } from "@/lib/apiClient";
 
-export interface CreateLessonPayload {
+export type CreateLessonPayload = {
   title: string;
   type: LessonType;
-  file: File;
-}
+  file?: File;
+  content?: string;
+};
 
 export interface CreateLessonResponse {
   success: boolean;
@@ -56,8 +57,12 @@ export async function createLesson(
   const formData = new FormData();
   formData.append("title", data.title);
   formData.append("type", data.type);
-  formData.append("file", data.file);
-
+  if (data.file) {
+    formData.append("file", data.file);
+  }
+  if (data.content) {
+    formData.append("content", data.content);
+  }
   const res = await apiClient.postForm<CreateLessonResponse>(
     `/api/modules/${moduleId}/lessons`,
     formData,

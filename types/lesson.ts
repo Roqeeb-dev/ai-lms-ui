@@ -11,6 +11,7 @@ export type ServerLesson = {
   module: string;
   type: LessonType;
   file: ServerLessonFile;
+  content?: string;
   duration: number;
   order: number;
   createdAt: string;
@@ -29,6 +30,7 @@ export type Lesson = {
   moduleId: string;
   type: LessonType;
   file: LessonFile;
+  content?: string;
   duration: number;
   order: number;
   createdAt: Date;
@@ -42,11 +44,9 @@ export function normalizeLesson(data: ServerLesson): Lesson {
     moduleId: data.module,
     type: data.type,
     file: data.file
-      ? {
-          url: data.file.url,
-          publicId: data.file.public_id,
-        }
+      ? { url: data.file.url, publicId: data.file.public_id }
       : { url: "", publicId: "" },
+    content: data.content,
     duration: data.duration,
     order: data.order,
     createdAt: new Date(data.createdAt),

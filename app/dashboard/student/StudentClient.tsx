@@ -1,7 +1,14 @@
 "use client";
 
 import { useUserStore } from "@/store/useUserStore";
-import { BookOpen, Sparkles, BarChart2, Clock } from "lucide-react";
+import {
+  BookOpen,
+  Sparkles,
+  BarChart2,
+  Clock,
+  Search,
+  Bot,
+} from "lucide-react";
 import StatCard from "@/components/StatCard";
 import DashboardHeader from "@/components/DashboardHeader";
 import { useEnrollment } from "@/hooks/useEnrollment";
@@ -178,22 +185,43 @@ export default function StudentClient() {
       </div>
 
       {/* Quick actions */}
-      <div className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-5 shadow-sm">
+      <div className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-6 shadow-sm">
         <h2 className="text-sm font-bold text-foreground uppercase tracking-widest">
           Quick Actions
         </h2>
-        <div className="flex flex-wrap gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {[
-            { label: "Browse new courses", href: "/dashboard/student/browse" },
-            { label: "My Courses", href: "/dashboard/student/courses" },
-            { label: "Talk to AI Tutor", href: "/dashboard/student/ai-tutor" },
-          ].map((action) => (
+            {
+              label: "Browse New Courses",
+              href: "/dashboard/student/browse",
+              icon: Search,
+              desc: "Discover something new",
+            },
+            {
+              label: "My Courses",
+              href: "/dashboard/student/courses",
+              icon: BookOpen,
+              desc: "Continue where you left off",
+            },
+            {
+              label: "Talk to AI Tutor",
+              href: "/dashboard/student/ai-tutor",
+              icon: Bot,
+              desc: "Get instant help",
+            },
+          ].map(({ label, href, icon: Icon, desc }) => (
             <Link
-              key={action.label}
-              href={action.href}
-              className="rounded-lg border border-border bg-background px-3 py-1.5 text-sm font-medium text-foreground hover:border-primary hover:text-primary transition-all duration-200"
+              key={label}
+              href={href}
+              className="flex flex-col gap-2 rounded-xl border border-border bg-background p-4 hover:border-primary hover:bg-primary/5 transition-all duration-200 group"
             >
-              {action.label}
+              <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors duration-200">
+                <Icon size={15} className="text-primary" />
+              </div>
+              <span className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors duration-200">
+                {label}
+              </span>
+              <span className="text-xs text-foreground-muted">{desc}</span>
             </Link>
           ))}
         </div>
