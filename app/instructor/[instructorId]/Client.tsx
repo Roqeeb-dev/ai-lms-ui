@@ -16,13 +16,12 @@ const placeholderInstructor = {
   name: "Instructor",
   bio: "This instructor hasn't added a bio yet.",
   headline: "Educator & Course Creator",
-  profilePic: null as string | null,
 };
 
 interface PublicInstructor {
   name: string;
   bio: string;
-  profilePic: string | null;
+  profilePic?: { url: string; public_id: string } | null;
 }
 
 export default function PublicInstructorClient() {
@@ -71,7 +70,7 @@ export default function PublicInstructorClient() {
     name: publicInstructor?.name || placeholderInstructor.name,
     bio: publicInstructor?.bio || placeholderInstructor.bio,
     headline: placeholderInstructor.headline,
-    profilePic: publicInstructor?.profilePic || null,
+    profilePic: publicInstructor?.profilePic?.url ?? null,
   };
 
   const initials = instructor.name

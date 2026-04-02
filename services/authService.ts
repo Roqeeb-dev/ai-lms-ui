@@ -1,5 +1,6 @@
 import { apiClient } from "../lib/apiClient";
 import { User, ServerUser, Role } from "@/types/user";
+import type { ProfilePic } from "@/types/user";
 
 export type LoginPayload = Pick<User, "email" | "password">;
 
@@ -64,7 +65,7 @@ export type GetUserProfileResponse = {
   data: {
     name: string;
     bio: string;
-    profilePic: string | null;
+    profilePic: ProfilePic;
   };
 };
 
