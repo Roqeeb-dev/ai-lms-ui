@@ -3,9 +3,11 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Home, ArrowLeft, BookOpen } from "lucide-react";
+import { useUserStore } from "@/store/useUserStore";
 
 export default function NotFound() {
   const router = useRouter();
+  const { user } = useUserStore();
 
   return (
     <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-background px-4">
@@ -75,7 +77,7 @@ export default function NotFound() {
           {[
             { label: "Browse Courses", href: "/dashboard/student/browse" },
             { label: "My Learning", href: "/dashboard/student/courses" },
-            { label: "Dashboard", href: "/dashboard" },
+            { label: "Dashboard", href: `/dashboard/${user?.role}` },
           ].map((link) => (
             <Link
               key={link.label}
