@@ -1,5 +1,7 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 interface LogoProps {
   className?: string;
   size?: "sm" | "md" | "lg";
@@ -16,6 +18,7 @@ export default function Logo({
     md: { text: "text-lg", icon: "text-base", dot: "w-2 h-2" },
     lg: { text: "text-2xl", icon: "text-xl", dot: "w-2.5 h-2.5" },
   };
+  const router = useRouter();
 
   const { text, icon, dot } = sizeConfig[size];
 
@@ -35,7 +38,10 @@ export default function Logo({
   }
 
   return (
-    <div className={`flex items-center gap-0 select-none ${className}`}>
+    <div
+      onClick={() => router.push("/")}
+      className={`flex items-center gap-0 select-none ${className}`}
+    >
       {/* Icon mark */}
       <div className="relative flex items-center justify-center mr-1.5">
         <div className="w-6 h-6 rounded-lg bg-primary flex items-center justify-center shadow-sm">

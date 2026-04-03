@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { BookOpen, BarChart2 } from "lucide-react";
 import CourseCard from "@/components/CourseCard";
 import { useEnrollment } from "@/hooks/useEnrollment";
@@ -11,9 +11,10 @@ export default function CourseClient() {
   const { enrollments, fetching: fetchingEnrollments } = useEnrollment({
     publishedOnly: true,
   });
-  const { allCourses, fetchingAllCourses, getAllCourses } = useCourse({
-    publishedOnly: true,
-  });
+  const { allCourses, fetchingAllCourses, getAllCourses, getCourseProgress } =
+    useCourse({ publishedOnly: true });
+
+  const [progressMap, setProgressMap] = useState<Record<string, number>>({});
 
   useEffect(() => {
     getAllCourses();
@@ -21,11 +22,34 @@ export default function CourseClient() {
 
   const enrolledCourseIds = new Set(enrollments.map((e) => e.course.id));
 
+  const enrollmentIds = useMemo(
+    () => enrollments.map((e) => e.course.id).join(","),
+    [enrollments],
+  );
+
+  useEffect(() => {
+    if (!enrollmentIds) return;
+
+    async function loadProgress() {
+      const entries = await Promise.allSettled(
+        enrollments.map((e) => getCourseProgress(e.course.id)),
+      );
+
+      const map: Record<string, number> = {};
+      entries.forEach((result, i) => {
+        if (result.status === "fulfilled" && result.value) {
+          map[enrollments[i].course.id] = result.value.progress.progress;
+        }
+      });
+
+      setProgressMap(map);
+    }
+
+    loadProgress();
+  }, [enrollmentIds]);
+
   const filteredBrowse = useMemo(() => {
-    return allCourses.filter((c) => {
-      const notEnrolled = !enrolledCourseIds.has(c.id);
-      return notEnrolled;
-    });
+    return allCourses.filter((c) => !enrolledCourseIds.has(c.id));
   }, [allCourses, enrolledCourseIds]);
 
   return (
@@ -76,7 +100,10 @@ export default function CourseClient() {
             {enrollments.map((enrollment) => (
               <CourseCard
                 key={enrollment.id}
-                course={{ ...enrollment.course, progress: 0 }}
+                course={{
+                  ...enrollment.course,
+                  progress: progressMap[enrollment.course.id] ?? 0,
+                }}
                 enrolled
               />
             ))}

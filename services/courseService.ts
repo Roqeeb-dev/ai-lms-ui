@@ -1,5 +1,10 @@
 import { apiClient } from "@/lib/apiClient";
-import { Course, ServerCourse } from "@/types/course";
+import {
+  Course,
+  ServerCourse,
+  ServerCourseProgress,
+  CourseProgress,
+} from "@/types/course";
 
 export interface GetAllCoursesResponse {
   success: boolean;
@@ -44,6 +49,11 @@ export interface DeleteCourseResponse {
   message: string;
 }
 
+export interface GetCourseProgressResponse {
+  success: boolean;
+  data: ServerCourseProgress;
+}
+
 function normalizeCourse(data: ServerCourse): Course {
   const createdAt = data.createdAt ? new Date(data.createdAt) : new Date();
   const updatedAt = data.updatedAt ? new Date(data.updatedAt) : new Date();
@@ -62,6 +72,27 @@ function normalizeCourse(data: ServerCourse): Course {
     status: data.status,
     createdAt,
     updatedAt,
+  };
+}
+
+function normalizeCourseProgress(data: ServerCourseProgress): CourseProgress {
+  return {
+    id: data._id,
+    userId: data.user,
+    courseId: data.course,
+    status: data.status,
+    progress: data.progress,
+    completedLessons: data.completedLessons.map((l) => ({
+      id: l._id,
+      title: l.title,
+      moduleId: l.module,
+      type: l.type,
+      fileUrl: l.file?.url ?? "",
+      duration: l.duration,
+      order: l.order,
+    })),
+    createdAt: new Date(data.createdAt),
+    updatedAt: new Date(data.updatedAt),
   };
 }
 
@@ -135,6 +166,15 @@ export const course = {
     return {
       course: normalizeCourse(res.course),
       message: res.message,
+    };
+  },
+
+  async getCourseProgress(courseId: string) {
+    const res = await apiClient.get<GetCourseProgressResponse>(
+      `/api/courses/${courseId}/progress`,
+    );
+    return {
+      progress: normalizeCourseProgress(res.data),
     };
   },
 

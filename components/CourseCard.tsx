@@ -91,20 +91,15 @@ export default function CourseCard({
 
       <div className="flex flex-col gap-3 p-4">
         <div className="flex items-center justify-between">
-          <span className="text-xs font-semibold tracking-widest uppercase text-primary">
-            {course.category ?? "—"}
-          </span>
-          <div className="flex items-center gap-1.5">
-            <CourseStatusBadge
-              status={course.status}
-              isInstructor={isInstructor}
-              reason={reason}
-            />
-          </div>
+          <CourseStatusBadge
+            status={course.status}
+            isInstructor={isInstructor}
+            reason={reason}
+          />
         </div>
 
-        <div className="flex flex-col gap-1">
-          <h3 className="text-sm font-bold text-foreground leading-snug group-hover:text-primary transition-colors duration-200">
+        <div className="flex flex-col gap-1.5">
+          <h3 className="text-base font-bold text-foreground leading-snug group-hover:text-primary transition-colors duration-200">
             {course.title}
           </h3>
           <p className="text-xs text-foreground-muted leading-relaxed line-clamp-2">
