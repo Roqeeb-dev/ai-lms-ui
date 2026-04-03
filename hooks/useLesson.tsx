@@ -131,7 +131,7 @@ export function useLesson() {
     setError(null);
     try {
       const res = await completeLesson(lessonId);
-      addToast("Lesson marked as complete!", "success");
+      addToast("Lesson completed!", "success");
       return res;
     } catch (err: any) {
       const message = getErrorMessage(err);

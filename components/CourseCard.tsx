@@ -104,7 +104,7 @@ export default function CourseCard({
         </div>
 
         <div className="flex flex-col gap-1">
-          <h3 className="text-sm font-bold text-foreground leading-snug group-hover:text-primary transition-colors duration-200">
+          <h3 className="text-md font-bold text-foreground leading-snug group-hover:text-primary transition-colors duration-200">
             {course.title}
           </h3>
           <p className="text-xs text-foreground-muted leading-relaxed line-clamp-2">
