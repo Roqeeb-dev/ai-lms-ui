@@ -11,10 +11,12 @@ import {
   Save,
   ArrowLeft,
   CheckCircle,
+  Loader2,
 } from "lucide-react";
 import { CreateQuizPayload } from "@/services/quizService";
 import { Question } from "@/types/quiz";
 import QuizPreviewModal from "@/components/QuizPreviewModal";
+import { useGenerateQuiz } from "@/hooks/useAi";
 
 export type LocalQuestion = Omit<Question, "_id"> & { localId: string };
 
@@ -35,6 +37,7 @@ export default function CreateQuizClient() {
   const params = useParams<{ lessonId: string }>();
   const router = useRouter();
   const { createQuizAsInstructor, creating } = useQuiz();
+  const { generating, generateNewQuiz } = useGenerateQuiz();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [questions, setQuestions] = useState<LocalQuestion[]>([
@@ -110,6 +113,20 @@ export default function CreateQuizClient() {
     }
   }
 
+  async function handleGenerateAIQuiz() {
+    const res = await generateNewQuiz(params.lessonId);
+    if (!res?.data?.questions) return;
+
+    const generated: LocalQuestion[] = res.data.questions.map((q: any) => ({
+      localId: crypto.randomUUID(),
+      question: q.question,
+      options: q.options,
+      correctAnswer: q.correctAnswer,
+    }));
+
+    setQuestions(generated);
+  }
+
   return (
     <div className="max-w-6xl mx-auto px-3 py-2 flex flex-col gap-8">
       {/* Header */}
@@ -133,14 +150,22 @@ export default function CreateQuizClient() {
             </p>
           </div>
 
-          {/* AI Generate — decorative */}
           <button
-            disabled
-            className="shrink-0 flex items-center gap-2 px-3 py-2 rounded-lg border border-amber-500/30 bg-amber-500/10 text-amber-600 text-xs font-semibold opacity-60 cursor-not-allowed"
-            title="AI generation coming soon"
+            onClick={handleGenerateAIQuiz}
+            disabled={generating}
+            className="shrink-0 flex items-center gap-2 px-3 py-2 rounded-lg border border-amber-500/30 bg-amber-500/10 text-amber-600 text-xs font-semibold hover:bg-amber-500/20 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            <Sparkles size={13} />
-            Generate with AI
+            {generating ? (
+              <>
+                <Loader2 size={13} className="animate-spin" />
+                Generating...
+              </>
+            ) : (
+              <>
+                <Sparkles size={13} />
+                Generate with AI
+              </>
+            )}
           </button>
         </div>
       </div>
@@ -199,7 +224,6 @@ export default function CreateQuizClient() {
             key={q.localId}
             className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-5 shadow-sm"
           >
-            {/* Question header */}
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-primary uppercase tracking-widest">
                 Question {qIdx + 1}
@@ -218,7 +242,6 @@ export default function CreateQuizClient() {
               </button>
             </div>
 
-            {/* Question text */}
             <div className="flex flex-col gap-1.5">
               <label className={labelClass}>Question</label>
               <input
@@ -227,12 +250,11 @@ export default function CreateQuizClient() {
                 onChange={(e) =>
                   updateQuestion(q.localId, "question", e.target.value)
                 }
-                placeholder={`e.g. What is the main purpose of...`}
+                placeholder="e.g. What is the main purpose of..."
                 className={inputClass}
               />
             </div>
 
-            {/* Options */}
             <div className="flex flex-col gap-2">
               <label className={labelClass}>
                 Options — select the correct answer
@@ -247,7 +269,6 @@ export default function CreateQuizClient() {
                         : "border-border hover:border-border bg-background"
                     }`}
                   >
-                    {/* Radio */}
                     <button
                       type="button"
                       onClick={() =>
@@ -266,8 +287,6 @@ export default function CreateQuizClient() {
                         />
                       )}
                     </button>
-
-                    {/* Option letter */}
                     <span
                       className={`text-xs font-bold shrink-0 ${
                         q.correctAnswer === optIdx
@@ -277,8 +296,6 @@ export default function CreateQuizClient() {
                     >
                       {["A", "B", "C", "D"][optIdx]}
                     </span>
-
-                    {/* Option input */}
                     <input
                       type="text"
                       value={opt}
@@ -295,7 +312,6 @@ export default function CreateQuizClient() {
           </div>
         ))}
 
-        {/* Add question */}
         <button
           onClick={addQuestion}
           className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border border-dashed border-border text-xs font-semibold text-foreground-muted hover:border-primary hover:text-primary transition-colors"
