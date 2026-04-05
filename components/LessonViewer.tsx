@@ -12,9 +12,12 @@ import {
 } from "lucide-react";
 import { Lesson } from "@/types/lesson";
 import { getPdfViewUrl } from "@/lib/cloudinary";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 interface Props {
   lesson: Lesson | null;
+  courseId: string;
   completing: boolean;
   isCompleted: boolean;
   hasPrev: boolean;
@@ -48,6 +51,7 @@ function DocumentViewer({ url }: { url: string }) {
 
 export default function LessonViewer({
   lesson,
+  courseId,
   completing,
   isCompleted,
   hasPrev,
@@ -56,6 +60,14 @@ export default function LessonViewer({
   onPrev,
   onNext,
 }: Props) {
+  const router = useRouter();
+
+  useEffect(() => {
+    if (lesson?.type === "quiz") {
+      router.push(`/dashboard/student/courses/${courseId}/quiz/${lesson.id}`);
+    }
+  }, [lesson?.type, lesson?.id]);
+
   if (!lesson) {
     return (
       <div className="w-full max-w-5xl mx-auto px-8 py-20 flex flex-col items-center justify-center gap-4 text-center">
@@ -71,6 +83,8 @@ export default function LessonViewer({
       </div>
     );
   }
+
+  if (lesson?.type === "quiz") return null;
 
   return (
     <div className="w-full max-w-6xl mx-auto px-3 md:px-8 py-3 md:py-8 flex flex-col gap-6">

@@ -19,6 +19,8 @@ function LessonTypeIcon({ type }: { type: Lesson["type"] }) {
     return <PlayCircle size={11} className="text-foreground-muted shrink-0" />;
   if (type === "pdf")
     return <FileText size={11} className="text-foreground-muted shrink-0" />;
+  if (type === "quiz")
+    return <Sparkles size={11} className="text-amber-500 shrink-0" />;
   return <AlignLeft size={11} className="text-foreground-muted shrink-0" />;
 }
 
@@ -45,6 +47,7 @@ function LessonItem({ lesson }: { lesson: Lesson }) {
           <Sparkles size={10} />
           <span className="hidden sm:inline text-[10px] font-medium">Quiz</span>
         </button>
+
         <span className="text-xs text-foreground-muted">{lesson.order}</span>
       </div>
     </div>

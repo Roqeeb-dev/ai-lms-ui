@@ -121,6 +121,7 @@ export default function Client() {
       <div className="flex-1 overflow-y-auto">
         <LessonViewer
           lesson={selectedLesson}
+          courseId={courseDetails.id}
           completing={completing}
           isCompleted={
             selectedLesson
