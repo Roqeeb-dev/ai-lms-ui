@@ -105,7 +105,7 @@ export function QuizViewerClient() {
 
   const isLastQuestion = quiz && currentIndex === quiz.questions.length - 1;
 
-  if (stage === "intro" && quiz) {
+  if (stage === "intro") {
     return (
       <QuizIntro
         onBack={() => router.back()}
