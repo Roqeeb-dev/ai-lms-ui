@@ -102,14 +102,15 @@ export default function LessonForm({
         ...(values.type === "text" && { content: values.content }),
       });
 
-      onSuccess?.();
-      reset();
-
       if (values.type === "quiz" && res?.lesson?.id) {
         router.push(
           `/dashboard/instructor/lessons/${res.lesson.id}/quiz/create`,
         );
+        return;
       }
+
+      onSuccess?.();
+      reset();
     }
   }
 
