@@ -19,6 +19,8 @@ function LessonTypeIcon({ type }: { type: Lesson["type"] }) {
     return <PlayCircle size={11} className="text-foreground-muted shrink-0" />;
   if (type === "pdf")
     return <FileText size={11} className="text-foreground-muted shrink-0" />;
+  if (type === "quiz")
+    return <Sparkles size={11} className="text-amber-500 shrink-0" />;
   return <AlignLeft size={11} className="text-foreground-muted shrink-0" />;
 }
 
@@ -32,19 +34,23 @@ function LessonItem({ lesson }: { lesson: Lesson }) {
         {lesson.title}
       </span>
       <div className="flex items-center gap-1.5 ml-auto shrink-0">
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            router.push(
-              `/dashboard/instructor/lessons/${lesson.id}/quiz/create`,
-            );
-          }}
-          title="Create quiz for this lesson"
-          className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 flex items-center gap-1 px-1.5 py-0.5 rounded text-xs text-amber-600 bg-amber-500/10 hover:bg-amber-500/20 transition-all duration-150"
-        >
-          <Sparkles size={10} />
-          <span className="hidden sm:inline text-[10px] font-medium">Quiz</span>
-        </button>
+        {lesson.type !== "quiz" && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              router.push(
+                `/dashboard/instructor/lessons/${lesson.id}/quiz/create`,
+              );
+            }}
+            title="Create quiz for this lesson"
+            className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 flex items-center gap-1 px-1.5 py-0.5 rounded text-xs text-amber-600 bg-amber-500/10 hover:bg-amber-500/20 transition-all duration-150"
+          >
+            <Sparkles size={10} />
+            <span className="hidden sm:inline text-[10px] font-medium">
+              Quiz
+            </span>
+          </button>
+        )}
         <span className="text-xs text-foreground-muted">{lesson.order}</span>
       </div>
     </div>

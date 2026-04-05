@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "@/hooks/useForm";
 import { LessonEditor } from "./LessonEditor";
 import { Lesson, LessonType } from "@/types/lesson";
+import { useRouter } from "next/navigation";
 import {
   CreateLessonPayload,
   UpdateLessonPayload,
@@ -17,6 +18,7 @@ import {
   Upload,
   Loader2,
   PencilLine,
+  Sparkles,
 } from "lucide-react";
 
 interface Props {
@@ -38,6 +40,7 @@ const lessonTypes: {
   { value: "video", label: "Video", icon: <PlayCircle size={13} /> },
   { value: "pdf", label: "Document", icon: <FileText size={13} /> },
   { value: "text", label: "Text", icon: <AlignLeft size={13} /> },
+  { value: "quiz", label: "Quiz", icon: <Sparkles size={13} /> },
 ];
 
 export default function LessonForm({
@@ -51,6 +54,7 @@ export default function LessonForm({
   deleting,
 }: Props) {
   const isEditing = !!lesson;
+  const router = useRouter();
 
   const { values, update, reset, setAll } = useForm<{
     title: string;
@@ -88,18 +92,25 @@ export default function LessonForm({
         ...(values.file && { file: values.file }),
         ...(values.type === "text" && { content: values.content }),
       });
+      onSuccess?.();
     } else {
-      await onCreate(moduleId, {
+      const res = await onCreate(moduleId, {
         title: values.title,
         type: values.type,
-        // ✅ only attach file if it's not a text lesson
-        ...(values.type !== "text" && { file: values.file! }),
+        ...(values.type !== "text" &&
+          values.type !== "quiz" && { file: values.file! }),
         ...(values.type === "text" && { content: values.content }),
       });
-    }
 
-    onSuccess?.();
-    if (!isEditing) reset();
+      onSuccess?.();
+      reset();
+
+      if (values.type === "quiz" && res?.lesson?.id) {
+        router.push(
+          `/dashboard/instructor/lessons/${res.lesson.id}/quiz/create`,
+        );
+      }
+    }
   }
 
   return (
@@ -146,7 +157,7 @@ export default function LessonForm({
           <label className="text-xs font-medium text-foreground">
             Type <span className="text-destructive">*</span>
           </label>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid sm:grid-cols-2 grid-cols-4 gap-2">
             {lessonTypes.map((t) => (
               <button
                 key={t.value}
@@ -166,7 +177,7 @@ export default function LessonForm({
         </div>
 
         {/* Upload */}
-        {values.type !== "text" && (
+        {values.type !== "text" && values.type !== "quiz" && (
           <div className="md:col-span-2 flex flex-col gap-1.5">
             <label className="text-xs font-medium text-foreground">
               {values.type === "video" ? "Video File" : "Document File"}
@@ -238,7 +249,10 @@ export default function LessonForm({
             type="submit"
             disabled={
               loading ||
-              (!isEditing && values.type !== "text" && !values.file) ||
+              (!isEditing &&
+                values.type !== "text" &&
+                values.type !== "quiz" &&
+                !values.file) ||
               (values.type === "text" && !values.content.trim())
             }
             className="flex items-center gap-1.5 text-xs px-4 py-2 rounded-md bg-primary text-primary-foreground"
