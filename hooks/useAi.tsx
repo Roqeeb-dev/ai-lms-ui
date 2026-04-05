@@ -18,7 +18,7 @@ export function useGenerateQuiz() {
       addToast("Quiz generated successfully!", "success");
       return res;
     } catch (err: any) {
-      const message = err ?? err?.message ?? "Something went wrong";
+      const message = err?.error ?? "Something went wrong";
       addToast(message, "error");
       setError(message);
     } finally {
