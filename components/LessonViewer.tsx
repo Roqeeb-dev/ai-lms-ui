@@ -33,7 +33,7 @@ function VideoPlayer({ url }: { url: string }) {
       <video
         src={url}
         controls
-        className="w-full max-h-[600px] object-contain"
+        className="w-full max-h-[500px] object-contain"
       />
     </div>
   );
