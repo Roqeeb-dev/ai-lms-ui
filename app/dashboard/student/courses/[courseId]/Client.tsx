@@ -23,7 +23,8 @@ export default function Client() {
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
   const [completedLessons, setCompletedLessons] = useState<string[]>([]);
 
-  const { getCourseDetails, fetchingCourseDetails } = useCourse();
+  const { getCourseDetails, fetchingCourseDetails, getCourseProgress } =
+    useCourse();
   const {
     modules,
     fetchCourseModules,
@@ -64,11 +65,16 @@ export default function Client() {
   }, [modules]);
 
   useEffect(() => {
-    const enrollment = enrollments.find((e) => e.course.id === params.courseId);
-    if (enrollment) {
-      setCompletedLessons([]);
+    async function initProgress() {
+      try {
+        const res = await getCourseProgress(params.courseId);
+        if (res?.progress?.completedLessons) {
+          setCompletedLessons(res.progress.completedLessons.map((l) => l.id));
+        }
+      } catch {}
     }
-  }, [enrollments, params.courseId]);
+    initProgress();
+  }, [params.courseId]);
 
   const allLessons = Object.values(lessonsMap).flat();
   const totalLessons = allLessons.length;
