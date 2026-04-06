@@ -92,9 +92,7 @@ export default function ForgotPasswordClient() {
             <button
               type="submit"
               disabled={sendingReset}
-              className="w-full rounded-lg bg-primary text-primary-foreground px-3 py-3 lg:py-2 text-sm font-semibold
-                         hover:bg-primary-hover active:scale-[0.98] transition-all duration-200 shadow-sm
-                         disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:bg-primary"
+              className="w-full rounded-lg bg-primary text-primary-foreground px-3 py-3 lg:py-2 text-sm font-semibold hover:bg-primary-hover active:scale-95 active:brightness-95 active:shadow-sm transition-all duration-200 shadow-sm disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:bg-primary"
             >
               {sendingReset ? (
                 <LoadingDots text="Sending" />

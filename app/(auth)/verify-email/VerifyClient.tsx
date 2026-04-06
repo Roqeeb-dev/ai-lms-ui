@@ -123,7 +123,7 @@ export default function VerifyClient() {
         <button
           type="submit"
           disabled={verifying || !token.trim()}
-          className="w-full rounded-lg bg-primary text-primary-foreground px-4 py-3 lg:py-2.5 text-sm font-semibold hover:bg-primary-hover active:scale-[0.98] transition-all duration-200 shadow-sm disabled:opacity-60 disabled:pointer-events-none"
+          className="w-full rounded-lg bg-primary text-primary-foreground px-4 py-3 lg:py-2.5 text-sm font-semibold hover:bg-primary-hover active:scale-95 active:brightness-95 active:shadow-sm transition-all duration-200 shadow-sm disabled:opacity-60 disabled:pointer-events-none"
         >
           {verifying ? "Verifying..." : "Verify email"}
         </button>

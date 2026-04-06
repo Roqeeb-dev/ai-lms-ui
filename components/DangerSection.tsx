@@ -41,7 +41,7 @@ export default function DangerSection() {
 
         <button
           onClick={() => setIsDialogShown(true)}
-          className="shrink-0 px-3 py-1.5 rounded-lg border border-destructive/40 text-destructive text-sm font-semibold hover:bg-destructive hover:text-destructive-foreground transition-all duration-200"
+          className="shrink-0 px-3 py-1.5 rounded-lg border border-destructive/40 text-destructive text-sm font-semibold hover:bg-destructive hover:text-destructive-foreground active:scale-95 active:brightness-95 active:shadow-sm transition-all duration-200"
         >
           Delete account
         </button>

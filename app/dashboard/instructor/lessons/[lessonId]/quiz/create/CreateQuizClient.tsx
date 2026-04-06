@@ -153,7 +153,7 @@ export default function CreateQuizClient() {
           <button
             onClick={handleGenerateAIQuiz}
             disabled={generating}
-            className="shrink-0 flex items-center gap-2 px-3 py-2 rounded-lg border border-amber-500/30 bg-amber-500/10 text-amber-600 text-xs font-semibold hover:bg-amber-500/20 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+            className="shrink-0 flex items-center gap-2 px-3 py-2 rounded-lg border border-amber-500/30 bg-amber-500/10 text-amber-600 text-xs font-semibold hover:bg-amber-500/20 transition-colors active:scale-95 active:brightness-95 active:shadow-sm disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {generating ? (
               <>
