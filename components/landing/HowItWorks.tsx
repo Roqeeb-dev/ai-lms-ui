@@ -36,7 +36,7 @@ export default function HowItWorks() {
           <span className="text-xs font-semibold uppercase tracking-widest text-primary">
             How it works
           </span>
-          <h2 className="text-3xl md:text-4xl font-black text-foreground leading-tight">
+          <h2 className="text-3xl md:text-4xl font-extrabold text-foreground leading-tight">
             Up and running
             <br />
             <span className="text-primary">in three steps.</span>
@@ -50,9 +50,6 @@ export default function HowItWorks() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {steps.map((step, i) => (
             <div key={step.number} className="flex flex-col gap-4 relative">
-              {i < steps.length - 1 && (
-                <div className="hidden md:block absolute top-8 left-[calc(100%+0px)] w-full h-px border-t border-dashed border-border z-0" />
-              )}
               <div
                 className={`w-14 h-14 rounded-2xl border-2 ${step.border} ${step.bg} flex items-center justify-center shrink-0`}
               >

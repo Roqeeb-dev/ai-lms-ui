@@ -39,7 +39,7 @@ export default function LessonTypes() {
           <span className="text-xs font-semibold uppercase tracking-widest text-primary">
             Content types
           </span>
-          <h2 className="text-3xl md:text-4xl font-black text-foreground leading-tight">
+          <h2 className="text-3xl md:text-4xl font-extrabold text-foreground leading-tight">
             Four ways to
             <br />
             <span className="text-primary">deliver knowledge.</span>

@@ -63,7 +63,7 @@ export default function LandingFeatures() {
           <span className="text-xs font-semibold uppercase tracking-widest text-primary">
             Features
           </span>
-          <h2 className="text-3xl md:text-4xl font-black text-foreground leading-tight">
+          <h2 className="text-3xl md:text-4xl font-extrabold text-foreground leading-tight">
             Everything you need.
             <br />
             <span className="text-primary">Nothing you don't.</span>

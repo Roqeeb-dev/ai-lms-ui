@@ -9,7 +9,7 @@ export default function LandingFinalCTA() {
           <GraduationCap size={24} className="text-primary" />
         </div>
         <div className="flex flex-col gap-3">
-          <h2 className="text-3xl md:text-4xl font-black text-foreground leading-tight">
+          <h2 className="text-3xl md:text-4xl font-extrabold text-foreground leading-tight">
             Start learning today.
           </h2>
           <p className="text-base text-foreground-muted leading-relaxed max-w-md mx-auto">

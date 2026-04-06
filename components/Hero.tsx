@@ -165,7 +165,6 @@ function NeuralViz() {
   );
 }
 
-// ── Floating stat card
 function StatCard({
   value,
   label,

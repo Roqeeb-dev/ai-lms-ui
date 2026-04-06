@@ -1,12 +1,11 @@
+import Logo from "./Logo";
+
 export default function LandingFooter() {
   return (
     <footer className="bg-[#1A0F0A] px-4 md:px-8 py-10">
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center md:items-start justify-between gap-6">
         <div className="flex flex-col gap-2 items-center md:items-start">
-          <div className="flex items-center gap-1">
-            <span className="text-lg font-black text-white">cogni</span>
-            <span className="text-lg font-black text-[#C0522A]">fy</span>
-          </div>
+          <Logo />
           <p className="text-xs text-white/40 max-w-xs text-center md:text-left">
             AI-powered personalized learning for students and instructors.
           </p>
