@@ -42,28 +42,23 @@ export default function Navbar() {
           {mounted && (
             <button
               onClick={toggleTheme}
-              className="relative flex items-center justify-center w-9 h-9 rounded-lg border border-border bg-background-subtle hover:bg-muted transition-all duration-300 hover:scale-[1.03] active:scale-[0.97]"
               aria-label="Toggle theme"
+              className="relative flex items-center w-14 h-8 rounded-full px-1 bg-muted/70 backdrop-blur-md border border-border/60 transition-all duration-300 ease-out hover:bg-muted"
             >
-              {/* Sun */}
-              <Sun
-                size={16}
-                className={`absolute transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-                  theme === "light"
-                    ? "opacity-100 scale-100 rotate-0 translate-y-0"
-                    : "opacity-0 scale-75 -rotate-45 translate-y-1"
-                }`}
-              />
+              <div
+                className={`absolute top-1 left-1 w-6 h-6 rounded-full bg-background shadow-sm flex items-center justify-center transition-all duration-400 ease-[cubic-bezier(0.22,1,0.36,1)] ${theme === "dark" ? "translate-x-6" : "translate-x-0"}`}
+              >
+                {theme === "light" ? (
+                  <Sun size={12} className="text-yellow-500" />
+                ) : (
+                  <Moon size={12} className="text-blue-400" />
+                )}
+              </div>
 
-              {/* Moon */}
-              <Moon
-                size={16}
-                className={`absolute transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-                  theme === "dark"
-                    ? "opacity-100 scale-100 rotate-0 translate-y-0"
-                    : "opacity-0 scale-75 rotate-45 -translate-y-1"
-                }`}
-              />
+              <div className="flex justify-between w-full px-1.5 text-foreground-muted">
+                <Sun size={12} className="opacity-60" />
+                <Moon size={12} className="opacity-60" />
+              </div>
             </button>
           )}
 
