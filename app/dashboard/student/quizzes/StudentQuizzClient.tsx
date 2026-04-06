@@ -1,47 +1,10 @@
 "use client";
 
+import { BookOpen, Info, Sparkles } from "lucide-react";
 import DashboardHeader from "@/components/DashboardHeader";
-import QuizCard from "@/components/QuizCard";
+import Link from "next/link";
 
-type Quiz = {
-  id: string;
-  title: string;
-  course: string;
-  questions: number;
-  duration: string;
-  status: "not_started" | "in_progress" | "completed";
-  score?: number;
-};
-
-const quizzes: Quiz[] = [
-  {
-    id: "1",
-    title: "Introduction to React",
-    course: "React Fundamentals",
-    questions: 10,
-    duration: "10 mins",
-    status: "not_started",
-  },
-  {
-    id: "2",
-    title: "State & Props Quiz",
-    course: "React Fundamentals",
-    questions: 15,
-    duration: "15 mins",
-    status: "in_progress",
-  },
-  {
-    id: "3",
-    title: "JavaScript Basics",
-    course: "JavaScript Mastery",
-    questions: 20,
-    duration: "20 mins",
-    status: "completed",
-    score: 85,
-  },
-];
-
-export default function StudentQuizzClient() {
+export default function StudentQuizClient() {
   return (
     <main className="flex flex-col gap-8 max-w-6xl mx-auto">
       <DashboardHeader
@@ -49,11 +12,43 @@ export default function StudentQuizzClient() {
         text="Test your understanding across your courses"
       />
 
-      {/* Quiz List */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {quizzes.map((quiz) => (
-          <QuizCard key={quiz.id} quiz={quiz} />
-        ))}
+      {/* Info card */}
+      <div className="flex items-start gap-4 rounded-xl border border-border bg-card p-5">
+        <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+          <Info size={15} className="text-primary" />
+        </div>
+        <div className="flex flex-col gap-1">
+          <p className="text-sm font-semibold text-foreground">
+            Quizzes are attached to lessons
+          </p>
+          <p className="text-xs text-foreground-muted leading-relaxed">
+            To take a quiz, open a course, navigate to a quiz lesson in the
+            course outline, and it will launch automatically.
+          </p>
+        </div>
+      </div>
+
+      {/* Empty state */}
+      <div className="flex flex-col items-center justify-center gap-5 rounded-2xl border border-dashed border-border bg-card py-20 text-center">
+        <div className="w-14 h-14 rounded-2xl bg-muted flex items-center justify-center">
+          <Sparkles size={22} className="text-foreground-muted" />
+        </div>
+        <div className="flex flex-col gap-1.5 max-w-xs">
+          <h3 className="text-sm font-semibold text-foreground">
+            No quizzes to display here
+          </h3>
+          <p className="text-xs text-foreground-muted leading-relaxed">
+            Head over to your courses and open a lesson marked as a quiz to get
+            started.
+          </p>
+        </div>
+        <Link
+          href="/dashboard/student/courses"
+          className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-primary text-primary-foreground text-xs font-semibold hover:bg-primary/90 transition-colors duration-200"
+        >
+          <BookOpen size={14} />
+          Go to My Courses
+        </Link>
       </div>
     </main>
   );

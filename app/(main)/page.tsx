@@ -1,9 +1,10 @@
 import Hero from "@/components/Hero";
-import Features from "@/components/Features";
-import Testimonials from "@/components/Testimonials";
-import HowItWorks from "@/components/HowItWorks";
-import Pricing from "@/components/Pricing";
-import CTABanner from "@/components/CTA";
+import SocialProofBar from "@/components/landing/SocialProofBar";
+import LandingFeatures from "@/components/landing/LandingFeatures";
+import HowItWorks from "@/components/landing/HowItWorks";
+import LessonTypes from "@/components/landing/LandingLessonTypes";
+import InstructorCTA from "@/components/landing/InstructorCTA";
+import LandingFinalCTA from "@/components/landing/LandingFinalCTA";
 
 export const metadata = {
   metadataBase: new URL("https://ai-lms-ui.vercel.app"),
@@ -66,13 +67,14 @@ export const metadata = {
 
 export default function Home() {
   return (
-    <main>
+    <>
       <Hero />
-      <Features />
-      <Testimonials />
+      <SocialProofBar />
+      <LandingFeatures />
       <HowItWorks />
-      <Pricing />
-      <CTABanner />
-    </main>
+      <LessonTypes />
+      <InstructorCTA />
+      <LandingFinalCTA />
+    </>
   );
 }
