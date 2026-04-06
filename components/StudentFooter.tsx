@@ -67,7 +67,7 @@ export function StudentFooter({
             : handleEnroll
         }
         disabled={loading}
-        className={`w-full py-2 rounded-lg text-xs font-semibold transition-all duration-200 flex items-center justify-center gap-1.5 disabled:opacity-70 disabled:cursor-not-allowed ${
+        className={`w-full py-2 rounded-lg text-xs font-semibold transition-all duration-200 flex items-center justify-center gap-1.5 active:scale-95 active:brightness-95 active:shadow-sm disabled:opacity-70 disabled:cursor-not-allowed ${
           isEnrolled
             ? "bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground"
             : "bg-primary text-primary-foreground hover:bg-primary/90"

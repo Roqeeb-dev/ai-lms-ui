@@ -50,7 +50,7 @@ export default function Dialog({
         {!loading && (
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 text-foreground-muted hover:text-foreground transition-colors"
+            className="absolute top-4 right-4 text-foreground-muted hover:text-foreground active:scale-95 active:brightness-95 active:shadow-sm transition-colors"
           >
             <X size={15} />
           </button>
@@ -79,7 +79,7 @@ export default function Dialog({
             <button
               onClick={onClose}
               disabled={loading}
-              className="px-3 py-1.5 text-xs font-semibold rounded-lg border border-border bg-background text-foreground hover:bg-muted transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-3 py-1.5 text-xs font-semibold rounded-lg border border-border bg-background text-foreground hover:bg-muted active:scale-95 active:brightness-95 active:shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {cancelText}
             </button>
@@ -105,7 +105,7 @@ export default function Dialog({
             <button
               onClick={onClose}
               disabled={loading}
-              className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+              className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors active:scale-95 active:brightness-95 active:shadow-sm disabled:opacity-50 disabled:cursor-not-allowed ${
                 type === "success"
                   ? "bg-emerald-600 text-white hover:bg-emerald-700"
                   : "bg-destructive text-white hover:bg-destructive/90"

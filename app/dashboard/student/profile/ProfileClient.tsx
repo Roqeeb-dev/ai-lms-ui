@@ -107,7 +107,7 @@ export default function ProfileClient() {
         {!editing ? (
           <button
             onClick={() => setEditing(true)}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border bg-card text-sm font-semibold text-foreground hover:border-primary hover:text-primary transition-all duration-200"
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border bg-card text-sm font-semibold text-foreground hover:border-primary hover:text-primary active:scale-95 active:brightness-95 active:shadow-sm transition-all duration-200"
           >
             <Pencil size={14} /> Edit
           </button>
@@ -116,14 +116,14 @@ export default function ProfileClient() {
             <button
               onClick={handleCancel}
               disabled={updatingProfile}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border bg-card text-sm font-semibold text-foreground-muted hover:text-foreground transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border bg-card text-sm font-semibold text-foreground-muted hover:text-foreground active:scale-95 active:brightness-95 active:shadow-sm transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <X size={14} /> Cancel
             </button>
             <button
               onClick={handleSave}
               disabled={updatingProfile}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 active:scale-[0.98] transition-all duration-200 shadow-sm disabled:opacity-70 disabled:cursor-not-allowed"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 active:scale-95 active:brightness-95 active:shadow-sm transition-all duration-200 shadow-sm disabled:opacity-70 disabled:cursor-not-allowed"
             >
               {updatingProfile ? (
                 <>

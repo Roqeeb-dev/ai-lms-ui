@@ -80,7 +80,7 @@ export default function PasswordSection() {
                 onClick={() =>
                   setShow((prev) => ({ ...prev, [field]: !prev[field] }))
                 }
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-foreground-muted hover:text-foreground transition-colors"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-foreground-muted hover:text-foreground active:scale-95 active:brightness-95 active:shadow-sm transition-colors"
               >
                 {show[field] ? <EyeOff size={15} /> : <Eye size={15} />}
               </button>

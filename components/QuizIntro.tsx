@@ -31,7 +31,7 @@ export function QuizIntro({
       <div className="w-full max-w-lg flex flex-col gap-5">
         <button
           onClick={onBack}
-          className="flex items-center gap-1.5 text-xs text-foreground-muted hover:text-foreground transition-colors w-fit"
+          className="flex items-center gap-1.5 text-xs text-foreground-muted hover:text-foreground active:scale-95 active:brightness-95 active:shadow-sm transition-colors w-fit"
         >
           <ArrowLeft size={13} />
           Back to course
@@ -149,7 +149,7 @@ export function QuizIntro({
             <button
               onClick={handleStart}
               disabled={!quiz || starting}
-              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 active:scale-[0.98] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 active:scale-95 active:brightness-95 active:shadow-sm transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {starting ? (
                 <>
