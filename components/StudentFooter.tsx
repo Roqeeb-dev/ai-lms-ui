@@ -2,6 +2,7 @@
 
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useOptimistic } from "react";
 import Link from "next/link";
 
 export function StudentFooter({
@@ -14,12 +15,29 @@ export function StudentFooter({
 }: {
   instructorName: string;
   enrolled: boolean;
-  onEnroll: () => void;
+  onEnroll: () => Promise<void>;
   loading: boolean;
   courseId: string;
   instructorId: string;
 }) {
   const router = useRouter();
+
+  const [optimisticEnrolled, setOptimisticEnrolled] = useOptimistic(
+    enrolled,
+    (current, value: boolean) => value,
+  );
+
+  const handleEnroll = async () => {
+    setOptimisticEnrolled(true);
+
+    try {
+      await onEnroll();
+    } catch (err) {
+      // rollback handled automatically
+    }
+  };
+
+  const isEnrolled = optimisticEnrolled;
 
   return (
     <div className="flex flex-col gap-3 w-full">
@@ -30,36 +48,38 @@ export function StudentFooter({
         >
           {instructorName}
         </Link>
+
         <span
           className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
-            enrolled
+            isEnrolled
               ? "bg-emerald-500/10 text-emerald-600"
               : "bg-muted text-foreground-muted"
           }`}
         >
-          {enrolled ? "Enrolled" : "Not enrolled"}
+          {isEnrolled ? "Enrolled" : "Not enrolled"}
         </span>
       </div>
+
       <button
         onClick={
-          enrolled
+          isEnrolled
             ? () => router.push(`/dashboard/student/courses/${courseId}`)
-            : onEnroll
+            : handleEnroll
         }
         disabled={loading}
         className={`w-full py-2 rounded-lg text-xs font-semibold transition-all duration-200 flex items-center justify-center gap-1.5 disabled:opacity-70 disabled:cursor-not-allowed ${
-          enrolled
+          isEnrolled
             ? "bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground"
             : "bg-primary text-primary-foreground hover:bg-primary/90"
         }`}
       >
-        {loading ? (
+        {isEnrolled ? (
+          "Continue Learning"
+        ) : loading ? (
           <>
             <Loader2 size={12} className="animate-spin" />
             Enrolling...
           </>
-        ) : enrolled ? (
-          "Continue Learning"
         ) : (
           "Enroll Now"
         )}
