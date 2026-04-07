@@ -140,7 +140,7 @@ export async function getQuiz(quizId: string) {
 
 export async function getQuizzesByLesson(lessonId: string) {
   const res = await apiClient.get<GetQuizzesByLessonResponse>(
-    `/api/lessons/${lessonId}/quizzes`,
+    `/api/quizzes/${lessonId}`,
   );
   return {
     success: res.success,
