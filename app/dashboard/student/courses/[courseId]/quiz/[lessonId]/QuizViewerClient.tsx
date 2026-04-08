@@ -23,11 +23,10 @@ export function QuizViewerClient() {
   const router = useRouter();
 
   const {
-    fetchQuizzesByLesson,
     startQuizAsStudent,
     submitQuizAsStudent,
+    getQuizAsStudent,
     fetching,
-    fetchingByLesson,
     starting,
     submitting,
   } = useQuiz();
@@ -42,11 +41,21 @@ export function QuizViewerClient() {
 
   useEffect(() => {
     async function loadQuiz() {
+      if (!params.lessonId) return;
+
       try {
-        const res = await fetchQuizzesByLesson(params.lessonId);
-        if (res?.data?.[0]) setQuiz(res.data[0]);
-      } catch {}
+        const quizRes = await getQuizAsStudent(params.lessonId);
+
+        if (quizRes?.data) {
+          setQuiz(quizRes.data);
+        } else {
+          console.warn("No quiz found for this lesson ID:", params.lessonId);
+        }
+      } catch (error: any) {
+        console.error("Failed to fetch quiz:", error.message, error);
+      }
     }
+
     loadQuiz();
   }, [params.lessonId]);
 
@@ -56,7 +65,9 @@ export function QuizViewerClient() {
       const res = await startQuizAsStudent(quiz.id);
       setAttemptId(res.data.id);
       setStage("active");
-    } catch {}
+    } catch (error) {
+      console.error("Failed to start quiz:", error);
+    }
   }
 
   function handleSelectOption(optionIdx: number) {
@@ -100,7 +111,9 @@ export function QuizViewerClient() {
         duration: res.data.duration,
       });
       setStage("results");
-    } catch {}
+    } catch (error) {
+      console.error("Failed to submit quiz:", error);
+    }
   }
 
   const isLastQuestion = quiz && currentIndex === quiz.questions.length - 1;
@@ -109,7 +122,7 @@ export function QuizViewerClient() {
     return (
       <QuizIntro
         onBack={() => router.back()}
-        fetchingByLesson={fetchingByLesson}
+        fetchingByLesson={fetching}
         starting={starting}
         quiz={quiz}
         handleStart={handleStart}
