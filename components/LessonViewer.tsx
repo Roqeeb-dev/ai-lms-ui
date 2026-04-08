@@ -64,7 +64,10 @@ export default function LessonViewer({
 
   useEffect(() => {
     if (lesson?.type === "quiz") {
-      router.push(`/dashboard/student/courses/${courseId}/quiz/${lesson.id}`);
+      router.push(
+        `/dashboard/student/courses/${courseId}/quiz/${lesson.quizId}`,
+      );
+      console.log(lesson);
     }
   }, [lesson?.type, lesson?.id]);
 
