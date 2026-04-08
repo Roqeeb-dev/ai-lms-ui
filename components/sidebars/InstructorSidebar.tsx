@@ -62,9 +62,9 @@ export default function InstructorSidebar({
         className={`
           fixed inset-y-0 left-0 z-50 flex flex-col bg-card border-r border-border
           transition-all duration-300 ease-in-out
-          ${mobileOpen ? "translate-x-0 w-56" : "-translate-x-full w-56"}
+          ${mobileOpen ? "translate-x-0 w-60" : "-translate-x-full w-60"}
           md:translate-x-0 md:relative md:inset-auto md:z-auto
-          ${desktopPinned ? "md:w-56" : "md:w-[60px]"}
+          ${desktopPinned ? "md:w-60" : "md:w-[60px]"}
         `}
       >
         {/* Logo */}
