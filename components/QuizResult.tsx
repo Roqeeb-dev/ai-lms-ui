@@ -1,6 +1,6 @@
 "use client";
 
-import type { QuizResult as QuizResultType } from "@/app/dashboard/student/courses/[courseId]/quiz/[lessonId]/QuizViewerClient";
+import type { QuizResult as QuizResultType } from "@/app/dashboard/student/courses/[courseId]/quiz/[quizId]/QuizViewerClient";
 import { Trophy, XCircle, ArrowLeft } from "lucide-react";
 
 export interface QuizResultProps {

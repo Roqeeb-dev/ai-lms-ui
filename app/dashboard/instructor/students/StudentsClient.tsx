@@ -5,6 +5,7 @@ import { useEnrollment } from "@/hooks/useEnrollment";
 import { useInstructorCourses } from "@/hooks/useInstructorCourses";
 import { Search, Users, BookOpen } from "lucide-react";
 import DashboardHeader from "@/components/DashboardHeader";
+import LoadingScreen from "@/components/LoadingPage";
 
 export default function StudentsClient() {
   const { courses, fetching: fetchingCourses } = useInstructorCourses();
@@ -137,9 +138,7 @@ export default function StudentsClient() {
           </p>
         </div>
       ) : fetchingStudents ? (
-        <div className="flex items-center justify-center py-16">
-          <p className="text-sm text-foreground-muted">Loading students...</p>
-        </div>
+        <LoadingScreen />
       ) : filtered.length === 0 ? (
         <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-border bg-card py-16 px-6 text-center">
           <Users size={24} className="text-foreground-muted opacity-40" />

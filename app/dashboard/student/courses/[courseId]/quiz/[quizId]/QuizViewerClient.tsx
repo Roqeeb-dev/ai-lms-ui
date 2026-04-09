@@ -19,7 +19,7 @@ export interface QuizResult {
 }
 
 export function QuizViewerClient() {
-  const params = useParams<{ courseId: string; lessonId: string }>();
+  const params = useParams<{ courseId: string; quizId: string }>();
   const router = useRouter();
 
   const {
@@ -41,15 +41,15 @@ export function QuizViewerClient() {
 
   useEffect(() => {
     async function loadQuiz() {
-      if (!params.lessonId) return;
+      if (!params.quizId) return;
 
       try {
-        const quizRes = await getQuizAsStudent(params.lessonId);
+        const quizRes = await getQuizAsStudent(params.quizId);
 
         if (quizRes?.data) {
           setQuiz(quizRes.data);
         } else {
-          console.warn("No quiz found for this lesson ID:", params.lessonId);
+          console.warn("No quiz found for this lesson ID:", params.quizId);
         }
       } catch (error: any) {
         console.error("Failed to fetch quiz:", error.message, error);
@@ -57,7 +57,7 @@ export function QuizViewerClient() {
     }
 
     loadQuiz();
-  }, [params.lessonId]);
+  }, [params.quizId]);
 
   async function handleStart() {
     if (!quiz) return;

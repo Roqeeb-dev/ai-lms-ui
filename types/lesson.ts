@@ -49,7 +49,7 @@ export function normalizeLesson(data: ServerLesson): Lesson {
       ? { url: data.file.url, publicId: data.file.public_id }
       : { url: "", publicId: "" },
     content: data.content,
-    quizId: data.quizId,
+    quizId: data.quizId ?? undefined,
     duration: data.duration,
     order: data.order,
     createdAt: new Date(data.createdAt),

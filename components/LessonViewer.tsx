@@ -64,12 +64,16 @@ export default function LessonViewer({
 
   useEffect(() => {
     if (lesson?.type === "quiz") {
+      if (!lesson.quizId) {
+        console.error("Quiz lesson is missing quizId");
+        return;
+      }
       router.push(
         `/dashboard/student/courses/${courseId}/quiz/${lesson.quizId}`,
       );
-      console.log(lesson);
     }
   }, [lesson?.type, lesson?.id]);
+  console.log(lesson);
 
   if (!lesson) {
     return (
@@ -193,7 +197,7 @@ export default function LessonViewer({
           disabled={!hasPrev}
           className="flex items-center gap-2 text-xs font-semibold px-3 md:px-4 py-2.5 rounded-lg border border-border hover:bg-muted transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
         >
-          <ChevronLeft size={14} />
+          <ChevronLeft size={16} />
           <span className="hidden sm:inline">Previous</span>
         </button>
 
@@ -210,13 +214,13 @@ export default function LessonViewer({
           >
             {completing ? (
               <>
-                <Loader2 size={13} className="animate-spin" />
+                <Loader2 size={15} className="animate-spin" />
                 <span className="hidden sm:inline">Marking...</span>
               </>
             ) : (
               <>
-                <CheckCircle size={13} />
-                <span className="hidden sm:inline">Mark as Complete</span>
+                <CheckCircle size={15} />
+                <span>Mark as Complete</span>
               </>
             )}
           </button>
@@ -228,7 +232,7 @@ export default function LessonViewer({
           className="flex items-center gap-2 text-xs font-semibold px-3 md:px-4 py-2.5 rounded-lg border border-border hover:bg-muted transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
         >
           <span className="hidden sm:inline">Next</span>
-          <ChevronRight size={14} />
+          <ChevronRight size={16} />
         </button>
       </div>
     </div>

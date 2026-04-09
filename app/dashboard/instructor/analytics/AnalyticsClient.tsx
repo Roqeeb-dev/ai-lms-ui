@@ -18,6 +18,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import LoadingScreen from "@/components/LoadingPage";
 
 export default function AnalyticsClient() {
   const { courses, fetching } = useInstructorCourses();
@@ -130,9 +131,7 @@ export default function AnalyticsClient() {
         </div>
 
         {fetching ? (
-          <div className="flex items-center justify-center py-12">
-            <p className="text-sm text-foreground-muted">Loading courses...</p>
-          </div>
+          <LoadingScreen />
         ) : courses.length === 0 ? (
           <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-border bg-card py-12 px-6 text-center">
             <span className="text-3xl opacity-30">📊</span>
