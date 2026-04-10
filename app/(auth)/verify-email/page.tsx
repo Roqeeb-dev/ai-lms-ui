@@ -1,7 +1,7 @@
 import VerifyClient from "./VerifyClient";
 
 export const metadata = {
-  title: "Verify Email | AI-powered Learning Management System",
+  title: "Verify Email",
   description:
     "Verify your email address to complete your Cognify account setup.",
 };

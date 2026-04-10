@@ -1,7 +1,7 @@
 import CourseClient from "./CourseClient";
 
 export const metadata = {
-  title: "My Courses | Cognify",
+  title: "My Courses",
   description:
     "View your enrolled courses, track progress, and discover new AI-recommended learning paths.",
 };

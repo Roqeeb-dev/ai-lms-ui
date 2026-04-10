@@ -1,7 +1,7 @@
 import BuilderClient from "./BuilderClient";
 
 export const metadata = {
-  title: "Course Builder | Cognify LMS",
+  title: "Course Builder",
   description: "Build courses and add modules, lessons and other descriptions",
 };
 

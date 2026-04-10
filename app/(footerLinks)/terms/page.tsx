@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Terms of Service | Cognify LMS",
+  title: "Terms of Service",
   description:
     "Read Cognify's Terms of Service to understand your rights and responsibilities when using our platform.",
 };

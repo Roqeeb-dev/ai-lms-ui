@@ -1,7 +1,7 @@
 import SettingsClient from "./SettingsClient";
 
 export const metadata = {
-  title: "Settings | Cognify",
+  title: "Settings",
   description: "Manage your account settings, notifications, and preferences.",
 };
 

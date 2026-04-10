@@ -1,7 +1,7 @@
 import BrowseClient from "./BrowseClient";
 
 export const metadata = {
-  title: "Browse Courses | Cognify LMS",
+  title: "Browse Courses",
   description: "Browse courses you may be interested in",
 };
 

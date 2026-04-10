@@ -1,7 +1,7 @@
 import StudentClient from "./StudentClient";
 
 export const metadata = {
-  title: "My Dashboard | Cognify",
+  title: "My Dashboard",
   description:
     "Track your learning progress, continue your courses, and get AI-powered guidance personalized to you.",
 };

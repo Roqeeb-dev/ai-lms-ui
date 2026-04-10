@@ -1,7 +1,7 @@
 import StudentQuizzClient from "./StudentQuizzClient";
 
 export const metadata = {
-  title: "My Quizzes | Cognify LMS",
+  title: "My Quizzes",
   description:
     "Test your understanding with AI-generated quizzes across your enrolled courses.",
 };

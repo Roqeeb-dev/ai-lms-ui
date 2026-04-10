@@ -2,7 +2,7 @@ import RegisterClient from "./RegisterClient";
 import SideAnimation from "@/components/SideAnimation";
 
 export const metadata = {
-  title: "Register | AI-powered Learning Management System",
+  title: "Register",
   description: "Register as a new user to start enjoying the application",
 };
 

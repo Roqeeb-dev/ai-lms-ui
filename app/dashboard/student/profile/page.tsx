@@ -1,7 +1,7 @@
 import ProfileClient from "./ProfileClient";
 
 export const metadata = {
-  title: "Profile | Cognify",
+  title: "Profile",
   description: "View and update your Cognify profile information.",
 };
 

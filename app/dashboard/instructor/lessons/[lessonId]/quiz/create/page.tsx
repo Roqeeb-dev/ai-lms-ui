@@ -1,7 +1,7 @@
 import CreateQuizClient from "./CreateQuizClient";
 
 export const metadata = {
-  title: "Create Quiz | Instructor Dashboard",
+  title: "Create Quiz",
   description: "Create quiz and manage quiz for your students",
 };
 
