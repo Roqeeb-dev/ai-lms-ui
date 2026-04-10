@@ -9,11 +9,13 @@ import {
   Loader2,
   PlayCircle,
   FileText,
+  Sparkles,
 } from "lucide-react";
 import { Lesson } from "@/types/lesson";
 import { getPdfViewUrl } from "@/lib/cloudinary";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { useToastStore } from "@/store/useToastStore";
 
 interface Props {
   lesson: Lesson | null;
@@ -61,6 +63,7 @@ export default function LessonViewer({
   onNext,
 }: Props) {
   const router = useRouter();
+  const { addToast } = useToastStore();
 
   useEffect(() => {
     if (lesson?.type === "quiz") {
@@ -68,12 +71,12 @@ export default function LessonViewer({
         console.error("Quiz lesson is missing quizId");
         return;
       }
+      addToast("Redirecting to quiz page to attempt Quiz", "info");
       router.push(
         `/dashboard/student/courses/${courseId}/quiz/${lesson.quizId}`,
       );
     }
   }, [lesson?.type, lesson?.id]);
-  console.log(lesson);
 
   if (!lesson) {
     return (
