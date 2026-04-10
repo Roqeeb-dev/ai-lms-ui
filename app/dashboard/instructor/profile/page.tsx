@@ -1,7 +1,7 @@
 import InstructorProfileClient from "./ProfileClient";
 
 export const metadata = {
-  title: "My Profile | Cognify LMS",
+  title: "My Profile",
   description: "Manage your instructor profile, bio, and account settings.",
 };
 

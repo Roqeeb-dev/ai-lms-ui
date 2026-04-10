@@ -1,7 +1,7 @@
 import Client from "./Client";
 
 export const metadata = {
-  title: "Course Content | Cognify LMS",
+  title: "Course Content",
   description: "Continue learning your enrolled course.",
 };
 

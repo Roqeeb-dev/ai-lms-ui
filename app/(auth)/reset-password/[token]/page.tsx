@@ -1,7 +1,7 @@
 import ResetClient from "./ResetClient";
 
 export const metadata = {
-  title: "Reset Password | AI-powered Learning Management System",
+  title: "Reset Password",
   description: "Set a new password for your Cognify account",
 };
 

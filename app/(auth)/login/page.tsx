@@ -2,7 +2,7 @@ import LoginClient from "./LoginClient";
 import SideAnimation from "@/components/SideAnimation";
 
 export const metadata = {
-  title: "Login | AI-powered Learning Management System",
+  title: "Login",
   description: "Login as an existing user to continue from where you stopped",
 };
 

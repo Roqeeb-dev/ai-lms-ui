@@ -1,7 +1,7 @@
 import Client from "./Client";
 
 export const metadata = {
-  title: "Forgot Password | AI-powered Learning Management System",
+  title: "Forgot Password",
   description: "Reset your Cognify password and get back to learning",
 };
 

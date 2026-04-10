@@ -1,7 +1,7 @@
 import AnalyticsClient from "./AnalyticsClient";
 
 export const metadata = {
-  title: "Analytics | Cognify LMS",
+  title: "Analytics",
   description: "Get an overview of all actions related to you on the app",
 };
 

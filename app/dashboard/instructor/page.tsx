@@ -1,7 +1,7 @@
 import InstructorClient from "./InstructorClient";
 
 export const metadata = {
-  title: "Instructor Dashboard | Cognify",
+  title: "Instructor Dashboard",
   description:
     "Manage your classrooms, track student progress, and deliver AI-enhanced learning experiences.",
 };
