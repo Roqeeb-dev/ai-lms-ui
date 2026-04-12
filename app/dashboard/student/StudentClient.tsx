@@ -220,7 +220,7 @@ export default function StudentClient() {
             </p>
           </div>
           <Link
-            href="/dashboard/student/ai-tutor"
+            href="/coming-soon"
             className="relative mt-6 inline-flex items-center justify-center rounded-lg bg-white text-primary px-3 py-2 text-sm font-semibold hover:bg-white/90 active:scale-[0.98] transition-all duration-200"
           >
             Ask a question →

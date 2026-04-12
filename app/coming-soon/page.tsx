@@ -7,7 +7,6 @@ export default function ComingSoonPage() {
   return (
     <main className="min-h-screen flex items-center justify-center px-4 py-12 bg-background">
       <div className="w-full max-w-md flex flex-col items-center gap-8 text-center">
-        {/* Icon */}
         <div className="relative">
           <div className="w-20 h-20 rounded-3xl bg-primary/10 flex items-center justify-center">
             <Sparkles size={32} className="text-primary" />
@@ -17,7 +16,6 @@ export default function ComingSoonPage() {
           </div>
         </div>
 
-        {/* Text */}
         <div className="flex flex-col gap-3">
           <div className="flex items-center justify-center gap-2">
             <span className="text-xs font-semibold uppercase tracking-widest text-primary">
@@ -35,7 +33,6 @@ export default function ComingSoonPage() {
           </p>
         </div>
 
-        {/* Divider with logo */}
         <div className="flex items-center gap-3 w-full max-w-xs">
           <div className="h-px flex-1 bg-border" />
           <span className="text-xs font-bold text-foreground">
@@ -44,7 +41,6 @@ export default function ComingSoonPage() {
           <div className="h-px flex-1 bg-border" />
         </div>
 
-        {/* Actions */}
         <div className="flex flex-col sm:flex-row items-center gap-3 w-full max-w-xs">
           <Link
             href="/dashboard"

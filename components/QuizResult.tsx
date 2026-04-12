@@ -25,8 +25,8 @@ function formatDuration(seconds: number): string {
   return `${mins}m ${secs}s`;
 }
 
-function formatTime(iso: string): string {
-  return new Date(iso).toLocaleTimeString("en-US", {
+function formatTime(time: string | Date): string {
+  return new Date(time).toLocaleTimeString("en-US", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: true,
