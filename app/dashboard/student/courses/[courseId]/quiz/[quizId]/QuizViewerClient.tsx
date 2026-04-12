@@ -18,8 +18,8 @@ export interface QuizResult {
   duration: number;
   passingScore: number;
   totalQuestions: number;
-  startedAt: string;
-  submittedAt: string;
+  startedAt: Date;
+  submittedAt: Date;
 }
 
 export function QuizViewerClient() {
@@ -115,16 +115,8 @@ export function QuizViewerClient() {
         duration: res.data.duration,
         passingScore: res.data.quiz.passingScore,
         totalQuestions: res.data.answers.length,
-        startedAt: res.data.startedAt.toLocaleTimeString("en-US", {
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: true,
-        }),
-        submittedAt: res.data.submittedAt.toLocaleTimeString("en-US", {
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: true,
-        }),
+        startedAt: res.data.startedAt,
+        submittedAt: res.data.submittedAt,
       });
       setStage("results");
     } catch (error) {
