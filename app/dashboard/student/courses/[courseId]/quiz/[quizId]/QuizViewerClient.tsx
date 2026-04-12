@@ -16,6 +16,10 @@ export interface QuizResult {
   percentage: number;
   passed: boolean;
   duration: number;
+  passingScore: number;
+  totalQuestions: number;
+  startedAt: Date;
+  submittedAt: Date;
 }
 
 export function QuizViewerClient() {
@@ -109,6 +113,10 @@ export function QuizViewerClient() {
         percentage: res.data.percentage,
         passed: res.data.passed,
         duration: res.data.duration,
+        passingScore: res.data.quiz.passingScore,
+        totalQuestions: res.data.answers.length,
+        startedAt: res.data.startedAt,
+        submittedAt: res.data.submittedAt,
       });
       setStage("results");
     } catch (error) {
