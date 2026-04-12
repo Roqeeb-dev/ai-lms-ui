@@ -14,6 +14,18 @@ import { Avatar } from "./Avatar";
 import { ReplyItem } from "./ReplyItem";
 import { ReplyInput } from "./ReplyInput";
 
+interface DiscussionItemProps {
+  discussion: Discussion;
+  currentUserId: string;
+  onDelete: (id: string) => void;
+  onCreateReply: (discussionId: string, content: string) => Promise<void>;
+  onDeleteReply: (replyId: string) => Promise<any>;
+  onFetchReplies: (discussionId: string) => Promise<Reply[]>;
+  deletingDiscussion: boolean;
+  creatingReply: boolean;
+  deletingReply: boolean;
+}
+
 export function DiscussionItem({
   discussion,
   currentUserId,
@@ -24,17 +36,7 @@ export function DiscussionItem({
   deletingDiscussion,
   creatingReply,
   deletingReply,
-}: {
-  discussion: Discussion;
-  currentUserId: string;
-  onDelete: (id: string) => void;
-  onCreateReply: (discussionId: string, content: string) => Promise<void>;
-  onDeleteReply: (replyId: string) => Promise<any>;
-  onFetchReplies: (discussionId: string) => Promise<Reply[]>;
-  deletingDiscussion: boolean;
-  creatingReply: boolean;
-  deletingReply: boolean;
-}) {
+}: DiscussionItemProps) {
   const isOwner = discussion.user._id === currentUserId;
   const [showReplies, setShowReplies] = useState(false);
   const [showReplyInput, setShowReplyInput] = useState(false);
