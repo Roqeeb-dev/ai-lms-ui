@@ -11,8 +11,10 @@ import { Lesson } from "@/types/lesson";
 import CourseContentHeader from "@/components/CourseContentHeader";
 import CourseOutline from "@/components/CourseOutline";
 import LessonViewer from "@/components/LessonViewer";
+import LoadingScreen from "@/components/LoadingPage";
 
 export type LessonMap = Record<string, Lesson[]>;
+export type LessonTab = "lesson" | "discussion";
 
 export default function Client() {
   const params = useParams<{ courseId: string }>();
@@ -22,6 +24,7 @@ export default function Client() {
   const [lessonsMap, setLessonsMap] = useState<LessonMap>({});
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
   const [completedLessons, setCompletedLessons] = useState<string[]>([]);
+  const [activeTab, setActiveTab] = useState<LessonTab>("lesson");
 
   const { getCourseDetails, fetchingCourseDetails, getCourseProgress } =
     useCourse();
@@ -31,7 +34,6 @@ export default function Client() {
     fetching: fetchingModules,
   } = useModule();
   const { fetchModuleLessons, markLessonComplete, completing } = useLesson();
-  const { enrollments } = useEnrollment();
 
   useEffect(() => {
     async function init() {
@@ -89,28 +91,31 @@ export default function Client() {
 
   function handleSelectLesson(lesson: Lesson) {
     setSelectedLesson(lesson);
+    setActiveTab("lesson");
   }
 
   function handlePrev() {
     if (!selectedLesson) return;
     const idx = allLessons.findIndex((l) => l.id === selectedLesson.id);
-    if (idx > 0) setSelectedLesson(allLessons[idx - 1]);
+    if (idx > 0) {
+      setSelectedLesson(allLessons[idx - 1]);
+      setActiveTab("lesson");
+    }
   }
 
   function handleNext() {
     if (!selectedLesson) return;
     const idx = allLessons.findIndex((l) => l.id === selectedLesson.id);
-    if (idx < allLessons.length - 1) setSelectedLesson(allLessons[idx + 1]);
+    if (idx < allLessons.length - 1) {
+      setSelectedLesson(allLessons[idx + 1]);
+      setActiveTab("lesson");
+    }
   }
 
   const isLoading = fetchingCourseDetails || fetchingModules;
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-full text-sm text-foreground-muted">
-        Loading course...
-      </div>
-    );
+    return <LoadingScreen text="Loading course" />;
   }
 
   if (!courseDetails) return null;
@@ -128,6 +133,8 @@ export default function Client() {
         <LessonViewer
           lesson={selectedLesson}
           courseId={courseDetails.id}
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
           completing={completing}
           isCompleted={
             selectedLesson

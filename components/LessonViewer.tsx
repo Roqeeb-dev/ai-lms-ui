@@ -9,17 +9,21 @@ import {
   Loader2,
   PlayCircle,
   FileText,
-  Sparkles,
+  MessageSquare,
 } from "lucide-react";
 import { Lesson } from "@/types/lesson";
 import { getPdfViewUrl } from "@/lib/cloudinary";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useToastStore } from "@/store/useToastStore";
+import { LessonTab } from "@/app/dashboard/student/courses/[courseId]/Client";
+import DiscussionSection from "./DiscussionSection";
 
 interface Props {
   lesson: Lesson | null;
   courseId: string;
+  activeTab: LessonTab;
+  onTabChange: (tab: LessonTab) => void;
   completing: boolean;
   isCompleted: boolean;
   hasPrev: boolean;
@@ -28,6 +32,11 @@ interface Props {
   onPrev: () => void;
   onNext: () => void;
 }
+
+const TABS: { key: LessonTab; label: string; icon: React.ReactNode }[] = [
+  { key: "lesson", label: "Lesson", icon: <BookOpen size={13} /> },
+  { key: "discussion", label: "Discussion", icon: <MessageSquare size={13} /> },
+];
 
 function VideoPlayer({ url }: { url: string }) {
   return (
@@ -43,7 +52,6 @@ function VideoPlayer({ url }: { url: string }) {
 
 function DocumentViewer({ url }: { url: string }) {
   const viewUrl = getPdfViewUrl(url);
-
   return (
     <div className="w-full rounded-2xl overflow-hidden border border-border shadow-sm">
       <iframe src={viewUrl} className="w-full h-[600px]" title="PDF Viewer" />
@@ -54,6 +62,8 @@ function DocumentViewer({ url }: { url: string }) {
 export default function LessonViewer({
   lesson,
   courseId,
+  activeTab,
+  onTabChange,
   completing,
   isCompleted,
   hasPrev,
@@ -115,85 +125,132 @@ export default function LessonViewer({
         <h1 className="text-2xl font-bold text-foreground">{lesson.title}</h1>
       </div>
 
-      {/* Content */}
-      {lesson.type === "video" && lesson.file?.url && (
-        <VideoPlayer url={lesson.file.url} />
-      )}
-      {lesson.type === "pdf" && lesson.file?.url && (
-        <DocumentViewer url={lesson.file.url} />
-      )}
-      {lesson.type === "text" && (
-        <div className="w-full rounded-2xl border border-border bg-card p-6 md:p-8">
-          {lesson.content ? (
-            <div className="max-h-[600px] overflow-y-auto pr-2 scrollbar-thin">
-              <ReactMarkdown
-                components={{
-                  h1: ({ children }) => (
-                    <h1 className="text-2xl font-bold text-foreground mb-4 mt-6 first:mt-0">
-                      {children}
-                    </h1>
-                  ),
-                  h2: ({ children }) => (
-                    <h2 className="text-xl font-bold text-foreground mb-3 mt-5 first:mt-0">
-                      {children}
-                    </h2>
-                  ),
-                  h3: ({ children }) => (
-                    <h3 className="text-lg font-semibold text-foreground mb-2 mt-4 first:mt-0">
-                      {children}
-                    </h3>
-                  ),
-                  p: ({ children }) => (
-                    <p className="text-sm text-foreground leading-relaxed mb-3">
-                      {children}
-                    </p>
-                  ),
-                  strong: ({ children }) => (
-                    <strong className="font-semibold text-foreground">
-                      {children}
-                    </strong>
-                  ),
-                  em: ({ children }) => (
-                    <em className="italic text-foreground">{children}</em>
-                  ),
-                  code: ({ children }) => (
-                    <code className="px-1.5 py-0.5 rounded text-xs font-mono bg-muted text-foreground border border-border">
-                      {children}
-                    </code>
-                  ),
-                  ul: ({ children }) => (
-                    <ul className="list-disc list-inside text-sm text-foreground space-y-1 mb-3 pl-2">
-                      {children}
-                    </ul>
-                  ),
-                  ol: ({ children }) => (
-                    <ol className="list-decimal list-inside text-sm text-foreground space-y-1 mb-3 pl-2">
-                      {children}
-                    </ol>
-                  ),
-                  li: ({ children }) => (
-                    <li className="text-foreground">{children}</li>
-                  ),
-                  hr: () => <hr className="border-border my-4" />,
-                  blockquote: ({ children }) => (
-                    <blockquote className="border-l-4 border-primary/40 pl-4 italic text-foreground-muted my-3">
-                      {children}
-                    </blockquote>
-                  ),
-                }}
-              >
-                {lesson.content}
-              </ReactMarkdown>
-            </div>
-          ) : (
-            <p className="text-sm text-foreground-muted italic">
-              This lesson has no content yet.
-            </p>
+      {/* Tab Container */}
+      <div className="w-full bg-background/80 backdrop-blur-sm border-b border-border sticky top-0 z-10">
+        <div className="max-w-6xl mx-auto px-3 md:px-8">
+          <div className="flex items-center gap-1 overflow-x-auto no-scrollbar">
+            {TABS.map((tab) => {
+              const isActive = activeTab === tab.key;
+              return (
+                <button
+                  key={tab.key}
+                  onClick={() => onTabChange(tab.key)}
+                  className={`relative flex items-center gap-2 px-4 py-3.5 text-xs font-semibold uppercase tracking-widest whitespace-nowrap transition-all duration-200
+              ${
+                isActive
+                  ? "text-primary"
+                  : "text-foreground-muted hover:text-foreground"
+              }
+            `}
+                >
+                  {isActive && (
+                    <span className="absolute inset-x-1 inset-y-2 rounded-lg bg-primary/8 z-0" />
+                  )}
+
+                  <span className="relative z-10">{tab.icon}</span>
+
+                  <span className="relative z-10">{tab.label}</span>
+
+                  <span
+                    className={`absolute bottom-0 left-3 right-3 h-[2px] rounded-full transition-all duration-300 ${
+                      isActive ? "bg-primary opacity-100" : "opacity-0"
+                    }`}
+                  />
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* Tab content */}
+      {activeTab === "lesson" && (
+        <>
+          {lesson.type === "video" && lesson.file?.url && (
+            <VideoPlayer url={lesson.file.url} />
           )}
+          {lesson.type === "pdf" && lesson.file?.url && (
+            <DocumentViewer url={lesson.file.url} />
+          )}
+          {lesson.type === "text" && (
+            <div className="w-full rounded-2xl border border-border bg-card p-6 md:p-8">
+              {lesson.content ? (
+                <div className="max-h-[600px] overflow-y-auto pr-2 scrollbar-thin">
+                  <ReactMarkdown
+                    components={{
+                      h1: ({ children }) => (
+                        <h1 className="text-2xl font-bold text-foreground mb-4 mt-6 first:mt-0">
+                          {children}
+                        </h1>
+                      ),
+                      h2: ({ children }) => (
+                        <h2 className="text-xl font-bold text-foreground mb-3 mt-5 first:mt-0">
+                          {children}
+                        </h2>
+                      ),
+                      h3: ({ children }) => (
+                        <h3 className="text-lg font-semibold text-foreground mb-2 mt-4 first:mt-0">
+                          {children}
+                        </h3>
+                      ),
+                      p: ({ children }) => (
+                        <p className="text-sm text-foreground leading-relaxed mb-3">
+                          {children}
+                        </p>
+                      ),
+                      strong: ({ children }) => (
+                        <strong className="font-semibold text-foreground">
+                          {children}
+                        </strong>
+                      ),
+                      em: ({ children }) => (
+                        <em className="italic text-foreground">{children}</em>
+                      ),
+                      code: ({ children }) => (
+                        <code className="px-1.5 py-0.5 rounded text-xs font-mono bg-muted text-foreground border border-border">
+                          {children}
+                        </code>
+                      ),
+                      ul: ({ children }) => (
+                        <ul className="list-disc list-inside text-sm text-foreground space-y-1 mb-3 pl-2">
+                          {children}
+                        </ul>
+                      ),
+                      ol: ({ children }) => (
+                        <ol className="list-decimal list-inside text-sm text-foreground space-y-1 mb-3 pl-2">
+                          {children}
+                        </ol>
+                      ),
+                      li: ({ children }) => (
+                        <li className="text-foreground">{children}</li>
+                      ),
+                      hr: () => <hr className="border-border my-4" />,
+                      blockquote: ({ children }) => (
+                        <blockquote className="border-l-4 border-primary/40 pl-4 italic text-foreground-muted my-3">
+                          {children}
+                        </blockquote>
+                      ),
+                    }}
+                  >
+                    {lesson.content}
+                  </ReactMarkdown>
+                </div>
+              ) : (
+                <p className="text-sm text-foreground-muted italic">
+                  This lesson has no content yet.
+                </p>
+              )}
+            </div>
+          )}
+        </>
+      )}
+
+      {activeTab === "discussion" && (
+        <div className="w-full rounded-2xl border border-border bg-card p-6">
+          <DiscussionSection lessonId={lesson.id} />
         </div>
       )}
 
-      {/* Navigation */}
       <div className="flex items-center justify-between pt-4 border-t border-border mt-2">
         <button
           onClick={onPrev}
