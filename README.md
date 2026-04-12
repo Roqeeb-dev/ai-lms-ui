@@ -322,4 +322,4 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ---
 
-<p align="center">Built with care by <a href="https://github.com/your-username">Roqeeb</a> (Frontend) in collaboration with a backend developer.</p>
+<p align="center">Built with care by <a href="https://github.com/Roqeeb-dev">Roqeeb</a> (Frontend) in collaboration with a backend developer.</p>
