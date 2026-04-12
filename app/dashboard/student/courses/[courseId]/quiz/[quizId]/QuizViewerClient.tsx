@@ -16,6 +16,10 @@ export interface QuizResult {
   percentage: number;
   passed: boolean;
   duration: number;
+  passingScore: number;
+  totalQuestions: number;
+  startedAt: string;
+  submittedAt: string;
 }
 
 export function QuizViewerClient() {
@@ -109,6 +113,18 @@ export function QuizViewerClient() {
         percentage: res.data.percentage,
         passed: res.data.passed,
         duration: res.data.duration,
+        passingScore: res.data.quiz.passingScore,
+        totalQuestions: res.data.answers.length,
+        startedAt: res.data.startedAt.toLocaleTimeString("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true,
+        }),
+        submittedAt: res.data.submittedAt.toLocaleTimeString("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true,
+        }),
       });
       setStage("results");
     } catch (error) {
