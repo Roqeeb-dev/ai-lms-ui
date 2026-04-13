@@ -2,8 +2,11 @@
 
 import Link from "next/link";
 import { ArrowLeft, Clock, Sparkles } from "lucide-react";
+import { useUserStore } from "@/store/useUserStore";
 
 export default function ComingSoonPage() {
+  const { user } = useUserStore();
+
   return (
     <main className="min-h-screen flex items-center justify-center px-4 py-12 bg-background">
       <div className="w-full max-w-md flex flex-col items-center gap-8 text-center">
@@ -43,7 +46,7 @@ export default function ComingSoonPage() {
 
         <div className="flex flex-col sm:flex-row items-center gap-3 w-full max-w-xs">
           <Link
-            href="/dashboard"
+            href={`/dashboard/${user?.role}`}
             className="flex items-center justify-center gap-2 w-full px-5 py-3 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary-hover active:scale-[0.98] transition-all duration-200"
           >
             <ArrowLeft size={14} />

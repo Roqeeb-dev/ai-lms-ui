@@ -12,7 +12,19 @@ export default function BrowseClient() {
   const { allCourses, fetchingAllCourses, getAllCourses } = useCourse({
     publishedOnly: true,
   });
-  const { enrollments } = useEnrollment({ publishedOnly: true });
+  const {
+    enrollments,
+    fetching: fetchingEnrollments,
+    enroll,
+    enrolling,
+    refetchEnrollments,
+  } = useEnrollment({ publishedOnly: true });
+
+  async function handleEnroll(courseId: string) {
+    const res = await enroll(courseId);
+    if (!res) return;
+    await refetchEnrollments();
+  }
 
   useEffect(() => {
     getAllCourses();
@@ -118,6 +130,8 @@ export default function BrowseClient() {
               key={c.id}
               course={c}
               enrolled={enrolledCourseIds.has(c.id)}
+              onEnroll={handleEnroll}
+              enrolling={enrolling}
             />
           ))}
         </div>

@@ -8,9 +8,19 @@ import { useCourse } from "@/hooks/useCourse";
 import CourseCardSkeleton from "@/components/CourseCardSkeleton";
 
 export default function CourseClient() {
-  const { enrollments, fetching: fetchingEnrollments } = useEnrollment({
-    publishedOnly: true,
-  });
+  const {
+    enrollments,
+    fetching: fetchingEnrollments,
+    enroll,
+    enrolling,
+    refetchEnrollments,
+  } = useEnrollment({ publishedOnly: true });
+
+  async function handleEnroll(courseId: string) {
+    const res = await enroll(courseId);
+    if (!res) return;
+    await refetchEnrollments();
+  }
   const { allCourses, fetchingAllCourses, getAllCourses, getCourseProgress } =
     useCourse({ publishedOnly: true });
 
@@ -135,8 +145,15 @@ export default function CourseClient() {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            // Browse section
             {filteredBrowse.map((c) => (
-              <CourseCard key={c.id} course={c} />
+              <CourseCard
+                key={c.id}
+                course={c}
+                enrolled={enrolledCourseIds.has(c.id)}
+                onEnroll={handleEnroll}
+                enrolling={enrolling}
+              />
             ))}
           </div>
         )}
