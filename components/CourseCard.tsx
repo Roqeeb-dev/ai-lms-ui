@@ -18,7 +18,8 @@ interface StudentCardProps {
   variant?: "student";
   course: Course & { progress?: number; reason?: string };
   enrolled?: boolean;
-  onEdit?: never;
+  onEnroll?: (courseId: string) => Promise<void>;
+  enrolling?: boolean;
 }
 
 interface InstructorCardProps {
@@ -59,8 +60,14 @@ export default function CourseCard({
     ? (props as InstructorCardProps).onToggle
     : undefined;
 
+  const onEnrollProp = !isInstructor
+    ? (props as StudentCardProps).onEnroll
+    : undefined;
+  const enrollingProp = !isInstructor
+    ? ((props as StudentCardProps).enrolling ?? false)
+    : false;
+
   const router = useRouter();
-  const { enrolling, enroll, refetchEnrollments } = useEnrollment();
 
   function handleEdit() {
     router.push(`/dashboard/instructor/course-builder/${course.id}`);
@@ -74,9 +81,7 @@ export default function CourseCard({
   }
 
   async function handleEnroll(courseId: string) {
-    const res = await enroll(courseId);
-    if (!res) return;
-    await refetchEnrollments();
+    await onEnrollProp?.(courseId);
   }
 
   async function handleUpdate(data: CourseFormData) {
@@ -132,7 +137,7 @@ export default function CourseCard({
               instructorId={course.instructor?._id ?? ""}
               enrolled={enrolled}
               onEnroll={() => handleEnroll(course.id)}
-              loading={enrolling}
+              loading={enrollingProp} // 👈 use prop
               courseId={course.id}
             />
           )}
