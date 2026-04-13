@@ -8,6 +8,7 @@ import { Answer } from "@/services/quizService";
 import { QuizIntro } from "@/components/QuizIntro";
 import { QuizResult } from "@/components/QuizResult";
 import { QuizActiveSection } from "@/components/QuizActiveSection";
+import { useLesson } from "@/hooks/useLesson";
 
 type Stage = "intro" | "active" | "results";
 
@@ -25,6 +26,7 @@ export interface QuizResult {
 export function QuizViewerClient() {
   const params = useParams<{ courseId: string; quizId: string }>();
   const router = useRouter();
+  const { markLessonComplete } = useLesson();
 
   const {
     startQuizAsStudent,
@@ -108,6 +110,9 @@ export function QuizViewerClient() {
       const res = await submitQuizAsStudent(attemptId, {
         answers: finalAnswers,
       });
+
+      await markLessonComplete(quiz.lessonId);
+
       setResult({
         score: res.data.score,
         percentage: res.data.percentage,
