@@ -51,7 +51,7 @@ const config: Config = {
         input: "var(--color-input)",
         "input-focus": "var(--color-input-focus)",
 
-        ring: "var(--color-ring",
+        ring: "var(--color-ring)",
 
         highlight: "var(--color-highlight)",
         "highlight-foreground": "var(--color-highlight-foreground)",

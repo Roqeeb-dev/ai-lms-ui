@@ -35,22 +35,6 @@ const testimonials = [
     initials: "DF",
     color: "#8A6A52",
   },
-  {
-    quote:
-      "As an educator, what impresses me most is how Cognify identifies gaps I wouldn't have caught myself.",
-    name: "Prof. Sarah Okafor",
-    role: "Lecturer, Covenant University",
-    initials: "SO",
-    color: "#C0522A",
-  },
-  {
-    quote:
-      "I passed my certification exam on the first attempt. My study path was entirely built by Cognify.",
-    name: "James Whitfield",
-    role: "Cloud Architect, AWS certified",
-    initials: "JW",
-    color: "#2D4A3E",
-  },
 ];
 
 function Stars() {
@@ -158,25 +142,10 @@ export default function Testimonials() {
         {/* Grid */}
         <div
           ref={ref}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4"
         >
           {testimonials.map((t, i) => (
             <TestimonialCard key={i} t={t} index={i} visible={visible} />
-          ))}
-        </div>
-
-        {/* Bottom social proof bar */}
-        <div className="flex flex-wrap items-center justify-center gap-8 pt-4">
-          {[
-            ["10,000+", "Active learners"],
-            ["94%", "Completion rate"],
-            ["4.9/5", "Average rating"],
-            ["500+", "Courses"],
-          ].map(([val, label]) => (
-            <div key={label} className="flex flex-col items-center gap-0.5">
-              <span className="text-xl font-extrabold text-primary">{val}</span>
-              <span className="text-xs text-foreground-muted">{label}</span>
-            </div>
           ))}
         </div>
       </div>
