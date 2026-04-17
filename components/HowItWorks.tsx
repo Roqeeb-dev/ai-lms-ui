@@ -1,46 +1,53 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { BookOpen, User, Sparkles, Rocket } from "lucide-react";
 
 const content = {
   student: [
     {
       number: "01",
-      label: "Create your account",
+      label: "Create your learning profile",
       description:
-        "Sign up in seconds. No credit card, no setup friction. Just you and a blank slate ready to be shaped.",
+        "Sign up in seconds and let Cognify tailor your path to your goals, pace, and preferences.",
+      icon: User,
     },
     {
       number: "02",
-      label: "Tell us your goals",
+      label: "Lock in your learning goals",
       description:
-        "Pick what you want to learn and why. Cognify builds a personalized path calibrated to your pace and level.",
+        "Choose what matters most and let the platform build a study path that adapts as you grow.",
+      icon: BookOpen,
     },
     {
       number: "03",
-      label: "Learn with AI by your side",
+      label: "Learn with AI guidance",
       description:
-        "Work through your path with an AI tutor that adapts in real time — answering questions, filling gaps, and keeping you moving.",
+        "Study smarter with real-time explanations, review prompts, and next-step recommendations.",
+      icon: Sparkles,
     },
   ],
   instructor: [
     {
       number: "01",
-      label: "Set up your classroom",
+      label: "Launch your classroom",
       description:
-        "Create your educator profile and invite students in minutes. No IT setup, no configuration overhead.",
+        "Create your instructor space, onboard learners, and publish your first course in minutes.",
+      icon: Rocket,
     },
     {
       number: "02",
-      label: "Build or import your curriculum",
+      label: "Design curriculum faster",
       description:
-        "Upload existing materials or let Cognify's AI structure a course from scratch around your learning objectives.",
+        "Use AI-powered course creation or import your existing content for a polished learning journey.",
+      icon: BookOpen,
     },
     {
       number: "03",
-      label: "Track every learner in real time",
+      label: "Track every learner’s progress",
       description:
-        "See each student's progress, knowledge gaps, and engagement — and let Cognify flag who needs your attention most.",
+        "See who needs support, where gaps exist, and how to help learners reach their goals.",
+      icon: Sparkles,
     },
   ],
 };
@@ -127,27 +134,31 @@ export default function HowItWorks() {
           {/* Connector line */}
           <div className="hidden md:block absolute top-10 left-[calc(16.67%+1rem)] right-[calc(16.67%+1rem)] h-px bg-gradient-to-r from-border via-primary/40 to-border" />
 
-          {steps.map((step, i) => (
-            <div
-              key={`${tab}-${i}`}
-              className={`flex flex-col gap-5 rounded-2xl border border-border bg-card p-6 shadow-sm transition-all duration-500 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
-              style={{ transitionDelay: `${i * 100}ms` }}
-            >
-              <div className="w-10 h-10 rounded-full border-2 border-primary bg-background flex items-center justify-center shrink-0 z-10">
-                <span className="text-xs font-extrabold text-primary">
-                  {step.number}
-                </span>
+          {steps.map((step, i) => {
+            const Icon = step.icon;
+            return (
+              <div
+                key={`${tab}-${i}`}
+                className={`flex flex-col gap-5 rounded-2xl border border-border bg-card p-6 shadow-sm transition-all duration-500 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
+                style={{ transitionDelay: `${i * 100}ms` }}
+              >
+                <div className="w-12 h-12 rounded-3xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                  <Icon size={20} />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <div className="text-xs font-semibold uppercase tracking-wide text-primary">
+                    Step {step.number}
+                  </div>
+                  <h3 className="text-base font-bold text-foreground leading-snug">
+                    {step.label}
+                  </h3>
+                  <p className="text-sm text-foreground-muted leading-relaxed">
+                    {step.description}
+                  </p>
+                </div>
               </div>
-              <div className="flex flex-col gap-2">
-                <h3 className="text-base font-bold text-foreground leading-snug">
-                  {step.label}
-                </h3>
-                <p className="text-xs text-foreground-muted leading-relaxed">
-                  {step.description}
-                </p>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
