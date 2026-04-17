@@ -11,24 +11,80 @@ import InstructorSidebar from "./sidebars/InstructorSidebar";
 import AdminSidebar from "./sidebars/AdminSidebar";
 
 function getPageTitle(pathname: string): string {
-  const map: Record<string, string> = {
-    "/dashboard/student": "Home",
-    "/dashboard/student/courses": "My Courses",
-    "/dashboard/student/progress": "Progress",
-    "/dashboard/student/browse": "Explore Courses",
-    "/dashboard/instructor/courses": "My Courses",
-    "/dashboard/student/quizzes": "Quizzes",
-    "/dashboard/student/ai-tutor": "AI Tutor",
-    "/dashboard/instructor": "Home",
-    "/dashboard/instructor/students": "Students",
-    "/dashboard/instructor/analytics": "Analytics",
-    "/dashboard/instructor/settings": "Settings",
-    "/dashboard/instructor/quizzes": "Quizzes",
-    "/dashboard/admin": "Home",
-    "/dashboard/admin/users": "Users",
-    "/dashboard/admin/settings": "Settings",
-  };
-  return map[pathname] ?? "Dashboard";
+  if (pathname.startsWith("/dashboard/student/courses/")) {
+    return "Course Details";
+  }
+
+  if (pathname.startsWith("/dashboard/student/")) {
+    switch (pathname) {
+      case "/dashboard/student":
+        return "Home";
+      case "/dashboard/student/courses":
+        return "My Courses";
+      case "/dashboard/student/progress":
+        return "Progress";
+      case "/dashboard/student/browse":
+        return "Explore Courses";
+      case "/dashboard/student/quizzes":
+        return "Quizzes";
+      case "/dashboard/student/ai-tutor":
+        return "AI Tutor";
+      case "/dashboard/student/profile":
+        return "Profile";
+      case "/dashboard/student/settings":
+        return "Settings";
+      default:
+        return "Student Dashboard";
+    }
+  }
+
+  if (pathname.startsWith("/dashboard/instructor/course-builder")) {
+    return "Course Builder";
+  }
+
+  if (pathname.startsWith("/dashboard/instructor/")) {
+    switch (pathname) {
+      case "/dashboard/instructor":
+        return "Home";
+      case "/dashboard/instructor/courses":
+        return "My Courses";
+      case "/dashboard/instructor/students":
+        return "Students";
+      case "/dashboard/instructor/quizzes":
+        return "Quizzes";
+      case "/dashboard/instructor/analytics":
+        return "Analytics";
+      case "/dashboard/instructor/profile":
+        return "Profile";
+      case "/dashboard/instructor/settings":
+        return "Settings";
+      default:
+        return "Instructor Dashboard";
+    }
+  }
+
+  if (pathname.startsWith("/dashboard/admin/")) {
+    switch (pathname) {
+      case "/dashboard/admin":
+        return "Home";
+      case "/dashboard/admin/users":
+        return "Users";
+      case "/dashboard/admin/courses":
+        return "Courses";
+      case "/dashboard/admin/analytics":
+        return "Analytics";
+      case "/dashboard/admin/reports":
+        return "Reports";
+      case "/dashboard/admin/billing":
+        return "Billing";
+      case "/dashboard/admin/settings":
+        return "Settings";
+      default:
+        return "Admin Dashboard";
+    }
+  }
+
+  return "Dashboard";
 }
 
 export default function DashboardShell({
