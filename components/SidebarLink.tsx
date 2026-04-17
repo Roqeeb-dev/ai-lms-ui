@@ -18,7 +18,13 @@ export default function SidebarLink({
   open,
 }: SidebarLinkProps) {
   const pathname = usePathname();
-  const active = pathname === href;
+  const isRootDashboardLink =
+    href === "/dashboard/student" ||
+    href === "/dashboard/instructor" ||
+    href === "/dashboard/admin";
+  const active =
+    pathname === href ||
+    (!isRootDashboardLink && pathname.startsWith(`${href}/`));
 
   return (
     <Link

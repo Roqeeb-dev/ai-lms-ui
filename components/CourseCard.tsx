@@ -91,7 +91,10 @@ export default function CourseCard({
   }
 
   return (
-    <div className="flex flex-col rounded-2xl border border-border bg-card shadow-sm hover:border-primary/30 hover:shadow-md transition-all duration-200 group cursor-pointer overflow-hidden">
+    <div
+      className="flex flex-col rounded-2xl border border-border bg-card shadow-sm hover:border-primary/30 hover:shadow-md transition-all duration-200 group cursor-pointer overflow-hidden"
+      onClick={isInstructor ? handleEdit : undefined}
+    >
       <CourseThumbnail url={course.thumbnail?.url} title={course.title} />
 
       <div className="flex flex-col gap-3 p-4">
