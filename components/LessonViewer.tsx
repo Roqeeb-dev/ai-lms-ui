@@ -10,12 +10,12 @@ import {
   PlayCircle,
   FileText,
   MessageSquare,
+  ClipboardList,
+  AlertCircle,
 } from "lucide-react";
 import { Lesson } from "@/types/lesson";
 import { getPdfViewUrl } from "@/lib/cloudinary";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-import { useToastStore } from "@/store/useToastStore";
 import { LessonTab } from "@/app/dashboard/student/courses/[courseId]/Client";
 import DiscussionSection from "./DiscussionSection";
 
@@ -31,6 +31,7 @@ interface Props {
   onComplete: () => void;
   onPrev: () => void;
   onNext: () => void;
+  hasAttempted?: boolean;
 }
 
 const TABS: { key: LessonTab; label: string; icon: React.ReactNode }[] = [
@@ -59,6 +60,63 @@ function DocumentViewer({ url }: { url: string }) {
   );
 }
 
+function QuizPromptCard({
+  lesson,
+  courseId,
+  hasAttempted,
+}: {
+  lesson: Lesson;
+  courseId: string;
+  hasAttempted?: boolean;
+}) {
+  const router = useRouter();
+
+  const handleStart = () => {
+    if (!lesson.quizId) return;
+    router.push(`/dashboard/student/courses/${courseId}/quiz/${lesson.quizId}`);
+  };
+
+  return (
+    <div className="w-full rounded-2xl border border-border bg-card p-8 flex flex-col items-center justify-center gap-6 text-center min-h-[300px]">
+      <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center">
+        <ClipboardList size={28} className="text-primary" />
+      </div>
+
+      <div className="flex flex-col gap-2 max-w-sm">
+        <h2 className="text-xl font-bold text-foreground">{lesson.title}</h2>
+        <p className="text-sm text-foreground-muted leading-relaxed">
+          {hasAttempted
+            ? "You have already completed this quiz."
+            : "This lesson is a quiz. When you're ready, click the button below to begin."}
+        </p>
+      </div>
+
+      {hasAttempted ? (
+        <div className="flex flex-col items-center gap-3">
+          <div className="flex items-center gap-2 text-sm font-semibold text-amber-600 bg-amber-500/10 px-4 py-2.5 rounded-lg border border-amber-500/20">
+            <AlertCircle size={15} />
+            <span>You've used your attempt for this quiz</span>
+          </div>
+          <button
+            onClick={handleStart}
+            className="text-xs text-foreground-muted underline underline-offset-4 hover:text-foreground transition-colors"
+          >
+            View results anyway
+          </button>
+        </div>
+      ) : (
+        <button
+          onClick={handleStart}
+          className="flex items-center gap-2 text-sm font-semibold px-6 py-3 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+        >
+          <ClipboardList size={16} />
+          Start Quiz
+        </button>
+      )}
+    </div>
+  );
+}
+
 export default function LessonViewer({
   lesson,
   courseId,
@@ -71,23 +129,8 @@ export default function LessonViewer({
   onComplete,
   onPrev,
   onNext,
+  hasAttempted,
 }: Props) {
-  const router = useRouter();
-  const { addToast } = useToastStore();
-
-  useEffect(() => {
-    if (lesson?.type === "quiz") {
-      if (!lesson.quizId) {
-        console.error("Quiz lesson is missing quizId");
-        return;
-      }
-      addToast("Redirecting to quiz page to attempt Quiz", "info");
-      router.push(
-        `/dashboard/student/courses/${courseId}/quiz/${lesson.quizId}`,
-      );
-    }
-  }, [lesson?.type, lesson?.id]);
-
   if (!lesson) {
     return (
       <div className="w-full max-w-5xl mx-auto px-8 py-20 flex flex-col items-center justify-center gap-4 text-center">
@@ -104,8 +147,6 @@ export default function LessonViewer({
     );
   }
 
-  if (lesson?.type === "quiz") return null;
-
   return (
     <div className="w-full max-w-6xl mx-auto px-3 md:px-8 py-3 md:py-8 flex flex-col gap-6">
       {/* Lesson meta */}
@@ -115,6 +156,8 @@ export default function LessonViewer({
             <PlayCircle size={14} className="text-primary" />
           ) : lesson.type === "pdf" ? (
             <FileText size={14} className="text-primary" />
+          ) : lesson.type === "quiz" ? (
+            <ClipboardList size={14} className="text-primary" />
           ) : (
             <BookOpen size={14} className="text-primary" />
           )}
@@ -241,6 +284,13 @@ export default function LessonViewer({
                 </p>
               )}
             </div>
+          )}
+          {lesson.type === "quiz" && (
+            <QuizPromptCard
+              lesson={lesson}
+              courseId={courseId}
+              hasAttempted={hasAttempted}
+            />
           )}
         </>
       )}
