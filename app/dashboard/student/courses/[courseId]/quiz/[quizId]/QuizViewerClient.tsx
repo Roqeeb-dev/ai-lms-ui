@@ -10,7 +10,7 @@ import { QuizResult } from "@/components/QuizResult";
 import { QuizActiveSection } from "@/components/QuizActiveSection";
 import { useLesson } from "@/hooks/useLesson";
 
-type Stage = "intro" | "active" | "results";
+type Stage = "intro" | "active" | "results" | "exhausted";
 
 export interface QuizResult {
   score: number;
@@ -22,6 +22,30 @@ export interface QuizResult {
   startedAt: Date;
   submittedAt: Date;
 }
+
+// --- localStorage helpers ---
+function getAttemptedQuizIds(): string[] {
+  try {
+    return JSON.parse(localStorage.getItem("attemptedQuizIds") || "[]");
+  } catch {
+    return [];
+  }
+}
+
+function markQuizAsAttempted(quizId: string) {
+  const existing = getAttemptedQuizIds();
+  if (!existing.includes(quizId)) {
+    localStorage.setItem(
+      "attemptedQuizIds",
+      JSON.stringify([...existing, quizId]),
+    );
+  }
+}
+
+function hasAttemptedQuiz(quizId: string): boolean {
+  return getAttemptedQuizIds().includes(quizId);
+}
+// ----------------------------
 
 export function QuizViewerClient() {
   const params = useParams<{ courseId: string; quizId: string }>();
@@ -54,6 +78,12 @@ export function QuizViewerClient() {
 
         if (quizRes?.data) {
           setQuiz(quizRes.data);
+
+          // Check localStorage — if already attempted and maxAttempts is 1,
+          // skip straight to exhausted stage
+          if (hasAttemptedQuiz(params.quizId)) {
+            setStage("exhausted");
+          }
         } else {
           console.warn("No quiz found for this lesson ID:", params.quizId);
         }
@@ -113,6 +143,10 @@ export function QuizViewerClient() {
 
       await markLessonComplete(quiz.lessonId);
 
+      // Write to localStorage so Client.tsx and LessonViewer know this quiz
+      // has been attempted without needing an extra fetch
+      markQuizAsAttempted(params.quizId);
+
       setResult({
         score: res.data.score,
         percentage: res.data.percentage,
@@ -170,6 +204,35 @@ export function QuizViewerClient() {
           router.push(`/dashboard/student/courses/${courseId}`)
         }
       />
+    );
+  }
+
+  if (stage === "exhausted") {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-6">
+        <div className="w-full max-w-md rounded-2xl border border-border bg-card p-8 flex flex-col items-center gap-6 text-center">
+          <div className="w-14 h-14 rounded-2xl bg-amber-500/10 flex items-center justify-center">
+            <span className="text-2xl">🔒</span>
+          </div>
+          <div className="flex flex-col gap-2">
+            <h2 className="text-xl font-bold text-foreground">
+              Attempt Limit Reached
+            </h2>
+            <p className="text-sm text-foreground-muted leading-relaxed">
+              You have already completed this quiz. No more attempts are
+              available.
+            </p>
+          </div>
+          <button
+            onClick={() =>
+              router.push(`/dashboard/student/courses/${params.courseId}`)
+            }
+            className="w-full flex items-center justify-center gap-2 text-sm font-semibold px-6 py-3 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+          >
+            Back to Course
+          </button>
+        </div>
+      </div>
     );
   }
 
