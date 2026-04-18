@@ -82,6 +82,20 @@ export default function Client() {
   const totalLessons = allLessons.length;
   const completedCount = completedLessons.length;
 
+  const hasAttempted =
+    selectedLesson?.type === "quiz" && selectedLesson?.quizId
+      ? (() => {
+          try {
+            const attempted: string[] = JSON.parse(
+              localStorage.getItem("attemptedQuizIds") || "[]",
+            );
+            return attempted.includes(selectedLesson.quizId);
+          } catch {
+            return false;
+          }
+        })()
+      : false;
+
   async function handleComplete() {
     if (!selectedLesson) return;
     const res = await markLessonComplete(selectedLesson.id);
@@ -155,6 +169,7 @@ export default function Client() {
           onComplete={handleComplete}
           onPrev={handlePrev}
           onNext={handleNext}
+          hasAttempted={hasAttempted}
         />
 
         <CourseOutline

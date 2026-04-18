@@ -2,6 +2,8 @@
 
 import StatCard from "@/components/StatCard";
 import DashboardHeader from "@/components/DashboardHeader";
+import DonutChart from "@/components/DonutChart";
+import StudentBarChart from "@/components/StudentBarChart";
 import {
   BookOpen,
   Users,
@@ -235,10 +237,10 @@ export default function AnalyticsClient() {
         )}
       </div>
 
-      {/* Publishing ratio */}
+      {/* Charts + Summary */}
       {courses.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {/* Published vs Draft */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {/* Donut — Publishing Ratio */}
           <div className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-5 shadow-sm">
             <div className="flex items-center gap-2">
               <TrendingUp size={15} className="text-primary" />
@@ -246,59 +248,16 @@ export default function AnalyticsClient() {
                 Publishing Ratio
               </h2>
             </div>
-            <div className="flex flex-col gap-3">
-              <div className="flex flex-col gap-1.5">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-foreground-muted">
-                    Published
-                  </span>
-                  <span className="text-xs font-semibold text-foreground">
-                    {courses.length > 0
-                      ? Math.round((publishedCourses / courses.length) * 100)
-                      : 0}
-                    %
-                  </span>
-                </div>
-                <div className="w-full h-2 rounded-full bg-muted overflow-hidden">
-                  <div
-                    className="h-full rounded-full bg-emerald-500 transition-all duration-500"
-                    style={{
-                      width: `${courses.length > 0 ? (publishedCourses / courses.length) * 100 : 0}%`,
-                    }}
-                  />
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-1.5">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-foreground-muted">Draft</span>
-                  <span className="text-xs font-semibold text-foreground">
-                    {courses.length > 0
-                      ? Math.round((drafts / courses.length) * 100)
-                      : 0}
-                    %
-                  </span>
-                </div>
-                <div className="w-full h-2 rounded-full bg-muted overflow-hidden">
-                  <div
-                    className="h-full rounded-full bg-sky-500 transition-all duration-500"
-                    style={{
-                      width: `${courses.length > 0 ? (drafts / courses.length) * 100 : 0}%`,
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-4 pt-1 border-t border-border">
+            <DonutChart published={publishedCourses} drafts={drafts} />
+            <div className="flex items-center justify-center gap-5 pt-1 border-t border-border">
               <div className="flex items-center gap-1.5">
-                <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
                 <span className="text-xs text-foreground-muted">
                   {publishedCourses} published
                 </span>
               </div>
               <div className="flex items-center gap-1.5">
-                <div className="w-2 h-2 rounded-full bg-sky-500" />
+                <div className="w-2.5 h-2.5 rounded-full bg-sky-400" />
                 <span className="text-xs text-foreground-muted">
                   {drafts} draft{drafts !== 1 ? "s" : ""}
                 </span>
@@ -306,7 +265,22 @@ export default function AnalyticsClient() {
             </div>
           </div>
 
-          {/* Quick summary */}
+          {/* Bar — Students per course */}
+          <div className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-5 shadow-sm">
+            <div className="flex items-center gap-2">
+              <Users size={15} className="text-primary" />
+              <h2 className="text-sm font-bold text-foreground uppercase tracking-widest">
+                Students per Course
+              </h2>
+            </div>
+            <StudentBarChart
+              courses={courses}
+              analyticsMap={analyticsMap}
+              analyticsLoading={analyticsLoading}
+            />
+          </div>
+
+          {/* Summary */}
           <div className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-5 shadow-sm">
             <div className="flex items-center gap-2">
               <LayoutGrid size={15} className="text-primary" />
