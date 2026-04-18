@@ -31,50 +31,50 @@ const slides = [
 
 export default function SpotlightCarousel() {
   return (
-    <section className="w-full bg-background-subtle overflow-hidden">
-      <div className="max-w-6xl mx-auto px-6 py-16 flex flex-col gap-8">
-        <div className="text-center max-w-3xl mx-auto">
-          <span className="text-xs font-semibold tracking-widest uppercase text-primary">
-            Spotlight
-          </span>
-          <h2 className="text-3xl font-bold text-foreground">
-            A premium learning experience that looks and feels elevated.
-          </h2>
-        </div>
+    <section className="w-full overflow-hidden py-16">
+      {/* Section header */}
+      <div className="max-w-6xl mx-auto px-6 mb-10 flex flex-col gap-2">
+        <span className="text-xs font-semibold tracking-widest uppercase text-primary">
+          Spotlight
+        </span>
+        <h2 className="text-2xl font-bold text-foreground max-w-md leading-snug">
+          A premium learning experience, elevated.
+        </h2>
+      </div>
 
-        {/* MARQUEE */}
-        <div className="relative overflow-hidden rounded-[2rem] border border-border bg-card">
-          <motion.div
-            className="flex gap-4 w-max py-8"
-            animate={{
-              x: ["0%", "-50%"],
-            }}
-            transition={{
-              duration: 45,
-              ease: "linear",
-              repeat: Infinity,
-            }}
-          >
-            {[...slides, ...slides].map((slide, index) => (
-              <div
-                key={index}
-                className="min-w-[20rem] max-w-[20rem] shrink-0 rounded-3xl border border-border-subtle bg-background-subtle/80 p-6 backdrop-blur-xl"
-              >
-                <span className="text-xs font-semibold uppercase tracking-[0.3em] text-primary">
-                  {slide.label}
-                </span>
+      {/* Marquee track with edge fades */}
+      <div className="relative">
+        {/* Left fade */}
+        <div className="pointer-events-none absolute left-0 top-0 h-full w-24 z-10 bg-gradient-to-r from-background to-transparent" />
+        {/* Right fade */}
+        <div className="pointer-events-none absolute right-0 top-0 h-full w-24 z-10 bg-gradient-to-l from-background to-transparent" />
 
-                <h3 className="mt-4 text-lg font-bold text-foreground">
-                  {slide.title}
-                </h3>
-
-                <p className="mt-3 text-sm text-foreground-muted">
-                  {slide.description}
-                </p>
-              </div>
-            ))}
-          </motion.div>
-        </div>
+        <motion.div
+          className="flex gap-3 w-max"
+          animate={{ x: ["0%", "-50%"] }}
+          transition={{
+            duration: 30,
+            ease: "linear",
+            repeat: Infinity,
+          }}
+        >
+          {[...slides, ...slides].map((slide, index) => (
+            <div
+              key={index}
+              className="min-w-[260px] max-w-[260px] shrink-0 rounded-2xl border border-border bg-card px-5 py-4 flex flex-col gap-3 hover:border-primary/40 transition-colors duration-300"
+            >
+              <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-primary">
+                {slide.label}
+              </span>
+              <h3 className="text-sm font-semibold text-foreground leading-snug">
+                {slide.title}
+              </h3>
+              <p className="text-xs text-foreground-muted leading-relaxed">
+                {slide.description}
+              </p>
+            </div>
+          ))}
+        </motion.div>
       </div>
     </section>
   );
