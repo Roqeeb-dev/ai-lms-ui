@@ -20,12 +20,12 @@ export default async function StudentDashboard() {
   const progressEntries = await Promise.allSettled(
     recentEnrollments.map((e) => getCourseProgressServer(e.course.id)),
   );
-  console.log("PROGRESS DETAIL:", JSON.stringify(progressEntries, null, 2));
 
   const progressMap: Record<string, number> = {};
   progressEntries.forEach((result, i) => {
     if (result.status === "fulfilled" && result.value) {
-      progressMap[recentEnrollments[i].course.id] = result.value.progress;
+      progressMap[recentEnrollments[i].course.id] =
+        result.value.progress.progress;
     }
   });
 
