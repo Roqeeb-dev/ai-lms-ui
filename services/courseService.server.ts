@@ -42,3 +42,19 @@ export async function getCourseProgressServer(courseId: string) {
     progress: normalizeCourseProgress(res.data),
   };
 }
+
+export async function getLoggedInInstructorCoursesServer() {
+  const res = await serverApiClient.get<any>("/api/courses/me");
+  return {
+    courses: normalizeAllCourses(res.data),
+  };
+}
+
+export async function getInstructorCoursesServer(instructorId: string) {
+  const res = await serverApiClient.get<any>(
+    `/api/courses/instructors/${instructorId}`,
+  );
+  return {
+    courses: normalizeAllCourses(res.data),
+  };
+}

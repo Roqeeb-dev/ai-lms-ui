@@ -7,3 +7,12 @@ export async function getCoursesEnrollmentServer() {
     enrollments: normalizeAllEnrollmentsPopulated(res.data),
   };
 }
+
+export async function getCourseStudentsServer(courseId: string) {
+  const res = await serverApiClient.get<any>(
+    `/api/courses/${courseId}/students`,
+  );
+  return {
+    enrollments: normalizeAllEnrollmentsPopulated(res.data),
+  };
+}

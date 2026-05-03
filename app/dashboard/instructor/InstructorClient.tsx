@@ -21,40 +21,59 @@ export type ModalState =
   | { open: true; mode: "create" }
   | { open: true; mode: "update"; course: Course };
 
-export default function InstructorClient() {
-  const [modalState, setModalState] = useState<ModalState>({ open: false });
-  const { courses, fetching, createCourse, updateCourse } =
-    useInstructorCourses();
-  const [analyticsMap, setAnalyticsMap] = useState<
-    Map<string, CourseAnalytics>
-  >(new Map());
+export default function InstructorClient({
+  initialCourses,
+  initialAnalyticsMap,
+}: {
+  initialCourses: Course[];
+  initialAnalyticsMap: Map<string, CourseAnalytics>;
+}) {
   const router = useRouter();
 
+  // ✅ hydrate courses from SSR
+  const { courses, fetching, createCourse, updateCourse } =
+    useInstructorCourses(initialCourses);
+
+  // ✅ hydrate analytics from SSR
+  const [analyticsMap, setAnalyticsMap] =
+    useState<Map<string, CourseAnalytics>>(initialAnalyticsMap);
+
+  const [modalState, setModalState] = useState<ModalState>({ open: false });
+
+  // ✅ only fetch analytics if not already provided
   useEffect(() => {
+    if (analyticsMap.size > 0) return;
     if (courses.length === 0) return;
 
     const fetchAll = async () => {
       const results = await Promise.allSettled(
         courses.map((c) => getCourseAnalytics(c.id)),
       );
+
       const map = new Map<string, CourseAnalytics>();
+
       results.forEach((result, idx) => {
         if (result.status === "fulfilled") {
           map.set(courses[idx].id, result.value);
         }
       });
+
       setAnalyticsMap(map);
     };
 
     fetchAll();
-  }, [courses]);
+  }, [courses, analyticsMap]);
 
+  // 📊 computed stats
   const totalCourses = courses.length;
+
   const totalStudents = Array.from(analyticsMap.values()).reduce(
     (sum, a) => sum + a.totalStudents,
     0,
   );
+
   const publishedCount = courses.filter((c) => c.status === "published").length;
+
   const draftCount = courses.filter((c) => c.status === "draft").length;
 
   const stats = [
@@ -88,6 +107,7 @@ export default function InstructorClient() {
     },
   ];
 
+  // 🧠 actions
   async function handleCreate(data: CourseFormData) {
     const res = await createCourse(data);
     if (!res) return;
@@ -103,6 +123,7 @@ export default function InstructorClient() {
   async function toggleCourse(courseId: string) {
     const courseToToggle = courses.find((c) => c.id === courseId);
     if (!courseToToggle) return;
+
     await updateCourse(courseId, {
       status: courseToToggle.status === "published" ? "draft" : "published",
     });
@@ -116,17 +137,20 @@ export default function InstructorClient() {
         onClick={() => setModalState({ open: true, mode: "create" })}
       />
 
+      {/* 📊 Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat) => (
           <StatCard key={stat.label} stat={stat} />
         ))}
       </div>
 
+      {/* 📚 Courses */}
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-bold text-foreground uppercase tracking-widest">
             My Courses
           </h2>
+
           <Link
             href="/dashboard/instructor/courses"
             className="flex items-center gap-1 text-xs text-primary font-semibold hover:underline underline-offset-4"
@@ -166,6 +190,7 @@ export default function InstructorClient() {
         )}
       </div>
 
+      {/* 🧩 Modal */}
       <CourseModal
         open={modalState.open}
         onClose={() => setModalState({ open: false })}

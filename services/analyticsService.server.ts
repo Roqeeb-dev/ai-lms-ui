@@ -2,6 +2,8 @@ import { serverApiClient } from "@/lib/serverApiClient";
 import {
   GetStudentAnalyticsResponse,
   StudentAnalytics,
+  GetCourseAnalyticsResponse,
+  CourseAnalytics,
 } from "./analyticsService";
 import { QuizAttempt } from "./quizService";
 import { EnrollmentStatus } from "@/types/enrollment";
@@ -36,9 +38,28 @@ function normalizeStudentAnalytics(
   };
 }
 
+function normalizeCourseAnalytics(
+  data: GetCourseAnalyticsResponse["data"],
+): CourseAnalytics {
+  return {
+    totalStudents: data.totalStudents,
+    avgProgress: data.avgProgress,
+  };
+}
+
 export async function getStudentAnalyticsServer(): Promise<StudentAnalytics> {
   const res =
     await serverApiClient.get<GetStudentAnalyticsResponse>("/api/analytics/me");
 
   return normalizeStudentAnalytics(res.data);
+}
+
+export async function getCourseAnalyticsServer(
+  courseId: string,
+): Promise<CourseAnalytics> {
+  const res = await serverApiClient.get<GetCourseAnalyticsResponse>(
+    `/api/analytics/instructor/courses/${courseId}`,
+  );
+
+  return normalizeCourseAnalytics(res.data);
 }

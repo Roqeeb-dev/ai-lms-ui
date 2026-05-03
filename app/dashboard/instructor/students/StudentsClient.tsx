@@ -11,23 +11,32 @@ export default function StudentsClient() {
   const { courses, fetching: fetchingCourses } = useInstructorCourses();
   const { courseStudents, fetchingStudents, fetchCourseStudents } =
     useEnrollment();
+
   const [selectedCourseId, setSelectedCourseId] = useState<string>("");
   const [search, setSearch] = useState("");
+  const [lastFetchedId, setLastFetchedId] = useState<string | null>(null);
 
+  // ✅ Set initial course safely (no unnecessary updates)
   useEffect(() => {
-    if (courses.length > 0 && !selectedCourseId) {
-      setSelectedCourseId(courses[0].id);
-    }
+    if (!courses.length) return;
+
+    setSelectedCourseId((prev) => prev || courses[0].id);
   }, [courses]);
 
+  // ✅ Fetch students only when needed
   useEffect(() => {
     if (!selectedCourseId) return;
-    fetchCourseStudents(selectedCourseId);
-  }, [selectedCourseId]);
+    if (lastFetchedId === selectedCourseId) return;
 
+    fetchCourseStudents(selectedCourseId);
+    setLastFetchedId(selectedCourseId);
+  }, [selectedCourseId, fetchCourseStudents, lastFetchedId]);
+
+  // 🔍 Filter students
   const filtered = useMemo(() => {
+    const q = search.toLowerCase();
+
     return courseStudents.filter((e) => {
-      const q = search.toLowerCase();
       return (
         e.user.name.toLowerCase().includes(q) ||
         e.user.email.toLowerCase().includes(q)
@@ -71,7 +80,12 @@ export default function StudentsClient() {
         <select
           value={selectedCourseId}
           onChange={(e) => {
-            setSelectedCourseId(e.target.value);
+            const newId = e.target.value;
+
+            // ✅ prevent unnecessary updates
+            if (newId === selectedCourseId) return;
+
+            setSelectedCourseId(newId);
             setSearch("");
           }}
           disabled={fetchingCourses}
@@ -106,6 +120,7 @@ export default function StudentsClient() {
         </div>
       </div>
 
+      {/* Student count */}
       {!fetchingStudents && selectedCourseId && (
         <div className="flex items-center gap-2 -mt-2">
           <Users size={13} className="text-foreground-muted" />
@@ -180,12 +195,12 @@ export default function StudentsClient() {
             {filtered.map((enrollment) => {
               const status =
                 statusConfig[enrollment.status] ?? statusConfig.active;
+
               return (
                 <div
                   key={enrollment.id}
                   className="grid grid-cols-[1fr_1fr_auto] sm:grid-cols-[2fr_2fr_1fr_auto] gap-4 px-5 py-4 items-center hover:bg-muted/30 transition-colors"
                 >
-                  {/* Student */}
                   <div className="flex items-center gap-3 min-w-0">
                     <div className="w-8 h-8 rounded-full bg-primary shrink-0 flex items-center justify-center text-xs font-bold text-primary-foreground">
                       {initials(enrollment.user.name)}
@@ -200,12 +215,10 @@ export default function StudentsClient() {
                     </div>
                   </div>
 
-                  {/* Email */}
                   <span className="text-sm text-foreground-muted truncate hidden sm:block">
                     {enrollment.user.email}
                   </span>
 
-                  {/* Enrolled date */}
                   <span className="text-xs text-foreground-muted hidden sm:block">
                     {new Date(enrollment.createdAt).toLocaleDateString(
                       "en-US",
@@ -213,7 +226,6 @@ export default function StudentsClient() {
                     )}
                   </span>
 
-                  {/* Status */}
                   <span
                     className={`text-xs font-semibold px-2 py-0.5 rounded-full border ${status.class}`}
                   >

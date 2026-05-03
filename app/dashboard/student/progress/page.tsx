@@ -21,7 +21,10 @@ export default async function StudentProgress() {
 
   return (
     <main>
-      <ProgressClient initialAnalytics={analyticsData} initialError={analyticsError} />
+      <ProgressClient
+        initialAnalytics={analyticsData}
+        initialError={analyticsError}
+      />
     </main>
   );
 }

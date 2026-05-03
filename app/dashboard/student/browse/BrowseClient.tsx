@@ -82,9 +82,7 @@ export default function BrowseClient({
             <span>
               {" "}
               · matching{" "}
-              <span className="font-semibold text-foreground">
-                "{search}"
-              </span>
+              <span className="font-semibold text-foreground">"{search}"</span>
             </span>
           )}
         </p>
