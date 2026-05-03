@@ -1,6 +1,6 @@
 import { serverApiClient } from "@/lib/serverApiClient";
 import { Course, ServerCourse } from "@/types/course";
-import { normalizeCourseProgress } from "./courseService"; // only import pure functions/types
+import { normalizeCourseProgress } from "./courseService";
 
 function normalizeCourse(data: ServerCourse): Course {
   const createdAt = data.createdAt ? new Date(data.createdAt) : new Date();

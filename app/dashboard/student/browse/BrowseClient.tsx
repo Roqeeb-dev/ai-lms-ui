@@ -1,46 +1,46 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { Search, BookOpen } from "lucide-react";
 import CourseCard from "@/components/CourseCard";
-import { useCourse } from "@/hooks/useCourse";
 import { useEnrollment } from "@/hooks/useEnrollment";
 import CourseCardSkeleton from "@/components/CourseCardSkeleton";
+import { Course } from "@/types/course";
+import { EnrollmentWithCourse } from "@/types/enrollment";
+import { getCoursesEnrollment } from "@/services/enrollmentService";
 
-export default function BrowseClient() {
+interface BrowseClientProps {
+  initialEnrollments: EnrollmentWithCourse[];
+  initialCourses: Course[];
+}
+
+export default function BrowseClient({
+  initialEnrollments,
+  initialCourses,
+}: BrowseClientProps) {
   const [search, setSearch] = useState("");
-  const { allCourses, fetchingAllCourses, getAllCourses } = useCourse({
-    publishedOnly: true,
-  });
-  const {
-    enrollments,
-    fetching: fetchingEnrollments,
-    enroll,
-    enrolling,
-    refetchEnrollments,
-  } = useEnrollment({ publishedOnly: true });
+  const [enrollments, setEnrollments] =
+    useState<EnrollmentWithCourse[]>(initialEnrollments);
+  const { enroll, enrolling } = useEnrollment({ publishedOnly: true });
 
   async function handleEnroll(courseId: string) {
     const res = await enroll(courseId);
     if (!res) return;
-    await refetchEnrollments();
+    const updated = await getCoursesEnrollment();
+    setEnrollments(updated.enrollments);
   }
-
-  useEffect(() => {
-    getAllCourses();
-  }, []);
 
   const enrolledCourseIds = new Set(enrollments.map((e) => e.course.id));
 
   const filtered = useMemo(() => {
-    return allCourses.filter((c) => {
+    return initialCourses.filter((c) => {
       const matchesSearch = c.title
         .toLowerCase()
         .includes(search.toLowerCase());
 
       return matchesSearch;
     });
-  }, [allCourses, search]);
+  }, [initialCourses, search]);
 
   return (
     <div className="flex flex-col gap-6 max-w-6xl mx-auto">
@@ -70,36 +70,28 @@ export default function BrowseClient() {
       </div>
 
       {/* Results count */}
-      {!fetchingAllCourses && (
-        <div className="flex items-center gap-2 -mt-2">
-          <BookOpen size={13} className="text-foreground-muted" />
-          <p className="text-xs text-foreground-muted">
-            Showing{" "}
-            <span className="font-semibold text-foreground">
-              {filtered.length}
-            </span>{" "}
-            {filtered.length === 1 ? "course" : "courses"}
-            {search && (
-              <span>
-                {" "}
-                · matching{" "}
-                <span className="font-semibold text-foreground">
-                  "{search}"
-                </span>
+      <div className="flex items-center gap-2 -mt-2">
+        <BookOpen size={13} className="text-foreground-muted" />
+        <p className="text-xs text-foreground-muted">
+          Showing{" "}
+          <span className="font-semibold text-foreground">
+            {filtered.length}
+          </span>{" "}
+          {filtered.length === 1 ? "course" : "courses"}
+          {search && (
+            <span>
+              {" "}
+              · matching{" "}
+              <span className="font-semibold text-foreground">
+                "{search}"
               </span>
-            )}
-          </p>
-        </div>
-      )}
+            </span>
+          )}
+        </p>
+      </div>
 
       {/* Course grid */}
-      {fetchingAllCourses ? (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <CourseCardSkeleton key={i} />
-          ))}
-        </div>
-      ) : filtered.length === 0 ? (
+      {filtered.length === 0 ? (
         <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-border bg-card py-16 px-6 text-center">
           <span className="text-4xl opacity-30">🔍</span>
           <p className="text-sm font-semibold text-foreground">
