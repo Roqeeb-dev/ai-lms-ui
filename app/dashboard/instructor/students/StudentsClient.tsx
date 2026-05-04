@@ -20,7 +20,8 @@ export default function StudentsClient({
   initialStudents,
   initialSelectedCourseId,
 }: StudentsClientProps) {
-  const { courses, fetching: fetchingCourses } = useInstructorCourses();
+  const { courses, fetching: fetchingCourses } =
+    useInstructorCourses(initialCourses);
   const { courseStudents, fetchingStudents, fetchCourseStudents } =
     useEnrollment();
 
@@ -28,7 +29,9 @@ export default function StudentsClient({
     initialSelectedCourseId,
   );
   const [search, setSearch] = useState("");
-  const [lastFetchedId, setLastFetchedId] = useState<string | null>(null);
+  const [lastFetchedId, setLastFetchedId] = useState<string | null>(
+    initialStudents.length > 0 ? initialSelectedCourseId : null,
+  );
 
   // Use initial data if available, otherwise use state
   const currentCourses = courses.length > 0 ? courses : initialCourses;

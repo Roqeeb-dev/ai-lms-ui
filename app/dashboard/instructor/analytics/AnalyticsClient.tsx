@@ -13,6 +13,7 @@ import {
   CheckCircle,
 } from "lucide-react";
 import { useInstructorCourses } from "@/hooks/useInstructorCourses";
+import { Course } from "@/types/course";
 import {
   getCourseAnalytics,
   CourseAnalytics,
@@ -22,11 +23,19 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import LoadingScreen from "@/components/LoadingPage";
 
-export default function AnalyticsClient() {
-  const { courses, fetching } = useInstructorCourses();
+interface AnalyticsClientProps {
+  initialCourses: Course[];
+  initialAnalyticsMap: Map<string, CourseAnalytics>;
+}
+
+export default function AnalyticsClient({
+  initialCourses,
+  initialAnalyticsMap,
+}: AnalyticsClientProps) {
+  const { courses, fetching } = useInstructorCourses(initialCourses);
   const [analyticsMap, setAnalyticsMap] = useState<
     Map<string, CourseAnalytics>
-  >(new Map());
+  >(() => new Map(initialAnalyticsMap));
   const [analyticsLoading, setAnalyticsLoading] = useState(false);
 
   const drafts = courses.filter((c) => c.status === "draft").length;
@@ -36,6 +45,7 @@ export default function AnalyticsClient() {
 
   useEffect(() => {
     if (courses.length === 0) return;
+    if (analyticsMap.size === courses.length) return;
 
     const fetchAll = async () => {
       setAnalyticsLoading(true);
@@ -43,7 +53,7 @@ export default function AnalyticsClient() {
         const results = await Promise.allSettled(
           courses.map((c) => getCourseAnalytics(c.id)),
         );
-        const map = new Map<string, CourseAnalytics>();
+        const map = new Map<string, CourseAnalytics>(analyticsMap);
         results.forEach((result, idx) => {
           if (result.status === "fulfilled") {
             map.set(courses[idx].id, result.value);
@@ -56,7 +66,7 @@ export default function AnalyticsClient() {
     };
 
     fetchAll();
-  }, [courses]);
+  }, [courses, analyticsMap]);
 
   const totalStudents = Array.from(analyticsMap.values()).reduce(
     (sum, a) => sum + a.totalStudents,
