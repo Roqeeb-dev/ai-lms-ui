@@ -6,22 +6,41 @@ import { useInstructorCourses } from "@/hooks/useInstructorCourses";
 import { Search, Users, BookOpen } from "lucide-react";
 import DashboardHeader from "@/components/DashboardHeader";
 import LoadingScreen from "@/components/LoadingPage";
+import { Course } from "@/types/course";
+import { EnrollmentWithStudent } from "@/types/enrollment";
 
-export default function StudentsClient() {
+interface StudentsClientProps {
+  initialCourses: Course[];
+  initialStudents: EnrollmentWithStudent[];
+  initialSelectedCourseId: string;
+}
+
+export default function StudentsClient({
+  initialCourses,
+  initialStudents,
+  initialSelectedCourseId,
+}: StudentsClientProps) {
   const { courses, fetching: fetchingCourses } = useInstructorCourses();
   const { courseStudents, fetchingStudents, fetchCourseStudents } =
     useEnrollment();
 
-  const [selectedCourseId, setSelectedCourseId] = useState<string>("");
+  const [selectedCourseId, setSelectedCourseId] = useState<string>(
+    initialSelectedCourseId,
+  );
   const [search, setSearch] = useState("");
   const [lastFetchedId, setLastFetchedId] = useState<string | null>(null);
 
+  // Use initial data if available, otherwise use state
+  const currentCourses = courses.length > 0 ? courses : initialCourses;
+  const currentStudents =
+    courseStudents.length > 0 ? courseStudents : initialStudents;
+
   // ✅ Set initial course safely (no unnecessary updates)
   useEffect(() => {
-    if (!courses.length) return;
+    if (!currentCourses.length) return;
 
-    setSelectedCourseId((prev) => prev || courses[0].id);
-  }, [courses]);
+    setSelectedCourseId((prev) => prev || currentCourses[0].id);
+  }, [currentCourses]);
 
   // ✅ Fetch students only when needed
   useEffect(() => {
@@ -36,13 +55,13 @@ export default function StudentsClient() {
   const filtered = useMemo(() => {
     const q = search.toLowerCase();
 
-    return courseStudents.filter((e) => {
+    return currentStudents.filter((e) => {
       return (
         e.user.name.toLowerCase().includes(q) ||
         e.user.email.toLowerCase().includes(q)
       );
     });
-  }, [courseStudents, search]);
+  }, [currentStudents, search]);
 
   const initials = (name: string) =>
     name
@@ -93,10 +112,10 @@ export default function StudentsClient() {
         >
           {fetchingCourses ? (
             <option>Loading courses...</option>
-          ) : courses.length === 0 ? (
+          ) : currentCourses.length === 0 ? (
             <option>No courses yet</option>
           ) : (
-            courses.map((c) => (
+            currentCourses.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.title}
               </option>
