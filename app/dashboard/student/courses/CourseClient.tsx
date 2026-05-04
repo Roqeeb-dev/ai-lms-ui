@@ -36,7 +36,7 @@ export default function CourseClient({
     setEnrollments(updated.enrollments);
   }
 
-  const fetchingEnrollments = false;
+  const fetchingEnrollments = enrolling;
   const fetchingAllCourses = false;
   const enrolledCourseIds = new Set(enrollments.map((e) => e.course.id));
 

@@ -117,6 +117,7 @@ export default function InstructorClient({
   async function handleUpdate(data: CourseFormData) {
     if (modalState.open && modalState.mode === "update") {
       await updateCourse(modalState.course.id, data);
+      setModalState({ open: false });
     }
   }
 

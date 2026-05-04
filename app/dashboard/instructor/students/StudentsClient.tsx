@@ -32,6 +32,7 @@ export default function StudentsClient({
   const [lastFetchedId, setLastFetchedId] = useState<string | null>(
     initialStudents.length > 0 ? initialSelectedCourseId : null,
   );
+  const [isRefreshingStudents, setIsRefreshingStudents] = useState(false);
 
   // Use initial data if available, otherwise use state
   const currentCourses = courses.length > 0 ? courses : initialCourses;
@@ -53,6 +54,17 @@ export default function StudentsClient({
     fetchCourseStudents(selectedCourseId);
     setLastFetchedId(selectedCourseId);
   }, [selectedCourseId, fetchCourseStudents, lastFetchedId]);
+
+  async function handleRefreshStudents() {
+    if (!selectedCourseId) return;
+    setIsRefreshingStudents(true);
+
+    try {
+      await fetchCourseStudents(selectedCourseId);
+    } finally {
+      setIsRefreshingStudents(false);
+    }
+  }
 
   // 🔍 Filter students
   const filtered = useMemo(() => {
@@ -99,32 +111,45 @@ export default function StudentsClient({
 
       {/* Controls */}
       <div className="flex flex-col sm:flex-row gap-3">
-        <select
-          value={selectedCourseId}
-          onChange={(e) => {
-            const newId = e.target.value;
+        <div className="flex items-center gap-2">
+          <select
+            value={selectedCourseId}
+            onChange={(e) => {
+              const newId = e.target.value;
 
-            // ✅ prevent unnecessary updates
-            if (newId === selectedCourseId) return;
+              // ✅ prevent unnecessary updates
+              if (newId === selectedCourseId) return;
 
-            setSelectedCourseId(newId);
-            setSearch("");
-          }}
-          disabled={fetchingCourses}
-          className="sm:w-64 rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-all duration-200 disabled:opacity-50"
-        >
-          {fetchingCourses ? (
-            <option>Loading courses...</option>
-          ) : currentCourses.length === 0 ? (
-            <option>No courses yet</option>
-          ) : (
-            currentCourses.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.title}
-              </option>
-            ))
-          )}
-        </select>
+              setSelectedCourseId(newId);
+              setSearch("");
+            }}
+            disabled={fetchingCourses}
+            className="sm:w-64 rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-all duration-200 disabled:opacity-50"
+          >
+            {fetchingCourses ? (
+              <option>Loading courses...</option>
+            ) : currentCourses.length === 0 ? (
+              <option>No courses yet</option>
+            ) : (
+              currentCourses.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.title}
+                </option>
+              ))
+            )}
+          </select>
+
+          <button
+            type="button"
+            onClick={handleRefreshStudents}
+            disabled={
+              !selectedCourseId || fetchingStudents || isRefreshingStudents
+            }
+            className="rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground transition-all duration-200 hover:bg-muted disabled:opacity-50"
+          >
+            {isRefreshingStudents ? "Refreshing..." : "Refresh"}
+          </button>
+        </div>
 
         {/* Search */}
         <div className="relative flex-1">

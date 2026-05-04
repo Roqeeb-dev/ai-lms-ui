@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useMemo } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useUserStore } from "@/store/useUserStore";
 import { useForm } from "@/hooks/useForm";
 import { useUser } from "@/hooks/useUser";
@@ -41,7 +41,7 @@ export default function ProfileClient({ initialUser }: ProfileClientProps) {
   });
 
   // Initialize form values from user data
-  useMemo(() => {
+  useEffect(() => {
     if (!user) return;
     const [firstName, ...rest] = user.name.split(" ");
     setAll({
@@ -49,7 +49,7 @@ export default function ProfileClient({ initialUser }: ProfileClientProps) {
       lastName: rest.join(" ") ?? "",
       bio: user.bio ?? "",
     });
-  }, []);
+  }, [user, setAll]);
 
   if (!user)
     return (
