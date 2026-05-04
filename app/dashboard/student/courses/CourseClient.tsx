@@ -1,62 +1,44 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { BookOpen, BarChart2 } from "lucide-react";
 import CourseCard from "@/components/CourseCard";
 import { useEnrollment } from "@/hooks/useEnrollment";
-import { useCourse } from "@/hooks/useCourse";
 import CourseCardSkeleton from "@/components/CourseCardSkeleton";
+import { Course } from "@/types/course";
+import { EnrollmentWithCourse } from "@/types/enrollment";
+import { getCoursesEnrollment } from "@/services/enrollmentService";
 
-export default function CourseClient() {
-  const {
-    enrollments,
-    fetching: fetchingEnrollments,
-    enroll,
-    enrolling,
-    refetchEnrollments,
-  } = useEnrollment({ publishedOnly: true });
+interface CourseClientProps {
+  initialEnrollments: EnrollmentWithCourse[];
+  initialCourses: Course[];
+  initialProgressMap: Record<string, number>;
+}
+
+export default function CourseClient({
+  initialEnrollments,
+  initialCourses,
+  initialProgressMap,
+}: CourseClientProps) {
+  const { enroll, enrolling } = useEnrollment({ publishedOnly: true });
+
+  const [enrollments, setEnrollments] =
+    useState<EnrollmentWithCourse[]>(initialEnrollments);
+  const [allCourses] = useState<Course[]>(
+    initialCourses.filter((course) => course.status === "published"),
+  );
+  const [progressMap] = useState<Record<string, number>>(initialProgressMap);
 
   async function handleEnroll(courseId: string) {
     const res = await enroll(courseId);
     if (!res) return;
-    await refetchEnrollments();
+    const updated = await getCoursesEnrollment();
+    setEnrollments(updated.enrollments);
   }
-  const { allCourses, fetchingAllCourses, getAllCourses, getCourseProgress } =
-    useCourse({ publishedOnly: true });
 
-  const [progressMap, setProgressMap] = useState<Record<string, number>>({});
-
-  useEffect(() => {
-    getAllCourses();
-  }, []);
-
+  const fetchingEnrollments = enrolling;
+  const fetchingAllCourses = false;
   const enrolledCourseIds = new Set(enrollments.map((e) => e.course.id));
-
-  const enrollmentIds = useMemo(
-    () => enrollments.map((e) => e.course.id).join(","),
-    [enrollments],
-  );
-
-  useEffect(() => {
-    if (!enrollmentIds) return;
-
-    async function loadProgress() {
-      const entries = await Promise.allSettled(
-        enrollments.map((e) => getCourseProgress(e.course.id)),
-      );
-
-      const map: Record<string, number> = {};
-      entries.forEach((result, i) => {
-        if (result.status === "fulfilled" && result.value) {
-          map[enrollments[i].course.id] = result.value.progress.progress;
-        }
-      });
-
-      setProgressMap(map);
-    }
-
-    loadProgress();
-  }, [enrollmentIds]);
 
   const filteredBrowse = useMemo(() => {
     return allCourses.filter((c) => !enrolledCourseIds.has(c.id));

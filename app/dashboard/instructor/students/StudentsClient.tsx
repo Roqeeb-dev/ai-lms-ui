@@ -6,34 +6,77 @@ import { useInstructorCourses } from "@/hooks/useInstructorCourses";
 import { Search, Users, BookOpen } from "lucide-react";
 import DashboardHeader from "@/components/DashboardHeader";
 import LoadingScreen from "@/components/LoadingPage";
+import { Course } from "@/types/course";
+import { EnrollmentWithStudent } from "@/types/enrollment";
 
-export default function StudentsClient() {
-  const { courses, fetching: fetchingCourses } = useInstructorCourses();
+interface StudentsClientProps {
+  initialCourses: Course[];
+  initialStudents: EnrollmentWithStudent[];
+  initialSelectedCourseId: string;
+}
+
+export default function StudentsClient({
+  initialCourses,
+  initialStudents,
+  initialSelectedCourseId,
+}: StudentsClientProps) {
+  const { courses, fetching: fetchingCourses } =
+    useInstructorCourses(initialCourses);
   const { courseStudents, fetchingStudents, fetchCourseStudents } =
     useEnrollment();
-  const [selectedCourseId, setSelectedCourseId] = useState<string>("");
+
+  const [selectedCourseId, setSelectedCourseId] = useState<string>(
+    initialSelectedCourseId,
+  );
   const [search, setSearch] = useState("");
+  const [lastFetchedId, setLastFetchedId] = useState<string | null>(
+    initialStudents.length > 0 ? initialSelectedCourseId : null,
+  );
+  const [isRefreshingStudents, setIsRefreshingStudents] = useState(false);
 
+  // Use initial data if available, otherwise use state
+  const currentCourses = courses.length > 0 ? courses : initialCourses;
+  const currentStudents =
+    courseStudents.length > 0 ? courseStudents : initialStudents;
+
+  // ✅ Set initial course safely (no unnecessary updates)
   useEffect(() => {
-    if (courses.length > 0 && !selectedCourseId) {
-      setSelectedCourseId(courses[0].id);
-    }
-  }, [courses]);
+    if (!currentCourses.length) return;
 
+    setSelectedCourseId((prev) => prev || currentCourses[0].id);
+  }, [currentCourses]);
+
+  // ✅ Fetch students only when needed
   useEffect(() => {
     if (!selectedCourseId) return;
-    fetchCourseStudents(selectedCourseId);
-  }, [selectedCourseId]);
+    if (lastFetchedId === selectedCourseId) return;
 
+    fetchCourseStudents(selectedCourseId);
+    setLastFetchedId(selectedCourseId);
+  }, [selectedCourseId, fetchCourseStudents, lastFetchedId]);
+
+  async function handleRefreshStudents() {
+    if (!selectedCourseId) return;
+    setIsRefreshingStudents(true);
+
+    try {
+      await fetchCourseStudents(selectedCourseId);
+    } finally {
+      setIsRefreshingStudents(false);
+    }
+  }
+
+  // 🔍 Filter students
   const filtered = useMemo(() => {
-    return courseStudents.filter((e) => {
-      const q = search.toLowerCase();
+    const q = search.toLowerCase();
+
+    return currentStudents.filter((e) => {
       return (
         e.user.name.toLowerCase().includes(q) ||
         e.user.email.toLowerCase().includes(q)
       );
     });
-  }, [courseStudents, search]);
+  }, [currentStudents, search]);
 
   const initials = (name: string) =>
     name
@@ -68,27 +111,45 @@ export default function StudentsClient() {
 
       {/* Controls */}
       <div className="flex flex-col sm:flex-row gap-3">
-        <select
-          value={selectedCourseId}
-          onChange={(e) => {
-            setSelectedCourseId(e.target.value);
-            setSearch("");
-          }}
-          disabled={fetchingCourses}
-          className="sm:w-64 rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-all duration-200 disabled:opacity-50"
-        >
-          {fetchingCourses ? (
-            <option>Loading courses...</option>
-          ) : courses.length === 0 ? (
-            <option>No courses yet</option>
-          ) : (
-            courses.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.title}
-              </option>
-            ))
-          )}
-        </select>
+        <div className="flex items-center gap-2">
+          <select
+            value={selectedCourseId}
+            onChange={(e) => {
+              const newId = e.target.value;
+
+              // ✅ prevent unnecessary updates
+              if (newId === selectedCourseId) return;
+
+              setSelectedCourseId(newId);
+              setSearch("");
+            }}
+            disabled={fetchingCourses}
+            className="sm:w-64 rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-all duration-200 disabled:opacity-50"
+          >
+            {fetchingCourses ? (
+              <option>Loading courses...</option>
+            ) : currentCourses.length === 0 ? (
+              <option>No courses yet</option>
+            ) : (
+              currentCourses.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.title}
+                </option>
+              ))
+            )}
+          </select>
+
+          <button
+            type="button"
+            onClick={handleRefreshStudents}
+            disabled={
+              !selectedCourseId || fetchingStudents || isRefreshingStudents
+            }
+            className="rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground transition-all duration-200 hover:bg-muted disabled:opacity-50"
+          >
+            {isRefreshingStudents ? "Refreshing..." : "Refresh"}
+          </button>
+        </div>
 
         {/* Search */}
         <div className="relative flex-1">
@@ -106,6 +167,7 @@ export default function StudentsClient() {
         </div>
       </div>
 
+      {/* Student count */}
       {!fetchingStudents && selectedCourseId && (
         <div className="flex items-center gap-2 -mt-2">
           <Users size={13} className="text-foreground-muted" />
@@ -180,12 +242,12 @@ export default function StudentsClient() {
             {filtered.map((enrollment) => {
               const status =
                 statusConfig[enrollment.status] ?? statusConfig.active;
+
               return (
                 <div
                   key={enrollment.id}
                   className="grid grid-cols-[1fr_1fr_auto] sm:grid-cols-[2fr_2fr_1fr_auto] gap-4 px-5 py-4 items-center hover:bg-muted/30 transition-colors"
                 >
-                  {/* Student */}
                   <div className="flex items-center gap-3 min-w-0">
                     <div className="w-8 h-8 rounded-full bg-primary shrink-0 flex items-center justify-center text-xs font-bold text-primary-foreground">
                       {initials(enrollment.user.name)}
@@ -200,12 +262,10 @@ export default function StudentsClient() {
                     </div>
                   </div>
 
-                  {/* Email */}
                   <span className="text-sm text-foreground-muted truncate hidden sm:block">
                     {enrollment.user.email}
                   </span>
 
-                  {/* Enrolled date */}
                   <span className="text-xs text-foreground-muted hidden sm:block">
                     {new Date(enrollment.createdAt).toLocaleDateString(
                       "en-US",
@@ -213,7 +273,6 @@ export default function StudentsClient() {
                     )}
                   </span>
 
-                  {/* Status */}
                   <span
                     className={`text-xs font-semibold px-2 py-0.5 rounded-full border ${status.class}`}
                   >

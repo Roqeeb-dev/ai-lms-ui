@@ -75,7 +75,9 @@ function normalizeCourse(data: ServerCourse): Course {
   };
 }
 
-function normalizeCourseProgress(data: ServerCourseProgress): CourseProgress {
+export function normalizeCourseProgress(
+  data: ServerCourseProgress,
+): CourseProgress {
   return {
     id: data._id,
     userId: data.user,

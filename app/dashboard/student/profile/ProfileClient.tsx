@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useUserStore } from "@/store/useUserStore";
 import { useForm } from "@/hooks/useForm";
 import { useUser } from "@/hooks/useUser";
 import { Pencil, X, Check, Loader2, Lock, Camera } from "lucide-react";
 import Image from "next/image";
+import { SessionUser } from "@/types/user";
 
 type ProfilePic = {
   url: string;
@@ -18,8 +19,13 @@ type ProfileFormValues = {
   bio: string;
 };
 
-export default function ProfileClient() {
-  const user = useUserStore((state) => state.user);
+interface ProfileClientProps {
+  initialUser: SessionUser | null;
+}
+
+export default function ProfileClient({ initialUser }: ProfileClientProps) {
+  const storeUser = useUserStore((state) => state.user);
+  const user = initialUser || storeUser;
   const { updateProfile, updatingProfile } = useUser();
   const [editing, setEditing] = useState(false);
   const [profilePic, setProfilePic] = useState<File | null>(null);
@@ -34,6 +40,7 @@ export default function ProfileClient() {
     bio: "",
   });
 
+  // Initialize form values from user data
   useEffect(() => {
     if (!user) return;
     const [firstName, ...rest] = user.name.split(" ");
@@ -42,7 +49,7 @@ export default function ProfileClient() {
       lastName: rest.join(" ") ?? "",
       bio: user.bio ?? "",
     });
-  }, [user]);
+  }, [user, setAll]);
 
   if (!user)
     return (

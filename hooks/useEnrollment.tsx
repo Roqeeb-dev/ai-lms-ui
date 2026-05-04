@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   createCourseEnrollment,
   getCoursesEnrollment,
@@ -83,23 +83,27 @@ export function useEnrollment({
     }
   }
 
-  async function fetchCourseStudents(courseId: string) {
-    setFetchingStudents(true);
-    setError(null);
-    try {
-      const res = await getCourseStudents(courseId);
-      setCourseStudents(res.enrollments);
-      return res;
-    } catch (err: any) {
-      const message = getErrorMessage(err);
-      setError(message);
-      addToast(message, "error");
-      console.error(message);
-      throw new Error(message);
-    } finally {
-      setFetchingStudents(false);
-    }
-  }
+  const fetchCourseStudents = useCallback(
+    async (courseId: string) => {
+      setFetchingStudents(true);
+      setError(null);
+
+      try {
+        const res = await getCourseStudents(courseId);
+        setCourseStudents(res.enrollments);
+        return res;
+      } catch (err: any) {
+        const message = getErrorMessage(err);
+        setError(message);
+        addToast(message, "error");
+        console.error(message);
+        throw new Error(message);
+      } finally {
+        setFetchingStudents(false);
+      }
+    },
+    [addToast],
+  );
 
   async function refetchEnrollments() {
     try {

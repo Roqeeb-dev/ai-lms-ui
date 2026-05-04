@@ -15,19 +15,25 @@ export function getErrorMessage(err: any): string {
   );
 }
 
-export function useInstructorCourses() {
+// ✅ now accepts initialCourses
+export function useInstructorCourses(initialCourses: Course[] = []) {
   const { user } = useUserStore();
   const { addToast } = useToastStore();
 
-  const [fetching, setFetching] = useState<boolean>(false);
+  const [fetching, setFetching] = useState<boolean>(
+    initialCourses.length === 0,
+  );
   const [creating, setCreating] = useState<boolean>(false);
   const [deleting, setDeleting] = useState<boolean>(false);
   const [updating, setUpdating] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [courses, setCourses] = useState<Course[]>([]);
+
+  const [courses, setCourses] = useState<Course[]>(initialCourses);
 
   useEffect(() => {
     let isMounted = true;
+
+    if (initialCourses.length > 0) return;
 
     if (!user || user.role !== "instructor") return;
 
@@ -57,7 +63,7 @@ export function useInstructorCourses() {
     return () => {
       isMounted = false;
     };
-  }, [user, addToast]);
+  }, [user, addToast, initialCourses]);
 
   async function createCourse(data: CreateCoursePayload) {
     setCreating(true);
@@ -87,9 +93,11 @@ export function useInstructorCourses() {
     try {
       const res = await course.updateCourse(courseId, data);
       if (!res) return;
+
       setCourses((prev) =>
         prev.map((c) => (c.id === courseId ? res.course : c)),
       );
+
       addToast("Course updated successfully!", "success");
       return res;
     } catch (err: any) {
@@ -130,6 +138,7 @@ export function useInstructorCourses() {
     deleting,
     deleteCourse,
     courses,
+    setCourses,
     error,
   };
 }

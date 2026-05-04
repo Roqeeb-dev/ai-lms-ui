@@ -7,6 +7,7 @@ import { useUser } from "@/hooks/useUser";
 import { Check, Loader2, X, Pencil, Lock, Camera } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { SessionUser } from "@/types/user";
 
 type ProfileFormValues = {
   firstName: string;
@@ -14,8 +15,15 @@ type ProfileFormValues = {
   bio: string;
 };
 
-export default function InstructorProfileClient() {
-  const user = useUserStore((state) => state.user);
+interface InstructorProfileClientProps {
+  initialUser: SessionUser | null;
+}
+
+export default function InstructorProfileClient({
+  initialUser,
+}: InstructorProfileClientProps) {
+  const storeUser = useUserStore((state) => state.user);
+  const user = initialUser || storeUser;
   const { updateProfile, updatingProfile } = useUser();
   const [editing, setEditing] = useState(false);
   const [profilePic, setProfilePic] = useState<File | null>(null);
@@ -38,7 +46,7 @@ export default function InstructorProfileClient() {
       lastName: rest.join(" ") ?? "",
       bio: user.bio ?? "",
     });
-  }, [user]);
+  }, [user, setAll]);
 
   if (!user)
     return (

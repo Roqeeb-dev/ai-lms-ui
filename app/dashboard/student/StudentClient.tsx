@@ -11,11 +11,10 @@ import {
 } from "lucide-react";
 import StatCard from "@/components/StatCard";
 import DashboardHeader from "@/components/DashboardHeader";
-import { useEnrollment } from "@/hooks/useEnrollment";
-import { useCourse } from "@/hooks/useCourse";
 import Link from "next/link";
 import { Skeleton } from "@/components/Skeleton";
-import { useEffect, useState, useMemo } from "react";
+import { useState, useMemo } from "react";
+import { EnrollmentWithCourse } from "@/types/enrollment";
 
 function EnrollmentRowSkeleton() {
   return (
@@ -32,46 +31,23 @@ function EnrollmentRowSkeleton() {
   );
 }
 
-export default function StudentClient() {
-  const user = useUserStore((state) => state.user);
-  const { enrollments, fetching } = useEnrollment({ publishedOnly: true });
-  const { getCourseProgress } = useCourse();
+interface StudentClientProps {
+  initialEnrollments: EnrollmentWithCourse[];
+  initialProgressMap: Record<string, number>;
+}
 
-  const [progressMap, setProgressMap] = useState<Record<string, number>>({});
-  const [fetchingProgress, setFetchingProgress] = useState(false);
+export default function StudentClient({
+  initialEnrollments,
+  initialProgressMap,
+}: StudentClientProps) {
+  const user = useUserStore((state) => state.user);
+  const [enrollments] = useState(initialEnrollments);
+  const [progressMap] = useState(initialProgressMap);
 
   const recentEnrollments = useMemo(
     () => enrollments.slice(0, 3),
     [enrollments],
   );
-
-  const enrollmentIds = useMemo(
-    () => recentEnrollments.map((e) => e.course.id).join(","),
-    [recentEnrollments],
-  );
-
-  useEffect(() => {
-    if (!enrollmentIds) return;
-
-    async function loadProgress() {
-      setFetchingProgress(true);
-      const entries = await Promise.allSettled(
-        recentEnrollments.map((e) => getCourseProgress(e.course.id)),
-      );
-
-      const map: Record<string, number> = {};
-      entries.forEach((result, i) => {
-        if (result.status === "fulfilled" && result.value) {
-          map[recentEnrollments[i].course.id] = result.value.progress.progress;
-        }
-      });
-
-      setProgressMap(map);
-      setFetchingProgress(false);
-    }
-
-    loadProgress();
-  }, [enrollmentIds]);
 
   if (!user)
     return (
@@ -121,7 +97,7 @@ export default function StudentClient() {
     },
   ];
 
-  const isLoadingEnrollments = fetching || fetchingProgress;
+  const isLoadingEnrollments = false;
 
   return (
     <div className="flex flex-col gap-6 max-w-6xl mx-auto">

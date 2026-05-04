@@ -9,6 +9,7 @@ import { useInstructorCourses } from "@/hooks/useInstructorCourses";
 import type { ModalState } from "../InstructorClient";
 import CourseModal, { CourseFormData } from "@/components/CreateCourseModal";
 import { useRouter } from "next/navigation";
+import { Course } from "@/types/course";
 import CourseCardSkeleton from "@/components/CourseCardSkeleton";
 
 type FilterStatus = "all" | "published" | "draft";
@@ -19,13 +20,17 @@ const filterOptions: { label: string; value: FilterStatus }[] = [
   { label: "Draft", value: "draft" },
 ];
 
-export default function CoursesClient() {
+interface CoursesClientProps {
+  initialCourses: Course[];
+}
+
+export default function CoursesClient({ initialCourses }: CoursesClientProps) {
   const [search, setSearch] = useState("");
   const router = useRouter();
   const [activeFilter, setActiveFilter] = useState<FilterStatus>("all");
   const [modalState, setModalState] = useState<ModalState>({ open: false });
-  const { createCourse, updateCourse, courses, fetching } =
-    useInstructorCourses();
+  const { createCourse, updateCourse, fetching, courses } =
+    useInstructorCourses(initialCourses);
 
   const filtered = useMemo(() => {
     return courses.filter((c) => {
