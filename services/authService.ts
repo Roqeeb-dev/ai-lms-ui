@@ -92,12 +92,24 @@ function normalizeUser(u: ServerUser): User {
   };
 }
 
+function throwIfFailed<
+  T extends { success?: boolean; message?: string; error?: string },
+>(res: T) {
+  if (res.success === false) {
+    throw new Error(res.error || res.message || "Something went wrong");
+  }
+
+  return res;
+}
+
 export const auth = {
   async login(payload: LoginPayload) {
     const res = await apiClient.post<
       { success: boolean; message?: string; token?: string; user: ServerUser },
       LoginPayload
     >("/api/auth/login", payload);
+    throwIfFailed(res);
+
     return {
       ...res,
       user: normalizeUser(res.user),
@@ -109,6 +121,8 @@ export const auth = {
       { success: boolean; message?: string; token?: string; user: ServerUser },
       RegisterPayload
     >("/api/auth/signup", payload);
+    throwIfFailed(res);
+
     return {
       ...res,
       user: normalizeUser(res.user),
@@ -120,6 +134,8 @@ export const auth = {
       { success: boolean; message: string; user: ServerUser },
       { token: string }
     >("/api/auth/verify-email", payload);
+    throwIfFailed(res);
+
     return {
       ...res,
       user: normalizeUser(res.user),
@@ -131,6 +147,8 @@ export const auth = {
       "/api/auth/reset-verification",
       payload,
     );
+    throwIfFailed(res);
+
     return {
       ...res,
       user: normalizeUser(res.user),
@@ -153,6 +171,8 @@ export const auth = {
       "/api/users/me",
       formData,
     );
+    throwIfFailed(res);
+
     return {
       success: res.success,
       data: normalizeUser(res.data),
@@ -160,17 +180,21 @@ export const auth = {
   },
 
   async forgotPassword(payload: { email: string }) {
-    return apiClient.post<ForgotPasswordResponse, { email: string }>(
+    const res = await apiClient.post<ForgotPasswordResponse, { email: string }>(
       "/api/auth/forgot-password",
       payload,
     );
+    throwIfFailed(res);
+    return res;
   },
 
   async resetPassword(token: string, payload: { password: string }) {
-    return apiClient.post<
+    const res = await apiClient.post<
       { success: boolean; message?: string; user: ServerUser },
       { password: string }
     >(`/api/auth/reset-password/${token}`, payload);
+    throwIfFailed(res);
+    return res;
   },
 
   async checkUser() {
@@ -186,6 +210,7 @@ export const auth = {
       ChangePasswordResponse,
       ChangePasswordPayload
     >(`/api/auth/change-password`, payload);
+    throwIfFailed(res);
 
     return {
       success: res.success,
