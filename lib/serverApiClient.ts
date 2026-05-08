@@ -25,7 +25,12 @@ export const serverApiClient = {
 
     if (!res.ok) {
       const errorData = await res.json().catch(() => ({}));
-      throw new Error(errorData.message || "Something went wrong");
+      const errorMessage =
+        errorData?.error ||
+        errorData?.message ||
+        res.statusText ||
+        "Something went wrong";
+      throw new Error(errorMessage);
     }
 
     return res.json();
